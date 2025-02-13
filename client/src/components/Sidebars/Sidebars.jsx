@@ -13,7 +13,7 @@ export const Sidebars = () => {
 
     const isActive = (path) =>
         location.pathname === path
-            ? 'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 w-50 pt-2 pl-7 pb-2 pr-3  text-wrap text-center text-black font-bold rounded-lg'
+            ? 'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 w-100 text-wrap text-center text-black font-bold rounded-lg'
             : 'bg-transparent text-black';
     return (
         <div className='bg-gray-300 h-full p-8 rounded-md mt-2 flex flex-col space-y-5 cursor-pointer'>

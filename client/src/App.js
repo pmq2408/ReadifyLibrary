@@ -14,6 +14,9 @@ import { StatisticsPage } from "./pages/Homepage/StatisticsPage";
 import { FinesPage } from "./pages/Homepage/FinesPage";
 import { HomeContent } from "./pages/Homepage/HomeContent";
 import "./App.css";
+import { BookSearch } from "./pages/BorrowPage/BookSearch";
+import { BorrowBook } from "./pages/BorrowPage/BorrowBook";
+import { FineBooks } from "./pages/BorrowPage/FineBooks";
 
 function App() {
   return (
@@ -31,6 +34,9 @@ function App() {
         </Route>
 
         {/* Management Routes */}
+        <Route path="/booksearch" element={<BookSearch />} />
+        <Route path="/borrowBook" element={<BorrowBook />} />
+        <Route path="/fineBooks" element={<FineBooks />} />
         <Route path="/listaccount" element={<ListAccount />} />
         <Route path="/listrule" element={<ListRule />} />
         <Route path="/books" element={<ListBook />} />

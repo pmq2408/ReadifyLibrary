@@ -7,11 +7,8 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
-    "client": "file:",
-<<<<<<< HEAD
-=======
     "bootstrap": "^5.3.3",
->>>>>>> db54d863c0605808b1ced00ad6f950f2d00f3457
+    "client": "file:",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.9",
     "react-dom": "^18.3.1",
