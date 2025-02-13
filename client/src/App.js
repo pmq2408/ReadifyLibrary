@@ -4,7 +4,6 @@ import ListRule from "./pages/listRule";
 import GenreManagement from "./pages/listGerne";
 import ListBook from "./pages/listBookCatalog";
 import ListFine from "./pages/listFine";// src/App.js
-import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import { NewsPage } from "./pages/Homepage/NewsPage";
 import { RulesPage } from "./pages/Homepage/RulesPage";
