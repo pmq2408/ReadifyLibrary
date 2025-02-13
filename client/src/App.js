@@ -1,24 +1,21 @@
-
+import ListAccount from "./pages/listAccount";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import ListRule from "./pages/listRule";
+import GenreManagement from "./pages/listGerne";
+import ListBook from "./pages/listBookCatalog";
+import ListFine from "./pages/listFine";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        
-        <p>
-          Edit <code>src/App.js</code> and save to reload...
-        </p>
-        <p>s</p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+    <Routes>
+    <Route path="/listaccount" element={<ListAccount/>} />
+    <Route path="/listrule" element={<ListRule />} />
+    <Route path="/books" element={<ListBook/>} />
+    <Route path="/genres" element={<GenreManagement />} />
+    <Route path="/fines" element={<ListFine />} />
+    </Routes>
+    </BrowserRouter>
   );
 }
 
