@@ -1,24 +1,26 @@
+// src/App.js
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+import { NewsPage } from "./pages/Homepage/NewsPage";
+import { RulesPage } from "./pages/Homepage/RulesPage";
+import { StatisticsPage } from "./pages/Homepage/StatisticsPage";
+
+import "./App.css";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        
-        <p>
-          Edit <code>src/App.js</code> and save to reload...
-        </p>
-        <p>s</p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Routes>
+       
+ 
+
+          <Route path="News" element={<NewsPage />} />
+          <Route path="Rules" element={<RulesPage />} />
+          <Route path="Statistics" element={<StatisticsPage />} />
+
+
+      </Routes>
+    </BrowserRouter>
   );
 }
 
