@@ -42,6 +42,7 @@ function App() {
         <Route path="/books" element={<ListBook />} />
         <Route path="/genres" element={<GenreManagement />} />
         <Route path="/fines-management" element={<ListFine />} />
+ 
       </Routes>
     </BrowserRouter>
   );
