@@ -60,6 +60,7 @@ const ListRule = () => {
           <Table responsive bordered hover>
             <thead className="bg-light">
               <tr>
+                <th>#</th>
                 <th>Rule</th>
                 <th>Description</th>
                 <th>Status</th>
@@ -69,6 +70,7 @@ const ListRule = () => {
             <tbody>
               {rules.map((account) => (
                 <tr key={account.id}>
+                  <td>{account.id}</td>
                   <td>{account.rule}</td>
                   <td>{account.description}</td>
                   <td>{account.status}</td>

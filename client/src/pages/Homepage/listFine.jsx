@@ -61,6 +61,7 @@ const ListFine = () => {
           <Table responsive bordered hover>
             <thead className="bg-light">
               <tr>
+                <th>STT</th>
                 <th>violataion</th>
                 <th>Description</th>
                 <th>Status</th>
@@ -71,6 +72,7 @@ const ListFine = () => {
             <tbody>
               {fines.map((account) => (
                 <tr key={account.id}>
+                  <td>{account.id}</td>
                   <td>{account.violataion}</td>
                   <td>{account.description}</td> 
                   <td>{account.status}</td>
