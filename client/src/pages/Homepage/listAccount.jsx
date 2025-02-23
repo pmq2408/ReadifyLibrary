@@ -42,7 +42,7 @@ const ListAccount = () => {
         <Card.Header className="bg-white">
           <Row className="align-items-center">
             <Col>
-              <h4 className="mb-0">Account Management</h4>
+            <h2 className="text-3xl font-bold mb-5 text-indigo-700">Quản lý Tài Khoản</h2>
             </Col>
             <Col xs="auto">
               <Button 
