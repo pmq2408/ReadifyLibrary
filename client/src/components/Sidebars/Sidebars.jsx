@@ -1,5 +1,5 @@
 import React from 'react'
-import { FaHome } from "react-icons/fa";
+import { FaBalanceScale, FaClipboardList, FaHome, FaMoneyBillWave, FaTags, FaUserCog } from "react-icons/fa";
 import { GiReturnArrow } from "react-icons/gi";
 import { FaBook } from "react-icons/fa";
 import { IoNewspaperOutline } from "react-icons/io5";
@@ -34,11 +34,41 @@ export const Sidebars = () => {
                 <p className={`flex items-center gap-2 ${isActive("/Rules")}`}><FcRules />Quy định</p>
             </Link>
             <Link to="Statistics">
-                <p className={`flex items-center gap-2 ${isActive("/Statistics")}`}><FcStatistics />Thống kê</p>
-            </Link>
-            <Link to="Fines">
-                <p className={`flex items-center gap-2 ${isActive("/Fines")}`}><FaMoneyBill />Danh sách tiền phạt</p>
-            </Link>
+    <p className={`flex items-center gap-2 ${isActive("/Statistics")}`}>
+        <FcStatistics />Thống kê
+    </p>
+</Link>
+<Link to="Fines">
+    <p className={`flex items-center gap-2 ${isActive("/Fines")}`}>
+        <FaMoneyBillWave />Danh sách tiền phạt
+    </p>
+</Link>
+<Link to="listaccount">
+    <p className={`flex items-center gap-2 ${isActive("/listaccount")}`}>
+        <FaUserCog />Quản lí tài khoản
+    </p>
+</Link>
+<Link to="listrule">
+    <p className={`flex items-center gap-2 ${isActive("/listrule")}`}>
+        <FaClipboardList />Quản lí quy định
+    </p>
+</Link>
+<Link to="fines-management">
+    <p className={`flex items-center gap-2 ${isActive("/fines-management")}`}>
+        <FaBalanceScale />Quản lí phạt
+    </p>
+</Link>
+<Link to="books">
+    <p className={`flex items-center gap-2 ${isActive("/books")}`}>
+        <FaBook />Quản lí sách
+    </p>
+</Link>
+<Link to="genres">
+    <p className={`flex items-center gap-2 ${isActive("/genres")}`}>
+        <FaTags />Quản lí thể loại sách
+    </p>
+</Link>
+
         </div >
     )
 }

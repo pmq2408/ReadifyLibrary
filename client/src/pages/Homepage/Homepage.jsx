@@ -12,6 +12,7 @@ export const Homepage = () => {
                 <Link to="/booksearch"><button className='bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-blue-600 transition-all'>Danh sách sách</button></Link>
                 <Link to="/borrowBook"><button className='bg-blue-500 text-white px-5 py-2 rounded-lg hover:bg-blue-600 transition-all'>Danh sách sách đã mượn</button></Link>
                 <Link to="/fineBooks"><button className='ml-2 bg-green-500 text-white px-5 py-2 rounded-lg hover:bg-blue-600 transition-all'>Tiền phạt</button></Link>
+                
 
             </div>
             <div className='flex'>

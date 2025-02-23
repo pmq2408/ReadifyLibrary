@@ -1,10 +1,10 @@
 // src/App.js
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import ListAccount from "./pages/listAccount";
-import ListRule from "./pages/listRule";
-import GenreManagement from "./pages/listGerne";
-import ListBook from "./pages/listBookCatalog";
-import ListFine from "./pages/listFine";
+import ListAccount from "./pages/Homepage/listAccount";
+import ListRule from "./pages/Homepage/listRule";
+import GenreManagement from "./pages/Homepage/listGerne";
+import ListBook from "./pages/Homepage/listBookCatalog";
+import ListFine from "./pages/Homepage/listFine";
 import { Homepage } from "./pages/Homepage/Homepage";
 import { BorrowPage } from "./pages/Homepage/BorrowPage";
 import { ManageOrder } from "./pages/Homepage/Manage-order";
@@ -31,17 +31,23 @@ function App() {
           <Route path="rules" element={<RulesPage />} />
           <Route path="statistics" element={<StatisticsPage />} />
           <Route path="fines" element={<FinesPage />} />
+          
+          {/* Admin */}
+          <Route path="listaccount" element={<ListAccount />} />
+          <Route path="listrule" element={<ListRule />} />
+          <Route path="fines-management" element={<ListFine />} />
+          <Route path="books" element={<ListBook />} />
+          <Route path="genres" element={<GenreManagement />} />
+          
         </Route>
 
         {/* Management Routes */}
         <Route path="/booksearch" element={<BookSearch />} />
         <Route path="/borrowBook" element={<BorrowBook />} />
         <Route path="/fineBooks" element={<FineBooks />} />
-        <Route path="/listaccount" element={<ListAccount />} />
-        <Route path="/listrule" element={<ListRule />} />
-        <Route path="/books" element={<ListBook />} />
-        <Route path="/genres" element={<GenreManagement />} />
-        <Route path="/fines-management" element={<ListFine />} />
+
+      
+
       </Routes>
     </BrowserRouter>
   );

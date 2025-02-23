@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Container, Table, Button, Modal, Form, Row, Col, Card, Badge, InputGroup } from 'react-bootstrap';
-import { BsPencilSquare, BsTrash, BsPlus, BsArrowReturnRight } from 'react-icons/bs';
+import { BsPencilSquare, BsTrash, BsPlus, BsArrowReturnRight, BsSearch } from 'react-icons/bs';
 
 const GenreManagement = () => {
   // Sample genre data with parent-child relationships
+  const [searchQuery, setSearchQuery] = useState('');
   const [genres, setGenres] = useState([
     { 
       id: 1, 
@@ -41,6 +42,14 @@ const GenreManagement = () => {
     subgenres: [],
     status: 'Active',
     booksCount: 0
+  });
+  const filteredGenres = genres.filter(genre => {
+    const lowerQuery = searchQuery.toLowerCase();
+    return (
+      genre.name.toLowerCase().includes(lowerQuery) ||
+      genre.description.toLowerCase().includes(lowerQuery) ||
+      genre.subgenres.some(sub => sub.toLowerCase().includes(lowerQuery))
+    );
   });
 
   // State for new subgenre input
@@ -110,7 +119,7 @@ const GenreManagement = () => {
   return (
     <Container fluid className="py-4">
       <Card>
-        <Card.Header className="bg-white">
+      <Card.Header className="bg-white">
           <Row className="align-items-center">
             <Col>
               <h4 className="mb-0">Genre Management</h4>
@@ -129,6 +138,22 @@ const GenreManagement = () => {
         </Card.Header>
 
         <Card.Body>
+        <Row className="mb-3">
+            <Col md={6}>
+              <InputGroup>
+                <InputGroup.Text>
+                  <BsSearch />
+                </InputGroup.Text>
+                <Form.Control
+                  type="search"
+                  placeholder="Search genres by name, description, or subgenre..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </InputGroup>
+            </Col>
+          </Row>
+
           <Table responsive bordered hover>
             <thead className="bg-light">
               <tr>
@@ -141,7 +166,8 @@ const GenreManagement = () => {
               </tr>
             </thead>
             <tbody>
-              {genres.map((genre) => (
+              
+              {filteredGenres.map((genre) => (
                 <tr key={genre.id}>
                   <td>{genre.name}</td>
                   <td>{genre.description}</td>
