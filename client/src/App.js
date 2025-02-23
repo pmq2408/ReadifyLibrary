@@ -17,6 +17,7 @@ import "./App.css";
 import { BookSearch } from "./pages/BorrowPage/BookSearch";
 import { BorrowBook } from "./pages/BorrowPage/BorrowBook";
 import { FineBooks } from "./pages/BorrowPage/FineBooks";
+import Profile from "./pages/userProfile";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
           <Route path="rules" element={<RulesPage />} />
           <Route path="statistics" element={<StatisticsPage />} />
           <Route path="fines" element={<FinesPage />} />
+          <Route path="profile" element={<Profile />}/>
         </Route>
 
         {/* Management Routes */}
