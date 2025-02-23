@@ -5,6 +5,7 @@ import ListRule from "./pages/Homepage/listRule";
 import GenreManagement from "./pages/Homepage/listGerne";
 import ListBook from "./pages/Homepage/listBookCatalog";
 import ListFine from "./pages/Homepage/listFine";
+import Profile from "./pages/userProfile"
 import { Homepage } from "./pages/Homepage/Homepage";
 import { BorrowPage } from "./pages/Homepage/BorrowPage";
 import { ManageOrder } from "./pages/Homepage/Manage-order";
@@ -31,6 +32,8 @@ function App() {
           <Route path="rules" element={<RulesPage />} />
           <Route path="statistics" element={<StatisticsPage />} />
           <Route path="fines" element={<FinesPage />} />
+          <Route path="profile" element={<Profile />} />
+          
           
           {/* Admin */}
           <Route path="listaccount" element={<ListAccount />} />

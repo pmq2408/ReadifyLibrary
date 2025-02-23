@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Header.css';
 import { FaUserCog, FaUsersCog } from "react-icons/fa";
+import { Link } from 'react-router-dom';
 
 export const Header = () => {
     const [isDropdownVisible, setIsDropdownVisible] = useState(false); // State to toggle dropdown
@@ -34,7 +35,11 @@ export const Header = () => {
                             ><FaUsersCog /></p>
                             {isDropdownVisible && (
                                 <div className="dropdown-content">
-                                    <button>Thông tin cá nhân</button>
+                                    
+                                        <Link to="/profile">
+                                        <button>Thông tin cá nhân</button>
+                                        </Link>
+                                        
                                     <button>Đăng xuất</button>
                                 </div>
                             )}
