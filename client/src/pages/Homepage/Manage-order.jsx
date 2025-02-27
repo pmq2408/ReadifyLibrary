@@ -27,7 +27,7 @@ export const ManageOrder = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="p-3 border rounded mb-5 w-full shadow"
             />
-            <table className="border border-collapse border-gray-400 table-auto" style={{ width: "170%" }}>
+            <table className="border border-collapse border-gray-400 table-auto" style={{ width: "1250px" }}>
                 <thead className="bg-indigo-600 text-white">
                     <tr>
                         {['Mã SV', 'Tên SV', 'Tên Sách', 'Ngày Mượn', 'Ngày Hẹn Trả', 'Trạng Thái'].map((header, index) => (

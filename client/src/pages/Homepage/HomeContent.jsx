@@ -14,7 +14,7 @@ export const HomeContent = () => {
     ];
 
     return (
-        <div className="p-8 space-y-8 bg-gray-50 min-h-screen">
+        <div className="p-8 space-y-8 min-h-screen" >
             {/* Search Section */}
             <div className="flex items-center gap-4">
                 <input
