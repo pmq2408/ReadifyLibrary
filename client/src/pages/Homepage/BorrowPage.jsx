@@ -19,7 +19,7 @@ export const BorrowPage = () => {
     );
 
     return (
-        <div className="p-4 bg-white border rounded-lg shadow-md" style={{ width: "140%" }}>
+        <div className="size-fit w-[1300px] mx-auto p-4 bg-white border rounded-lg shadow-md">
             <h2 className="text-3xl font-bold mb-5 text-indigo-700">Quản lý Mượn Sách</h2>
 
             <div className="flex items-center mb-4">

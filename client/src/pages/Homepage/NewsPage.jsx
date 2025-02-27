@@ -1,4 +1,3 @@
-// src/pages/Homepage/NewsPage.js
 import React, { useState } from 'react';
 
 export const NewsPage = () => {
@@ -8,13 +7,17 @@ export const NewsPage = () => {
     ]);
     const [newTitle, setNewTitle] = useState('');
     const [newContent, setNewContent] = useState('');
+    const [newImage, setNewImage] = useState('');
+    const [showPopup, setShowPopup] = useState(false);
 
     const handleAdd = () => {
         const newId = newsList.length ? Math.max(...newsList.map(item => item.id)) + 1 : 1;
-        const newNews = { id: newId, image: '', title: newTitle, content: newContent };
+        const newNews = { id: newId, image: newImage, title: newTitle, content: newContent };
         setNewsList([...newsList, newNews]);
         setNewTitle('');
         setNewContent('');
+        setNewImage('');
+        setShowPopup(false);
     };
 
     const handleDelete = (id) => {
@@ -22,14 +25,26 @@ export const NewsPage = () => {
     };
 
     return (
-        <div className="p-4 bg-white border rounded-lg shadow-md mt-5" style={{ width: "200%" }}>
+        <div className="p-4 bg-white border rounded-lg shadow-md mt-5" style={{ width: "1250px" }}>
             <h2 className="text-lg font-bold mb-4">Quản lý Tin tức</h2>
-            <div className="mb-4 flex space-x-2">
-                <input value={newTitle} onChange={(e) => setNewTitle(e.target.value)} placeholder="Tiêu đề" className="border px-2 py-1 rounded" />
-                <input value={newContent} onChange={(e) => setNewContent(e.target.value)} placeholder="Nội dung" className="border px-2 py-1 rounded" />
-                <button onClick={handleAdd} className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">Thêm</button>
-            </div>
-            <table className="w-full border border-gray-300 rounded-lg text-sm">
+            <button onClick={() => setShowPopup(true)} className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">Thêm</button>
+
+            {showPopup && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+                    <div className="bg-white p-6 rounded shadow-lg w-96">
+                        <h3 className="text-lg font-bold mb-4">Thêm Tin Tức</h3>
+                        <input value={newTitle} onChange={(e) => setNewTitle(e.target.value)} placeholder="Tiêu đề" className="border px-2 py-1 w-full mb-2 rounded" />
+                        <input value={newImage} onChange={(e) => setNewImage(e.target.value)} placeholder="URL Ảnh" className="border px-2 py-1 w-full mb-2 rounded" />
+                        <textarea value={newContent} onChange={(e) => setNewContent(e.target.value)} placeholder="Nội dung" className="border px-2 py-1 w-full mb-2 rounded"></textarea>
+                        <div className="flex justify-end space-x-2">
+                            <button onClick={handleAdd} className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Lưu</button>
+                            <button onClick={() => setShowPopup(false)} className="bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600">Đóng</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            <table className="w-full border border-gray-300 rounded-lg text-sm mt-4">
                 <thead className="bg-gray-100 text-gray-700">
                     <tr>
                         <th className="p-2">#</th>
