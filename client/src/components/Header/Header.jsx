@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { FaUsersCog } from "react-icons/fa";
+import { useAuth } from '../../Aucontext/Aucontext'; // Import useAuth để kiểm tra trạng thái đăng nhập
 import './Header.css';
-import { FaUserCog, FaUsersCog } from "react-icons/fa";
 
 export const Header = () => {
-    const [isDropdownVisible, setIsDropdownVisible] = useState(false); // State to toggle dropdown
+    const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+    const { user, logout } = useAuth(); // Lấy thông tin user và hàm logout
+
     const toggleDropdown = () => {
-        setIsDropdownVisible(!isDropdownVisible); // Toggle dropdown visibility
+        setIsDropdownVisible(!isDropdownVisible);
     };
+
     return (
         <div>
             <header className="header">
@@ -20,22 +25,26 @@ export const Header = () => {
                     <p className='mt-3'><strong style={{ color: "black" }}>Open: 08:15 - 21:00 Weekday | 08:00 - 12:00 & 13:00 - 17:00 Weekend</strong></p>
                 </div>
 
-                <div>
-                    <h6 style={{
-                        color: "#0870b7", fontWeight: "bold"
-                    }}>Vietnamese | Login</h6>
-                </div>
-                <div className="header-icons" >
+                <div className="header-icons">
                     <div className="profile-container">
                         <div className="profile-dropdown">
-                            <p
-                                className="text-3xl cursor-pointer"
-                                onClick={toggleDropdown}
-                            ><FaUsersCog /></p>
+                            <p className="text-3xl cursor-pointer" onClick={toggleDropdown}>
+                                <FaUsersCog />
+                            </p>
                             {isDropdownVisible && (
                                 <div className="dropdown-content">
-                                    <button>Thông tin cá nhân</button>
-                                    <button>Đăng xuất</button>
+                                    {user ? (
+                                        <>
+                                            <Link to="/profile">
+                                                <button>Thông tin cá nhân</button>
+                                            </Link>
+                                            <button onClick={logout}>Đăng xuất</button>
+                                        </>
+                                    ) : (
+                                        <Link to="/login">
+                                            <button>Đăng nhập</button>
+                                        </Link>
+                                    )}
                                 </div>
                             )}
                         </div>
@@ -44,5 +53,5 @@ export const Header = () => {
             </header>
             <hr style={{ height: "5px", color: 'black' }} className='mt-6' />
         </div>
-    )
-}
+    );
+};

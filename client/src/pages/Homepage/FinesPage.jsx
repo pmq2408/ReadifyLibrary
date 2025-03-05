@@ -10,7 +10,7 @@ export const FinesPage = () => {
     ];
 
     return (
-        <div className="p-4 bg-white border border-r rounded-lg shadow-lg mt-4" style={{ width: "130%" }}>
+        <div className="p-4 bg-white border border-r rounded-lg shadow-lg mt-4" style={{ width: "1250px" }}>
             <h2 className="text-xl font-bold mb-4 text-center">Danh sách phạt</h2>
             <table className="w-full border border-gray-300 text-sm">
                 <thead className="bg-gray-200 text-gray-700">
