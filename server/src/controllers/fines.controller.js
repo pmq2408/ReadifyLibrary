@@ -201,14 +201,256 @@ const getFinesByOrderId = async (req, res, next) => {
   }
 };
 
-  
+//create fines
+const createFines = async (req, res, next) => {
+  try {
+    const { user_id, order_id, fineReason_id, createBy, updateBy } = req.body;
+
+    const user = await User.findById(user_id);
+    if (!user) {
+      return res.status(500).json({ message: "User not found" });
+    }
+
+    const order = await Order.findById(order_id).populate(
+      "identifier_code condition"
+    );
+    if (!order) {
+      return res.status(500).json({ message: "Order not found" });
+    }
+
+    const penaltyReason = await PenaltyReason.findById(fineReason_id).populate(
+      "reasonName"
+    );
+    if (!penaltyReason) {
+      return res.status(500).json({ message: "Penalty reason not found" });
+    }
+
+    var totalAmount = 0;
+    if (penaltyReason.type === "PN1") {
+      const returnDateObj = new Date(order.returnDate);
+      const dueDateObj = new Date(order.dueDate);
+
+      const daysLate = Math.floor(
+        (returnDateObj - dueDateObj) / (1000 * 60 * 60 * 24)
+      );
+      totalAmount = daysLate * penaltyReason.penaltyAmount;
+    } else {
+      const book = await Book.findById(order.book_id);
+      const bookSet = await BookSet.findById(book.bookSet_id);
+      totalAmount = (penaltyReason.penaltyAmount * bookSet.price) / 100;
+    }
+    const fines = new Fines({
+      user_id,
+      book_id: order.book_id,
+      order_id,
+      fineReason_id,
+      createBy,
+      updateBy,
+      totalFinesAmount: totalAmount,
+      status: "Pending",
+      paymentMethod: null,
+      paymentDate: null,
+    });
+
+    const newFines = await fines.save();
+
+    const notification = new Notification({
+      userId: user_id,
+      type: "Fines",
+      message: `Bạn đã bị phạt ${penaltyReason.penaltyAmount}k cho sách #${order.book_id.identifier_code} vì lý do ${penaltyReason.reasonName}. Vui lòng thanh toán để tránh các khoản phí bổ sung.`,
+    });
+    await notification.save();
+
+    // Gửi email thông báo cho người dùng
+    const userEmail = user.email;
+    let info = await transporter.sendMail({
+      from: '"Thông Báo Thư Viện" <readify@gmail.com>',
+      to: userEmail,
+      subject: "Thông Báo Phạt Khi Mượn Sách",
+      text: `Xin chào, đã bị phạt ${penaltyReason.penaltyAmount} VND cho sách có mã số #${order.book_id.identifier_code}. Lý do phạt là: ${penaltyReason.reasonName}.Vui lòng thực hiện thanh toán khoản phạt này sớm để tránh các khoản phí bổ sung trong tương lai. Nếu bạn cần hỗ trợ thêm, xin vui lòng liên hệ với thư viện.Trân trọng!`,
+      html: `<b>Xin chào</b>, bạn đã bị phạt <strong>${penaltyReason.penaltyAmount} VND</strong> cho sách có mã số <strong>#${order.book_id.identifier_code}</strong>. Lý do phạt là: <strong>${penaltyReason.reasonName}</strong>.<br><br> Vui lòng thực hiện thanh toán khoản phạt này sớm để tránh các khoản phí bổ sung trong tương lai.<br><br> Nếu bạn cần hỗ trợ thêm, xin vui lòng liên hệ với thư viện`,
+    });
+
+    console.log(
+      `Sent lost book fine email to ${userEmail} for order ${order_id}`
+    );
+
+    res.status(200).json({
+      message: "Create fines successfully",
+      data: newFines,
+    });
+  } catch (error) {
+    console.error("Error creating fines", error);
+    res.status(500).send({ message: error.message });
+  }
+};
+
+//update fines
+const updateFines = async (req, res, next) => {
+  try {
+    const { finesId } = req.params;
+    const { user_id, order_id, fineReason_id, createBy, updateBy } = req.body;
+
+    const fines = await Fines.findById(finesId);
+    if (!fines) {
+      return res.status(500).json({
+        message: "Fines not found",
+        data: null,
+      });
+    }
+
+    const user = await User.findById(user_id);
+    if (!user) {
+      return res.status(500).json({ message: "User not found" });
+    }
+
+    const order = await Order.findById(order_id).populate(
+      "identifier_code condition"
+    );
+    if (!order) {
+      return res.status(500).json({ message: "Order not found" });
+    }
+
+    const penaltyReason = await PenaltyReason.findById(fineReason_id).populate(
+      "reasonName"
+    );
+    if (!penaltyReason) {
+      return res.status(500).json({ message: "Penalty reason not found" });
+    }
+
+    fines.user_id = user_id;
+    fines.order_id = order_id;
+    fines.fineReason_id = fineReason_id;
+    fines.createBy = createBy;
+    fines.updateBy = updateBy;
+    fines.totalFinesAmount = penaltyReason.penaltyAmount;
+    fines.status = "Pending";
+    fines.paymentMethod = null;
+    fines.paymentDate = null;
+
+    const updatedFines = await fines.save();
+
+    res.status(200).json({
+      message: "Update fines successfully",
+      data: updatedFines,
+    });
+  } catch (error) {
+    console.error("Error updating fines", error);
+    res.status(500).send({ message: error.message });
+  }
+};
+
+//delete fines
+const deleteFines = async (req, res, next) => {
+  try {
+    const { finesId } = req.params;
+    const fines = await Fines.findByIdAndDelete(finesId);
+    if (!fines) {
+      return res.status(404).json({
+        message: "Fines not found",
+        data: null,
+      });
+    }
+
+    res.status(200).json({
+      message: "Delete fines successfully",
+      data: fines,
+    });
+  } catch (error) {
+    console.error("Error deleting fines", error);
+    res.status(500).send({ message: error.message });
+  }
+};
+
+//filter fines by status
+const filterFinesByStatus = async (req, res, next) => {
+  try {
+    const { status } = req.params;
+
+    if (!["Pending", "Paid", "Overdue"].includes(status)) {
+      return res.status(500).json({
+        message: "Invalid status",
+        data: [],
+      });
+    }
+    const fines = await Fines.find({ status })
+      .populate("user_id")
+      .populate({
+        path: "book_id",
+        populate: {
+          path: "bookSet_id",
+        },
+      })
+      .populate("order_id")
+      .populate("fineReason_id")
+      .populate("createBy")
+      .populate("updateBy");
+
+    if (!fines || fines.length === 0) {
+      return res.status(500).json({
+        message: "No fines found for the given status",
+        data: [],
+      });
+    }
+    res.status(200).json({
+      message: "Get fines successfully",
+      data: fines,
+    });
+  } catch (error) {
+    console.error("Error getting a fines", error);
+    res.status(500).send({ message: error.message });
+  }
+};
+
+//update fines status
+const updateFinesStatus = async (req, res, next) => {
+  try {
+    const { finesId } = req.params;
+    const { status } = req.body;
+
+    const validStatuses = ["Pending", "Paid", "Overdue"];
+    if (!validStatuses.includes(status)) {
+      return res.status(500).json({
+        message: `Trạng thái không hợp lệ. Các trạng thái hợp lệ là: ${validStatuses.join(
+          ", "
+        )}`,
+      });
+    }
+    const fines = await Fines.findById(finesId);
+    if (!fines) {
+      return res.status(500).json({
+        message: "Fines not found",
+        data: null,
+      });
+    }
+
+    fines.status = status;
+    await fines.save();
+
+    res.status(200).json({
+      message: "Cập nhật trạng thái khoản phạt thành công",
+      data: fines,
+    });
+  } catch (error) {
+    console.error("Error updating fines status", error);
+    res.status(500).send({ message: error.message });
+  }
+};
+
+
 
 const FinesController = {
     getAllFines,
     getFinesById,
     getFinesByUserId,
     getFinesByUserCode,
-    getFinesByOrderId
+    getFinesByOrderId,
+    createFines,
+    updateFines,
+    deleteFines,
+    filterFinesByStatus,
+    updateFinesStatus,
+
   };
   module.exports = FinesController;
   

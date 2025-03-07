@@ -14,4 +14,17 @@ finesRouter.get("/by-user/:userId", finesController.getFinesByUserId);
 finesRouter.get("/by-order/:orderId", finesController.getFinesByOrderId);
 
 finesRouter.get("/by-code/:userCode", finesController.getFinesByUserCode);
+
+finesRouter.post("/create", finesController.createFines);
+
+finesRouter.put("/update/:finesId", finesController.updateFines);
+
+finesRouter.delete("/delete/:finesId", finesController.deleteFines);
+
+finesRouter.get(
+    "/filter-by-status/:status",
+    finesController.filterFinesByStatus
+  );
+  
+  finesRouter.put("/update-status/:finesId", finesController.updateFinesStatus);
 module.exports = finesRouter;
