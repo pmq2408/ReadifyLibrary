@@ -26,5 +26,10 @@ finesRouter.get(
     finesController.filterFinesByStatus
   );
   
-  finesRouter.put("/update-status/:finesId", finesController.updateFinesStatus);
+finesRouter.put("/update-status/:finesId", finesController.updateFinesStatus);
+
+finesRouter.post("/check-payment/:paymentKey", finesController.checkPayment);
+
+finesRouter.get("/chart-fines-by-month", finesController.ChartFinesbyMonth);
+
 module.exports = finesRouter;

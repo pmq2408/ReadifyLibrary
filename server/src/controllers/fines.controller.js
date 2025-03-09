@@ -437,6 +437,111 @@ const updateFinesStatus = async (req, res, next) => {
   }
 };
 
+//check payment
+const checkPayment = async (req, res, next) => {
+  const { paymentKey } = req.params;
+  const { fineId } = req.body;
+  const sheetId = "1KnvznxmaALff3bQN0Nv4hU55MpnkhcOjJ8URzco6iL4";
+  const apiKey = "AIzaSyDrXD0uTwJImmMV_A7mrOXUPKbZOr8nBC8";
+  const range = "Casso!A2:F100";
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
+
+  try {
+    const response = await axios.get(url);
+
+    console.log("Data from Google Sheets API:", response.data);
+
+    if (response.status === 200 && response.data.values) {
+      let message = false;
+      let amount = 0;
+
+      response.data.values.forEach((value) => {
+        const matches = value[1].toLowerCase().match(/start(.*?)end/i);
+        if (matches && paymentKey.toLowerCase() === matches[1].trim()) {
+          message = true;
+          amount = parseInt(value[2], 10) * 1000;
+        }
+      });
+
+      if (message) {
+        // Cập nhật tất cả các fines có _id trong mảng fineId
+        const result = await Fines.updateMany(
+          { _id: { $in: Array.isArray(fineId) ? fineId : [fineId] } },
+          {
+            status: "Paid",
+            paymentMethod: "Casso",
+            paymentDate: new Date(),
+          }
+        );
+
+        return res.status(200).json({ message: "OK", data: result });
+      } else {
+        return res
+          .status(500)
+          .json({ error: "Không có giao dịch", data: response.data.values });
+      }
+    }
+
+    return res.status(500).json({
+      error: "Không thể lấy dữ liệu từ Google Sheets",
+      data: response.data.values,
+    });
+  } catch (error) {
+    console.error("Error occurred:", error);
+    return res
+      .status(500)
+      .json({ error: "Đã xảy ra lỗi trong quá trình xử lý" });
+  }
+};
+
+//chart fines by month
+const ChartFinesbyMonth = async (req, res, next) => {
+  try {
+    // Get the current year or use the year from a query parameter if provided
+    const year = req.query.year || new Date().getFullYear();
+
+    const monthlyFines = await Fines.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: new Date(`${year}-01-01`),
+            $lte: new Date(`${year}-12-31`),
+          },
+        },
+      },
+      {
+        $group: {
+          _id: { month: { $month: "$createdAt" } },
+          totalFinesAmount: { $sum: "$totalFinesAmount" },
+          count: { $sum: 1 }, // Counts the number of fines issued in each month
+        },
+      },
+      {
+        $sort: { "_id.month": 1 },
+      },
+      {
+        $project: {
+          month: "$_id.month",
+          totalFinesAmount: 1,
+          count: 1,
+          _id: 0,
+        },
+      },
+    ]);
+
+    res.status(200).json({
+      message: "Monthly fines stats retrieved successfully",
+      data: monthlyFines,
+    });
+  } catch (error) {
+    console.error("Error charting fines by month:", error);
+    res.status(500).json({
+      message: "Error retrieving monthly fines stats",
+      error: error.message,
+    });
+  }
+};
+
 
 
 const FinesController = {
@@ -450,7 +555,8 @@ const FinesController = {
     deleteFines,
     filterFinesByStatus,
     updateFinesStatus,
-
+    checkPayment,
+    ChartFinesbyMonth
   };
   module.exports = FinesController;
   
