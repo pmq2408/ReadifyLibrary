@@ -17,8 +17,8 @@ const nodemailer = require("nodemailer");
 let transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "",
-    pass: "",
+    user: "huyentrang20031408@gmail.com",
+    pass: "pdis pmxi fkak udsk",
   },
 });
 
@@ -264,7 +264,7 @@ const createFines = async (req, res, next) => {
     // Gửi email thông báo cho người dùng
     const userEmail = user.email;
     let info = await transporter.sendMail({
-      from: '"Thông Báo Thư Viện" <readify@gmail.com>',
+      from: '"Thông Báo Thư Viện" <huyentrang20031408@gmail.com>',
       to: userEmail,
       subject: "Thông Báo Phạt Khi Mượn Sách",
       text: `Xin chào, đã bị phạt ${penaltyReason.penaltyAmount} VND cho sách có mã số #${order.book_id.identifier_code}. Lý do phạt là: ${penaltyReason.reasonName}.Vui lòng thực hiện thanh toán khoản phạt này sớm để tránh các khoản phí bổ sung trong tương lai. Nếu bạn cần hỗ trợ thêm, xin vui lòng liên hệ với thư viện.Trân trọng!`,
