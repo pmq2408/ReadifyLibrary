@@ -6,7 +6,7 @@ const BookRouter = require("./book.route");
 const CatalogRouter = require("./catalog.route");
 const OrderRouter = require("./order.route");
 const BookSetRouter = require("./bookset.route");
-const RuleRouter = require("./rule.route");
+
 const FinesRouter = require("./fines.route");
 const NewsRouter = require("./news.route");
 const NotificationRouter = require("./notification.route");
@@ -23,7 +23,7 @@ router.use("/orders", OrderRouter);
 router.use("/fines", FinesRouter);
 
 router.use("/news", NewsRouter);
-router.use("/rules", RuleRouter);
+
 router.use("/penalty-reasons", PenaltyReasonRouter);
 
 router.use("/notifications", NotificationRouter);

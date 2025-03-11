@@ -9,7 +9,7 @@ const Fines = require("./fines.model");
 const News = require("./news.model");
 const Order = require("./order.model");
 const PenaltyReason = require("./penaltyreason.model");
-const Rule = require("./rule.model");
+
 const Notification = require("./notification.model");
 
 // Khai bao doi tuong mongoose su dung nhu moi bien global
@@ -27,7 +27,7 @@ db.fines = Fines;
 db.news = News;
 db.order = Order;
 db.penaltyreason = PenaltyReason;
-db.rule = Rule;
+
 db.notification = Notification;
 
 db.connectDB = async () => {
