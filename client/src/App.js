@@ -3,7 +3,6 @@ import React from "react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import AuthContext, { AuthProvider, isTokenExpired } from "./contexts/UserContext";
 import 'font-awesome/css/font-awesome.min.css';
-import './App.scss'; // Import the overall CSS
 import { ToastContainer } from 'react-toastify';
 
 // Import các trang
@@ -35,11 +34,7 @@ import ListBookSet from "./pages/ListBookSet";
 import UpdateBookSet from "./pages/UpdateBookSet";
 import ManageReturnBook from "./pages/ManageReturnBook";
 import UserProfile from "./pages/UserProfile";
-import ListRule from "./pages/ListRule";
-import CreateNewRule from "./pages/CreateNewRule";
-import UpdateRule from "./pages/UpdateRule";
-import RuleDetail from "./pages/RuleDetail";
-import ListRuleUser from "./pages/ListRuleUser";
+
 import OrderDetail from "./pages/OrderDetail";
 import SearchResultsPage from "./pages/SearchResultsPage";
 import Notification from "./pages/Notification";
@@ -71,8 +66,7 @@ function App() {
                 <Route path="/book-detail/:id" element={<ProtectedRoute roles={["borrower", "librarian", "admin"]}><BookDetail /></ProtectedRoute>} />
                 <Route path="/profile/:id" element={<ProtectedRoute roles={["borrower", "librarian", "admin"]}><UserProfile /></ProtectedRoute>} />
                 <Route path="/news/news-detail/:id" element={<ProtectedRoute roles={["borrower", "librarian"]}><NewsDetail /></ProtectedRoute>} />
-                <Route path="/list-rule-user/rule-detail/:id" element={<ProtectedRoute roles={["borrower", "librarian", "admin"]}><RuleDetail /></ProtectedRoute>} />
-                <Route path="/list-rule-user" element={<ProtectedRoute roles={["borrower", "librarian"]}><ListRuleUser /></ProtectedRoute>} />
+        
                 <Route path="/search-results" element={<ProtectedRoute roles={["borrower", "librarian"]}><SearchResultsPage /></ProtectedRoute>} />
                 <Route path="/chart" element={<ProtectedRoute roles={["admin", "librarian"]}><Chart /></ProtectedRoute>} />
 
@@ -101,9 +95,6 @@ function App() {
                 <Route path="/list-book-set/create-book" element={<ProtectedRoute roles={["admin"]}><CreateBook /></ProtectedRoute>} />
                 <Route path="/list-book-set" element={<ProtectedRoute roles={["admin"]}><ListBookSet /></ProtectedRoute>} />
                 <Route path="/list-book-set/update-bookset/:id" element={<ProtectedRoute roles={["admin"]}><UpdateBookSet /></ProtectedRoute>} />
-                <Route path="/list-rule" element={<ProtectedRoute roles={["admin"]}><ListRule /></ProtectedRoute>} />
-                <Route path="/list-rule/create-new-rule" element={<ProtectedRoute roles={["admin"]}><CreateNewRule /></ProtectedRoute>} />
-                <Route path="/list-rule/update-rule/:id" element={<ProtectedRoute roles={["admin"]}><UpdateRule /></ProtectedRoute>} />
                 <Route path="/list-penalty-reasons" element={<ProtectedRoute roles={["admin"]}><ListPenaltyReasons /></ProtectedRoute>} />
                 <Route path="/list-penalty-reasons/update-penalty-reason/:id" element={<ProtectedRoute roles={["admin"]}><UpdatePenaltyReason /></ProtectedRoute>} />
                 <Route path="/list-penalty-reasons/create-penalty-reason" element={<ProtectedRoute roles={["admin"]}><CreatePenaltyReason /></ProtectedRoute>} />
