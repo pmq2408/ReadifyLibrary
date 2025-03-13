@@ -1,12 +1,11 @@
 import React, { useState, useContext } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import AuthContext from "../../contexts/UserContext";
 import axios from "axios";
-import {toast } from 'react-toastify'; // Import toast
-import 'react-toastify/dist/ReactToastify.css'; // Import CSS cho toast
+import { toast } from "react-toastify"; // Import toast
+import "react-toastify/dist/ReactToastify.css"; // Import CSS cho toast
 import "./Login.scss";
-
 
 function LoginPage() {
   const [username, setUsername] = useState("");
@@ -17,73 +16,97 @@ function LoginPage() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post("http://localhost:9999/api/auth/login", {
-        email: username,
-        password: password,
-      });
-      login(response.data.accessToken); 
+      const response = await axios.post(
+        "http://localhost:9999/api/auth/login",
+        {
+          email: username,
+          password: password,
+        }
+      );
+      login(response.data.accessToken);
       toast(`Chào mừng bạn đến với fptu-library.xyz`);
       navigate("/");
     } catch (error) {
-      const errorMessage = error.response?.data?.message || "Login failed. Please try again.";
-      toast.error(errorMessage); 
+      const errorMessage =
+        error.response?.data?.message || "Login failed. Please try again.";
+      toast.error(errorMessage);
       console.error("Login error", error);
     }
   };
 
   const handleGoogleLogin = async (response) => {
     try {
-      const res = await axios.post("http://localhost:9999/api/auth/google-login", {
-        token: response.credential,
-      });
-      login(res.data.accessToken); 
+      const res = await axios.post(
+        "http://localhost:9999/api/auth/google-login",
+        {
+          token: response.credential,
+        }
+      );
+      login(res.data.accessToken);
       toast(`Chào mừng bạn đến với fptu-library.xyz`);
       navigate("/");
     } catch (error) {
-      const errorMessage = error.response?.data?.message || "Google login failed. Please try again.";
-      toast.error(errorMessage); 
+      const errorMessage =
+        error.response?.data?.message ||
+        "Google login failed. Please try again.";
+      toast.error(errorMessage);
       console.error("Google login error", error);
     }
   };
 
   return (
-    <div className="login-page-container">
-      <div className="image-section">
-        <img
-          src="https://daihoc.fpt.edu.vn/en/wp-content/uploads/2022/09/thu-vien-can-tho-6.jpg"
-          alt="Login"
-        />
-      </div>
-      <div className="login-section">
-        <h2>Login</h2>
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="username">Username:</label>
-            <input
-              type="text"
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
+    <div className="login-container">
+      <div className="login-overlay">
+        <div className="login-card">
+          <div className="login-header">
+            <h2>Đăng nhập</h2>
+            <p>Chào mừng đến với Thư viện FPT</p>
+          </div>
+
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label htmlFor="username">Email:</label>
+              <input
+                type="text"
+                id="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Nhập email của bạn"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="password">Mật khẩu:</label>
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Nhập mật khẩu của bạn"
+                required
+              />
+            </div>
+
+            <button type="submit" className="login-button">
+              Đăng nhập
+            </button>
+          </form>
+
+          <div className="divider">
+            <span>Hoặc</span>
+          </div>
+
+          <div className="google-login">
+            <GoogleLogin
+              onSuccess={handleGoogleLogin}
+              onError={handleGoogleLogin}
             />
           </div>
-          <div>
-            <label htmlFor="password">Password:</label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+
+          <div className="login-footer">
+            <p>Thư viện FPT University</p>
           </div>
-          <button type="submit">Login</button>
-        </form>
-        <div className="google-login">
-          <GoogleLogin
-            onSuccess={handleGoogleLogin}
-            onError={handleGoogleLogin}
-          />
         </div>
       </div>
     </div>

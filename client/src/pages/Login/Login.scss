@@ -1,67 +1,150 @@
-.login-page-container {
-    display: flex;
-    height: 100vh;
+.login-container {
+  height: 100vh;
+  width: 100%;
+  background-image: url("https://daihoc.fpt.edu.vn/en/wp-content/uploads/2022/09/thu-vien-can-tho-6.jpg");
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
 
-    .image-section {
-        flex: 2;
-        background-color: #f0f0f0; // Optional: Add a background color
+.login-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-        img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+.login-card {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 400px;
+  padding: 30px;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 25px;
+
+  h2 {
+    color: #f26f21;
+    margin-bottom: 10px;
+    font-size: 28px;
+    font-weight: 600;
+  }
+
+  p {
+    color: #666;
+    font-size: 16px;
+  }
+}
+
+.form-group {
+  margin-bottom: 20px;
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+  }
+
+  input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 15px;
+    transition: border-color 0.3s;
+
+    &:focus {
+      border-color: #f26f21;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(242, 111, 33, 0.2);
     }
 
-    .login-section {
-        flex: 1;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-
-        h2 {
-            margin-bottom: 20px;
-        }
-
-        form {
-            width: 100%;
-            max-width: 300px;
-            display: flex;
-            flex-direction: column;
-
-            div {
-                margin-bottom: 15px;
-
-                label {
-                    display: block;
-                    margin-bottom: 5px;
-                }
-
-                input {
-                    width: 100%;
-                    padding: 8px;
-                    box-sizing: border-box;
-                }
-            }
-
-            button {
-                padding: 10px;
-                background-color: #007bff;
-                color: white;
-                border: none;
-                cursor: pointer;
-                transition: background-color 0.3s;
-
-                &:hover {
-                    background-color: #0056b3;
-                }
-            }
-        }
-
-        .google-login{
-            margin-top: 10px;
-        }
+    &::placeholder {
+      color: #aaa;
     }
+  }
+}
+
+.login-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #f26f21;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #e05e10;
+  }
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+
+  &::before,
+  &::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid #ddd;
+  }
+
+  span {
+    padding: 0 10px;
+    color: #777;
+    font-size: 14px;
+  }
+}
+
+.google-login {
+  display: flex;
+  justify-content: center;
+  margin: 15px 0;
+}
+
+.login-footer {
+  text-align: center;
+  margin-top: 20px;
+
+  p {
+    color: #777;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    max-width: 90%;
+    padding: 20px;
+  }
 }
