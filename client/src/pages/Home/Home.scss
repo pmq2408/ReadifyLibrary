@@ -1,0 +1,282 @@
+.home-page {
+  position: relative;
+}
+
+.page-loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+}
+
+/* Hero Section */
+.hero-section {
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+    url("https://daihoc.fpt.edu.vn/en/wp-content/uploads/2022/09/thu-vien-can-tho-6.jpg");
+  background-size: cover;
+  background-position: center;
+  color: white;
+  padding: 100px 0;
+  margin-bottom: 50px;
+  text-align: center;
+}
+
+.hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+  opacity: 0.9;
+}
+
+.hero-search {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.search-container {
+  position: relative;
+  background-color: white;
+  border-radius: 8px;
+  padding: 10px 20px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.search-icon {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #f26f21;
+  font-size: 18px;
+}
+
+/* Features Section */
+.features-section {
+  padding: 50px 0;
+  background-color: #f8f9fa;
+  margin-bottom: 50px;
+}
+
+.feature-card {
+  background-color: white;
+  border-radius: 10px;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  height: 100%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.feature-icon {
+  font-size: 2.5rem;
+  color: #f26f21;
+  margin-bottom: 20px;
+}
+
+.feature-card h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.feature-card p {
+  color: #6c757d;
+  font-size: 0.95rem;
+}
+
+/* News Section */
+.news-section {
+  margin-bottom: 50px;
+}
+
+/* Content Section */
+.content-section {
+  padding: 50px 0;
+  background-color: #f8f9fa;
+  margin-bottom: 50px;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.section-icon {
+  color: #f26f21;
+  margin-right: 10px;
+  font-size: 1.3rem;
+}
+
+.video-wrapper {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.library-guide {
+  padding: 20px;
+  height: 100%;
+}
+
+.guide-text {
+  color: #495057;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.guide-list {
+  margin-bottom: 25px;
+  padding-left: 20px;
+}
+
+.guide-list li {
+  margin-bottom: 10px;
+  color: #495057;
+  position: relative;
+  padding-left: 15px;
+}
+
+.guide-list li::before {
+  content: "•";
+  color: #f26f21;
+  position: absolute;
+  left: 0;
+  font-weight: bold;
+}
+
+.guide-button {
+  margin-top: 20px;
+}
+
+/* CTA Section */
+.cta-section {
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+    url("https://daihoc.fpt.edu.vn/media/2022/05/IMG_8559-scaled.jpg");
+  background-size: cover;
+  background-position: center;
+  color: white;
+  padding: 80px 0;
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.cta-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.cta-content h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.cta-content p {
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+  opacity: 0.9;
+}
+
+/* Search Results Section */
+.search-results-section {
+  padding: 30px 0;
+}
+
+.search-results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.search-results-header h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.clear-search-btn {
+  background-color: transparent;
+  border: 1px solid #f26f21;
+  color: #f26f21;
+  padding: 8px 16px;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.clear-search-btn:hover {
+  background-color: #f26f21;
+  color: white;
+}
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+  .hero-section {
+    padding: 80px 0;
+  }
+
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .content-section .row {
+    flex-direction: column-reverse;
+  }
+
+  .video-container,
+  .library-guide {
+    margin-bottom: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 60px 0;
+  }
+
+  .hero-title {
+    font-size: 1.8rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+
+  .feature-card {
+    margin-bottom: 20px;
+  }
+
+  .cta-section {
+    padding: 60px 0;
+  }
+
+  .cta-content h2 {
+    font-size: 1.6rem;
+  }
+}
