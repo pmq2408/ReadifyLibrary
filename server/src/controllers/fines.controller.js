@@ -24,36 +24,36 @@ let transporter = nodemailer.createTransport({
 
 //get All fines
 const getAllFines = async (req, res, next) => {
-    try {
-      const fines = await Fines.find({})
-        .populate("user_id")
-        .populate({
-          path: "book_id",
-          populate: {
-            path: "bookSet_id",
-          },
-        })
-        .populate("order_id")
-        .populate("fineReason_id")
-        .populate("createBy")
-        .populate("updateBy");
-  
-      if (!fines || fines.length === 0) {
-        return res.status(500).json({
-          message: "Get all fines failed",
-          data: [],
-        });
-      }
-  
-      res.status(200).json({
-        message: "Get all fines successfully",
-        data: fines,
+  try {
+    const fines = await Fines.find({})
+      .populate("user_id")
+      .populate({
+        path: "book_id",
+        populate: {
+          path: "bookSet_id",
+        },
+      })
+      .populate("order_id")
+      .populate("fineReason_id")
+      .populate("createBy")
+      .populate("updateBy");
+
+    if (!fines || fines.length === 0) {
+      return res.status(500).json({
+        message: "Get all fines failed",
+        data: [],
       });
-    } catch (error) {
-      console.error("Error listing fines", error);
-      res.status(500).send({ message: error.message });
     }
-  };
+
+    res.status(200).json({
+      message: "Get all fines successfully",
+      data: fines,
+    });
+  } catch (error) {
+    console.error("Error listing fines", error);
+    res.status(500).send({ message: error.message });
+  }
+};
 
 //get fines by id
 const getFinesById = async (req, res, next) => {
@@ -118,7 +118,9 @@ const getFinesByUserCode = async (req, res, next) => {
   try {
     const { userCode } = req.params;
 
-    const user = await User.findOne({ code: { $regex: userCode, $options: "i" } });
+    const user = await User.findOne({
+      code: { $regex: userCode, $options: "i" },
+    });
     if (!user) {
       return res.status(500).json({
         message: "User not found",
@@ -442,7 +444,7 @@ const checkPayment = async (req, res, next) => {
   const { paymentKey } = req.params;
   const { fineId } = req.body;
   const sheetId = "1KnvznxmaALff3bQN0Nv4hU55MpnkhcOjJ8URzco6iL4";
-  // const apiKey = "AIzaSyDrXD0uTwJImmMV_A7mrOXUPKbZOr8nBC8";
+  const apiKey = "AIzaSyDrXD0uTwJImmMV_A7mrOXUPKbZOr8nBC8";
   const range = "Casso!A2:F100";
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
 
@@ -542,21 +544,18 @@ const ChartFinesbyMonth = async (req, res, next) => {
   }
 };
 
-
-
 const FinesController = {
-    getAllFines,
-    getFinesById,
-    getFinesByUserId,
-    getFinesByUserCode,
-    getFinesByOrderId,
-    createFines,
-    updateFines,
-    deleteFines,
-    filterFinesByStatus,
-    updateFinesStatus,
-    checkPayment,
-    ChartFinesbyMonth
-  };
-  module.exports = FinesController;
-  
+  getAllFines,
+  getFinesById,
+  getFinesByUserId,
+  getFinesByUserCode,
+  getFinesByOrderId,
+  createFines,
+  updateFines,
+  deleteFines,
+  filterFinesByStatus,
+  updateFinesStatus,
+  checkPayment,
+  ChartFinesbyMonth,
+};
+module.exports = FinesController;
