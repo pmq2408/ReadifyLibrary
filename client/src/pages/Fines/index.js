@@ -5,6 +5,15 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AuthContext from "../../contexts/UserContext";
 import ReactPaginate from "react-paginate";
+import {
+  FaMoneyBillWave,
+  FaQrcode,
+  FaCheckCircle,
+  FaTimesCircle,
+  FaHourglassHalf,
+  FaSearch,
+} from "react-icons/fa";
+import "./Fines.scss";
 
 function formatCurrency(amount) {
   return new Intl.NumberFormat("vi-VN", {
@@ -25,7 +34,9 @@ function Fines() {
   const [timeoutId, setTimeoutId] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [paymentSuccessful, setPaymentSuccessful] = useState(false);
-  const [isSuccessToastShown, setIsSuccessToastShown] = useState(false); // New state for tracking success toast
+  const [isSuccessToastShown, setIsSuccessToastShown] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
   const finesPerPage = 10;
 
   useEffect(() => {
@@ -33,12 +44,20 @@ function Fines() {
     setTransactionCode(code);
 
     const fetchFines = () => {
+      setIsLoading(true);
       axios
         .get(`http://localhost:9999/api/fines/by-user/${user.id}`)
-        .then((response) => setFines(response.data.data))
+        .then((response) => {
+          setFines(response.data.data);
+          setIsLoading(false);
+        })
         .catch((error) => {
-          console.error("Error fetching fines:", error.response?.data || error.message);
+          console.error(
+            "Error fetching fines:",
+            error.response?.data || error.message
+          );
           toast.error("Failed to load fines. Please try again later.");
+          setIsLoading(false);
         });
     };
 
@@ -50,7 +69,11 @@ function Fines() {
   }, [user.id]);
 
   const handleSelectAll = () => {
-    setSelectedFines(selectAll ? [] : fines.filter(fine => fine.status !== "Paid").map(fine => fine._id));
+    setSelectedFines(
+      selectAll
+        ? []
+        : fines.filter((fine) => fine.status !== "Paid").map((fine) => fine._id)
+    );
     setSelectAll(!selectAll);
   };
 
@@ -64,7 +87,7 @@ function Fines() {
 
   const handlePay = () => {
     setPaymentSuccessful(false);
-    setIsSuccessToastShown(false); // Reset success toast state on new payment
+    setIsSuccessToastShown(false);
     const total = fines
       .filter((fine) => selectedFines.includes(fine._id))
       .reduce((sum, fine) => sum + fine.totalFinesAmount, 0);
@@ -86,9 +109,12 @@ function Fines() {
     if (paymentSuccessful) return;
 
     axios
-      .post(`http://localhost:9999/api/fines/check-payment/${transactionCode}`, {
-        fineId: selectedFines,
-      })
+      .post(
+        `http://localhost:9999/api/fines/check-payment/${transactionCode}`,
+        {
+          fineId: selectedFines,
+        }
+      )
       .then((response) => {
         if (response.data.message === "OK") {
           setPaymentSuccessful(true);
@@ -98,12 +124,15 @@ function Fines() {
 
           if (!isSuccessToastShown) {
             toast.success("Thanh toán thành công");
-            setIsSuccessToastShown(true); // Mark success toast as shown
+            setIsSuccessToastShown(true);
           }
         }
       })
       .catch((error) => {
-        console.error("Error in checkPayment:", error.response?.data || error.message);
+        console.error(
+          "Error in checkPayment:",
+          error.response?.data || error.message
+        );
       });
   };
 
@@ -114,109 +143,242 @@ function Fines() {
     };
   }, [pollingIntervalId, timeoutId]);
 
-  const totalPages = Math.ceil(fines.length / finesPerPage);
+  const filteredFines = fines.filter(
+    (fine) =>
+      fine.user_id?.fullName
+        ?.toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      (fine.reason || fine.fineReason_id?.reasonName || "")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
+  );
+
+  const totalPages = Math.ceil(filteredFines.length / finesPerPage);
 
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
   };
 
-  const currentFines = fines.slice(
+  const currentFines = filteredFines.slice(
     currentPage * finesPerPage,
     (currentPage + 1) * finesPerPage
   );
 
+  const calculateTotalSelectedAmount = () => {
+    return fines
+      .filter((fine) => selectedFines.includes(fine._id))
+      .reduce((sum, fine) => sum + fine.totalFinesAmount, 0);
+  };
+
+  const getStatusBadge = (status) => {
+    switch (status) {
+      case "Pending":
+        return (
+          <span className="status-badge pending">
+            <FaHourglassHalf /> Đang chờ
+          </span>
+        );
+      case "Paid":
+        return (
+          <span className="status-badge paid">
+            <FaCheckCircle /> Đã thanh toán
+          </span>
+        );
+      default:
+        return (
+          <span className="status-badge unknown">
+            <FaTimesCircle /> Không xác định
+          </span>
+        );
+    }
+  };
+
   return (
-    <Container className="mt-5">
-      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
-      <div className="d-flex justify-content-center">
-        <h2>Fines Management</h2>
+    <div className="fines-container">
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+      />
+
+      <div className="fines-header">
+        <div className="fines-title">
+          <FaMoneyBillWave className="fines-icon" />
+          <h2>Quản lý tiền phạt</h2>
+        </div>
+        <p className="fines-subtitle">
+          Xem và thanh toán các khoản phạt của bạn
+        </p>
       </div>
-      <div className="d-flex justify-content-end" title={selectedFines.length === 0 ? "Chọn ít nhất 1 phạt để thanh toán" : "Thanh toán"}>
-        <Button
-          className="mb-3"
-          variant="primary"
-          onClick={handlePay}
-          disabled={selectedFines.length === 0}
-        >
-          Thanh toán
-        </Button>
-      </div>
-      {fines.length > 0 ? (
-        <table className="table table-hover border">
-          <thead>
-            <tr>
-              <th><input
-                variant="secondary"
-                onClick={handleSelectAll}
-                type="checkbox"
-              /></th>
-              <th>STT</th>
-              <th>Người bị phạt</th>
-              <th>Lý do</th>
-              <th>Tổng số tiền phạt</th>
-              <th>Trạng thái</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentFines.map((fine, index) => (
-              <tr key={fine._id}>
-                <td>
-                  {fine.status === "Pending" && (
-                    <input
-                      type="checkbox"
-                      checked={selectedFines.includes(fine._id)}
-                      onChange={() => handleSelectFine(fine._id)}
-                    />
-                  )}
-                </td>
-                <td>{index + 1}</td>
-                <td>{fine.user_id.fullName}</td>
-                <td>{fine.reason || fine.fineReason_id.reasonName}</td>
-                <td>{formatCurrency(fine.totalFinesAmount)}</td>
-                <td style={{ color: fine.status === "Pending" ? "orange" : fine.status === "Paid" ? "green" : "red" }}>
-                  {fine.status === "Pending" ? "Đang chờ" : fine.status === "Paid" ? "Đã thanh toán" : "Không xác định"}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      ) : (
-        <p>No fines available</p>
-      )}
-      {fines.length > 10 && (
-        <ReactPaginate
-          previousLabel={'<'}
-          nextLabel={'>'}
-          breakLabel={'...'}
-          pageCount={totalPages}
-          marginPagesDisplayed={2}
-          pageRangeDisplayed={5}
-          onPageChange={handlePageClick}
-          containerClassName={'pagination justify-content-end'}
-          pageClassName={'page-item'}
-          pageLinkClassName={'page-link'}
-          previousClassName={'page-item'}
-          previousLinkClassName={'page-link'}
-          nextClassName={'page-item'}
-          nextLinkClassName={'page-link'}
-          breakClassName={'page-item'}
-          breakLinkClassName={'page-link'}
-          activeClassName={'active'}
-        />
-      )}
-      <Modal show={showQRCode} onHide={() => setShowQRCode(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Scan QR code để hoàn thành thanh toán</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <h4>Tổng số tiền phạt: {formatCurrency(totalAmount)}</h4>
-          <img
-            src={`https://img.vietqr.io/image/mbbank-0985930695-compact2.jpg?amount=${totalAmount}&addInfo=start${transactionCode}end&accountName=FPTULibrary`}
-            alt="QR Code for Payment"
-            className="qr-code"
-            style={{ width: "100%", height: "auto" }}
+
+      <div className="fines-actions">
+        <div className="search-box">
+          <FaSearch className="search-icon" />
+          <input
+            type="text"
+            placeholder="Tìm kiếm theo tên hoặc lý do..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
           />
-          <p>Scan QR code để hoàn thành thanh toán</p>
+        </div>
+
+        <div className="payment-section">
+          {selectedFines.length > 0 && (
+            <div className="selected-amount">
+              <span>Tổng tiền đã chọn:</span>
+              <span className="amount">
+                {formatCurrency(calculateTotalSelectedAmount())}
+              </span>
+            </div>
+          )}
+          <Button
+            className="payment-button"
+            variant="primary"
+            onClick={handlePay}
+            disabled={selectedFines.length === 0}
+            title={
+              selectedFines.length === 0
+                ? "Chọn ít nhất 1 phạt để thanh toán"
+                : "Thanh toán"
+            }
+          >
+            <FaQrcode /> Thanh toán
+          </Button>
+        </div>
+      </div>
+
+      {isLoading ? (
+        <div className="loading-container">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+          <p>Đang tải dữ liệu...</p>
+        </div>
+      ) : filteredFines.length > 0 ? (
+        <div className="fines-table-container">
+          <table className="fines-table">
+            <thead>
+              <tr>
+                <th className="checkbox-column">
+                  <div className="custom-checkbox">
+                    <input
+                      id="select-all"
+                      type="checkbox"
+                      checked={selectAll}
+                      onChange={handleSelectAll}
+                    />
+                    <label htmlFor="select-all"></label>
+                  </div>
+                </th>
+                <th>STT</th>
+                <th>Người bị phạt</th>
+                <th>Lý do</th>
+                <th>Số tiền phạt</th>
+                <th>Trạng thái</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentFines.map((fine, index) => (
+                <tr
+                  key={fine._id}
+                  className={fine.status === "Paid" ? "paid-row" : ""}
+                >
+                  <td className="checkbox-column">
+                    {fine.status === "Pending" && (
+                      <div className="custom-checkbox">
+                        <input
+                          id={`fine-${fine._id}`}
+                          type="checkbox"
+                          checked={selectedFines.includes(fine._id)}
+                          onChange={() => handleSelectFine(fine._id)}
+                        />
+                        <label htmlFor={`fine-${fine._id}`}></label>
+                      </div>
+                    )}
+                  </td>
+                  <td>{currentPage * finesPerPage + index + 1}</td>
+                  <td>{fine.user_id.fullName}</td>
+                  <td className="reason-cell">
+                    {fine.reason ||
+                      fine.fineReason_id?.reasonName ||
+                      "Không có lý do"}
+                  </td>
+                  <td className="amount-cell">
+                    {formatCurrency(fine.totalFinesAmount)}
+                  </td>
+                  <td>{getStatusBadge(fine.status)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div className="empty-state">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/4076/4076432.png"
+            alt="No fines"
+            className="empty-image"
+          />
+          <h3>Không có khoản phạt nào</h3>
+          <p>Bạn không có khoản phạt nào cần thanh toán</p>
+        </div>
+      )}
+
+      {totalPages > 1 && (
+        <div className="pagination-container">
+          <ReactPaginate
+            previousLabel={"←"}
+            nextLabel={"→"}
+            breakLabel={"..."}
+            pageCount={totalPages}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={3}
+            onPageChange={handlePageClick}
+            containerClassName={"pagination"}
+            pageClassName={"page-item"}
+            pageLinkClassName={"page-link"}
+            previousClassName={"page-item"}
+            previousLinkClassName={"page-link"}
+            nextClassName={"page-item"}
+            nextLinkClassName={"page-link"}
+            breakClassName={"page-item"}
+            breakLinkClassName={"page-link"}
+            activeClassName={"active"}
+          />
+        </div>
+      )}
+
+      <Modal
+        show={showQRCode}
+        onHide={() => setShowQRCode(false)}
+        centered
+        className="qr-modal"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Quét mã QR để thanh toán</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="text-center">
+          <div className="payment-info">
+            <h4>
+              Tổng số tiền:{" "}
+              <span className="highlight">{formatCurrency(totalAmount)}</span>
+            </h4>
+            <p className="transaction-code">Mã giao dịch: {transactionCode}</p>
+          </div>
+          <div className="qr-container">
+            <img
+              src={`https://img.vietqr.io/image/mbbank-0985930695-compact2.jpg?amount=${totalAmount}&addInfo=start${transactionCode}end&accountName=FPTULibrary`}
+              alt="QR Code for Payment"
+              className="qr-code"
+            />
+          </div>
+          <div className="payment-instructions">
+            <p>1. Mở ứng dụng ngân hàng trên điện thoại</p>
+            <p>2. Quét mã QR hoặc chuyển khoản thủ công</p>
+            <p>3. Nhập chính xác số tiền và nội dung chuyển khoản</p>
+            <p>4. Xác nhận và hoàn tất thanh toán</p>
+          </div>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowQRCode(false)}>
@@ -224,7 +386,7 @@ function Fines() {
           </Button>
         </Modal.Footer>
       </Modal>
-    </Container>
+    </div>
   );
 }
 
