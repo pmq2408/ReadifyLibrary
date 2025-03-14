@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import ReactPaginate from "react-paginate";
 import { Modal, Button } from "react-bootstrap";
-
+import './index.css';
 const ListNews = () => {
   const navigate = useNavigate();
   const [newsData, setNewsData] = useState([]);
@@ -90,19 +90,18 @@ const ListNews = () => {
   };
 
   return (
-    <div className="container mt-4">
+    <div className="list-news-container mt-4">
       <ToastContainer />
-      <div className="d-flex justify-content-end mb-3">
+      <div className="header d-flex justify-content-end mb-3">
         <button
-          className="btn btn-primary"
-          style={{ backgroundColor: "#CC99FF", borderColor: "#CC99FF" }}
+          className="btn btn-primary create-news-button"
           onClick={handleCreateNew}
           title="Tạo tin"
         >
           <i className="fa fa-plus" aria-hidden="true"></i>
         </button>
       </div>
-
+  
       {message && (
         <div
           className={`alert ${message.includes("successfully") ? "alert-success" : "alert-danger"
@@ -111,7 +110,7 @@ const ListNews = () => {
           {message}
         </div>
       )}
-
+  
       <table className="table table-bordered mt-4">
         <thead>
           <tr>
@@ -132,36 +131,37 @@ const ListNews = () => {
                     src={`http://localhost:9999/api/news/thumbnail/${news.thumbnail
                       .split("/")
                       .pop()}`}
-                    style={{ width: "120px", height: "120px" }}
+                    className="news-thumbnail"
                     alt={news.title}
                   />
                 </td>
                 <td className="text-start w-25">{news.title}</td>
-                <td className="text-start w-25"><div
-                  className="content-preview"
-                  dangerouslySetInnerHTML={{
-                    __html: getLimitedContent(news.content, 50),
-                  }}
-                /></td>
+                <td className="text-start w-25">
+                  <div
+                    className="content-preview"
+                    dangerouslySetInnerHTML={{
+                      __html: getLimitedContent(news.content, 50),
+                    }}
+                  />
+                </td>
                 <td>
                   <button
                     className="btn btn-success"
                     onClick={() => handleUpdate(news._id)}
                     title="Cập nhật"
-                    style={{ marginRight: "20px" }}
+                    style={{ margin: "5px" }}
                   >
                     <i className="fa fa-pencil" aria-hidden="true"></i>
                   </button>
                   <button
-                    className="btn btn-primary"
+                    className="btn btn-primary "
                     onClick={() => handleDetail(news._id)}
                     title="Xem chi tiết"
-                    style={{ marginRight: "20px" }}
                   >
-                    <i className="fa fa-eye" aria-hidden="true"></i>
+                    <i className="fa fa-eye" aria-hidden="false"></i>
                   </button>
                   <button
-                    className="btn btn-danger"
+                    className="btn btn-danger "
                     onClick={() => handleShowModal(news._id)}
                     title="Xóa"
                   >
@@ -179,7 +179,7 @@ const ListNews = () => {
           )}
         </tbody>
       </table>
-
+  
       <ReactPaginate
         previousLabel={'<'}
         nextLabel={'>'}
@@ -199,7 +199,7 @@ const ListNews = () => {
         breakLinkClassName={'page-link'}
         activeClassName={"active"}
       />
-
+  
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>Confirm Deletion</Modal.Title>

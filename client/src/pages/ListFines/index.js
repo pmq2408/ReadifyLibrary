@@ -5,6 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import ReactPaginate from "react-paginate";
+import "./index.css";
 
 function ListFines() {
     const [fines, setFines] = useState([]);
@@ -78,104 +79,101 @@ function ListFines() {
     };
 
     return (
-        <div className="container mt-4">
-            <div className="row">
-                <div className="row mb-3 col-md-8">
-                    <div className="col-md-4">
-                        <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Tìm theo mã người dùng"
-                            value={userCode}
-                            onChange={(e) => setUserCode(e.target.value)}
-                        />
-                    </div>
-                    <div className="col-md-2">
-                        <button
-                            className="btn btn-primary w-100"
-                            onClick={handleSearchByUserCode}
-                        >
-                            Tìm kiếm
-                        </button>
-                    </div>
-                </div>
-                <div className="col-md-4">
-                    <div className="mb-3 float-end">
-                        <select
-                            className="form-select"
-                            value={status}
-                            onChange={(e) => {
-                                setStatus(e.target.value);
-                                handleSearchByStatus(e.target.value);
-                            }}
-                        >
-                            <option value="">Chọn trạng thái</option>
-                            <option value="Pending">Chưa thanh toán</option>
-                            <option value="Paid">Đã thanh toán</option>
-                            <option value="Overdue">Quá hạn</option>
-                        </select>
-                    </div>
-                </div>
+        <div className="list-fines-container mt-4">
+          <ToastContainer />
+          <div className="search-section row mb-4">
+            <div className="col-md-8 ">
+              <input
+                type="text"
+                className="form-control search-input"
+                placeholder="Tìm theo mã người dùng"
+                value={userCode}
+                onChange={(e) => setUserCode(e.target.value)}
+              />
+              <button
+                className="btn btn-primary search-button"
+                onClick={handleSearchByUserCode}
+                style={{ marginTop: "10px" }}
+              >
+                Tìm kiếm
+              </button>
             </div>
-            <Table striped bordered hover>
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Tựa sách</th>
-                        <th>Mã người dùng</th>
-                        <th>Tình trạng sách</th>
-                        <th>Tổng tiền phạt</th>
-                        <th>Trạng thái</th>
-                        <th>Lý do phạt</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {currentItems.length === 0 ? (
-                        <tr>
-                            <td colSpan="7" className="text-center">Không tìm thấy dữ liệu</td>
-                        </tr>
-                    ) : (
-                        currentItems.map((fine, index) => (
-                            <tr key={fine._id}>
-                                <td>{index + 1}</td>
-                                <td>{fine.book_id?.bookSet_id?.title || "N/A"}</td>
-                                <td>{fine.user_id?.code || "N/A"}</td>
-                                <td>{fine.book_id?.condition === "Lost" ? "Mất" : fine.book_id?.condition === "Hard" ? "Hư hỏng nặng" :
-                                    fine.book_id?.condition === "Medium" ? "Hư hỏng vừa" : fine.book_id?.condition === "Good" ? "Tốt" :
-                                        fine.book_id?.condition === "Light" ? "Hư hỏng nhẹ" : "N/A"}</td>
-                                <td>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(fine.totalFinesAmount)}</td>
-                                <td>{fine.status}</td>
-                                <td>{fine.reason === "Paid" ? "Đã thanh toán" :
-                                    fine.reason === "Pending" ? "Chưa thanh toán" :
-                                        fine.reason === "Overdue" ? "Quá hạn" :
-                                            fine.fineReason_id?.reasonName || "N/A"}</td>
-                            </tr>
-                        ))
-                    )}
-                </tbody>
-            </Table>
-
-            <ReactPaginate
-                previousLabel={'<'}
-                nextLabel={'>'}
-                breakLabel={'...'}
-                pageCount={totalPages}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={5}
-                onPageChange={handlePageClick}
-                containerClassName={'pagination justify-content-end'}
-                pageClassName={'page-item'}
-                pageLinkClassName={'page-link'}
-                previousClassName={'page-item'}
-                previousLinkClassName={'page-link'}
-                nextClassName={'page-item'}
-                nextLinkClassName={'page-link'}
-                breakClassName={'page-item'}
-                breakLinkClassName={'page-link'}
-                activeClassName={'active'}
-            />
+            <div className="col-md-4">
+              <select
+                className="form-select status-select"
+                value={status}
+                onChange={(e) => {
+                  setStatus(e.target.value);
+                  handleSearchByStatus(e.target.value);
+                }}
+              >
+                <option value="">Chọn trạng thái</option>
+                <option value="Pending">Chưa thanh toán</option>
+                <option value="Paid">Đã thanh toán</option>
+                <option value="Overdue">Quá hạn</option>
+              </select>
+            </div>
+          </div>
+      
+          <Table striped bordered hover className="fines-table">
+            <thead >
+              <tr>
+                <th>#</th>
+                <th>Tựa sách</th>
+                <th>Mã người dùng</th>
+                <th>Tình trạng sách</th>
+                <th>Tổng tiền phạt</th>
+                <th>Trạng thái</th>
+                <th>Lý do phạt</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentItems.length === 0 ? (
+                <tr>
+                  <td colSpan="7" className="text-center">Không tìm thấy dữ liệu</td>
+                </tr>
+              ) : (
+                currentItems.map((fine, index) => (
+                  <tr key={fine._id}>
+                    <td>{index + 1}</td>
+                    <td>{fine.book_id?.bookSet_id?.title || "N/A"}</td>
+                    <td>{fine.user_id?.code || "N/A"}</td>
+                    <td>{fine.book_id?.condition === "Lost" ? "Mất" : fine.book_id?.condition === "Hard" ? "Hư hỏng nặng" :
+                      fine.book_id?.condition === "Medium" ? "Hư hỏng vừa" : fine.book_id?.condition === "Good" ? "Tốt" :
+                        fine.book_id?.condition === "Light" ? "Hư hỏng nhẹ" : "N/A"}</td>
+                    <td>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(fine.totalFinesAmount)}</td>
+                    <td>{fine.status}</td>
+                    <td>{fine.reason === "Paid" ? "Đã thanh toán" :
+                      fine.reason === "Pending" ? "Chưa thanh toán" :
+                        fine.reason === "Overdue" ? "Quá hạn" :
+                          fine.fineReason_id?.reasonName || "N/A"}</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </Table>
+      
+          <ReactPaginate
+            previousLabel={'<'}
+            nextLabel={'>'}
+            breakLabel={'...'}
+            pageCount={totalPages}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={5}
+            onPageChange={handlePageClick}
+            containerClassName={'pagination justify-content-end'}
+            pageClassName={'page-item'}
+            pageLinkClassName={'page-link'}
+            previousClassName={'page-item'}
+            previousLinkClassName={'page-link'}
+            nextClassName={'page-item'}
+            nextLinkClassName={'page-link'}
+            breakClassName={'page-item'}
+            breakLinkClassName={'page-link'}
+            activeClassName={'active'}
+          />
         </div>
-    );
+      );
 }
 
 export default ListFines;
