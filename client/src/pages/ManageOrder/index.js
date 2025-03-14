@@ -4,7 +4,7 @@ import axios from "axios";
 import AuthContext from "../../contexts/UserContext";
 import { toast, ToastContainer } from "react-toastify";
 import ReactPaginate from "react-paginate";
-
+import './index.css';
 const BorrowBookList = () => {
   const [showModal, setShowModal] = useState(false);
   const [condition, setCondition] = useState(""); // Separate state for condition
@@ -219,34 +219,29 @@ const BorrowBookList = () => {
   );
 
   return (
-    <div className="mt-4">
+    <div className="manage-order-container mt-4">
       <ToastContainer />
-      <div className="d-flex justify-content-between mb-3">
+      <div className="header d-flex justify-content-between mb-3">
         <div className="search-bar d-flex align-items-center">
           <input
             type="text"
-            style={{
-              width: "300px",
-              height: "40px",
-              borderRadius: "10px",
-              border: "1px solid #ccc",
-            }}
-            placeholder=" Nhập mã định danh sách"
+            className="search-input"
+            placeholder="Nhập mã định danh sách"
             value={identifierCode}
             onChange={(e) => setIdentifierCode(e.target.value)}
           />
           <Button
             variant="primary"
-            style={{ marginLeft: "10px" }}
+            className="search-button"
             title="Tìm kiếm"
             onClick={handleSearchByIdentifierCode}
           >
             <i className="fa fa-search" aria-hidden="true"></i>
           </Button>
         </div>
-        <div className="d-flex align-items-center">
+        <div className="filter d-flex align-items-center">
           <select
-            className="form-select"
+            className="form-select status-select"
             value={status}
             onChange={(e) => setStatus(e.target.value)}
           >
@@ -262,10 +257,10 @@ const BorrowBookList = () => {
             <option value="Renew Pending">Đang chờ duyệt gia hạn</option>
           </select>
         </div>
-        <div className="d-flex align-items-center">
+        <div className="actions d-flex align-items-center">
           <Button
             variant="primary"
-            style={{ marginRight: "10px" }}
+            className="approve-button"
             title="Duyệt"
             onClick={handleApproveSelected}
           >
@@ -309,29 +304,14 @@ const BorrowBookList = () => {
                   />
                 </td>
                 <td>{index + 1}</td>
-                <td
-                  className="text-capitalize text-start"
-                  style={{ wordBreak: "break-word", maxWidth: "18ch" }}
-                >
+                <td className="text-capitalize text-start book-title">
                   {book.book_id?.bookSet_id?.title}
                 </td>
                 <td>{new Date(book.borrowDate).toLocaleDateString()}</td>
                 <td>{new Date(book.dueDate).toLocaleDateString()}</td>
                 <td>{book.book_id?.identifier_code}</td>
                 <td>
-                  <span
-                    className={`text-${
-                      book.status === "Pending"
-                        ? "warning"
-                        : book.status === "Approved"
-                        ? "success"
-                        : book.status === "Rejected"
-                        ? "danger"
-                        : book.status === "Received"
-                        ? "info"
-                        : "secondary"
-                    }`}
-                  >
+                  <span className={`status-label ${book.status.toLowerCase()}`}>
                     {book.status === "Pending"
                       ? "Đang chờ"
                       : book.status === "Approved"
@@ -366,63 +346,68 @@ const BorrowBookList = () => {
                     ? "Mất sách"
                     : "Khác"}
                 </td>
-                {book.status === "Pending" && (
-                  <td>
-                    <Button
-                      variant="success"
-                      style={{ marginRight: "10px" }}
-                      title="Duyệt"
-                      onClick={() => handleActionClick(book, "approve")}
-                    >
-                      <i className="fa fa-check" aria-hidden="true"></i>
-                    </Button>
-                    <Button
-                      variant="danger"
-                      title="Từ chối"
-                      onClick={() => handleActionClick(book, "reject")}
-                    >
-                      <i className="fa fa-times" aria-hidden="true"></i>
-                    </Button>
-                  </td>
-                )}
-                {book.status === "Approved" && (
-                  <td>
-                    <Button
-                      variant="primary"
-                      style={{ marginRight: "10px" }}
-                      title="Nhận"
-                      onClick={() => handleActionClick(book, "receive")}
-                    >
-                      <i className="fa fa-check" aria-hidden="true"></i>
-                    </Button>
-                    <Button
-                      variant="danger"
-                      title="Từ chối"
-                      onClick={() => handleActionClick(book, "reject")}
-                    >
-                      <i className="fa fa-times" aria-hidden="true"></i>
-                    </Button>
-                  </td>
-                )}
-                {book.status === "Renew Pending" && (
-                  <td>
-                    <Button
-                      variant="primary"
-                      style={{ marginRight: "10px" }}
-                      title="Duyệt gia hạn"
-                      onClick={() => handleActionClick(book, "receive")}
-                    >
-                      <i className="fa fa-check" aria-hidden="true"></i>
-                    </Button>
-                    <Button
-                      variant="danger"
-                      title="Từ chối"
-                      onClick={() => handleActionClick(book, "reject")}
-                    >
-                      <i className="fa fa-times" aria-hidden="true"></i>
-                    </Button>
-                  </td>
-                )}
+                <td>
+                  {book.status === "Pending" && (
+                    <div className="action-buttons">
+                      <Button
+                        variant="success"
+                        className="approve-button"
+                        title="Duyệt"
+                        onClick={() => handleActionClick(book, "approve")}
+                      >
+                        <i className="fa fa-check" aria-hidden="true"></i>
+                      </Button>
+                      <Button
+                        variant="danger"
+                        className="reject-button"
+                        title="Từ chối"
+                        onClick={() => handleActionClick(book, "reject")}
+                      >
+                        <i className="fa fa-times" aria-hidden="true"></i>
+                      </Button>
+                    </div>
+                  )}
+                  {book.status === "Approved" && (
+                    <div className="action-buttons">
+                      <Button
+                        variant="primary"
+                        className="receive-button"
+                        title="Nhận"
+                        onClick={() => handleActionClick(book, "receive")}
+                      >
+                        <i className="fa fa-check" aria-hidden="true"></i>
+                      </Button>
+                      <Button
+                        variant="danger"
+                        className="reject-button"
+                        title="Từ chối"
+                        onClick={() => handleActionClick(book, "reject")}
+                      >
+                        <i className="fa fa-times" aria-hidden="true"></i>
+                      </Button>
+                    </div>
+                  )}
+                  {book.status === "Renew Pending" && (
+                    <div className="action-buttons">
+                      <Button
+                        variant="primary"
+                        className="renew-button"
+                        title="Duyệt gia hạn"
+                        onClick={() => handleActionClick(book, "receive")}
+                      >
+                        <i className="fa fa-check" aria-hidden="true"></i>
+                      </Button>
+                      <Button
+                        variant="danger"
+                        className="reject-button"
+                        title="Từ chối"
+                        onClick={() => handleActionClick(book, "reject")}
+                      >
+                        <i className="fa fa-times" aria-hidden="true"></i>
+                      </Button>
+                    </div>
+                  )}
+                </td>
               </tr>
             ))
           ) : (
@@ -434,7 +419,7 @@ const BorrowBookList = () => {
           )}
         </tbody>
       </table>
-
+  
       <ReactPaginate
         previousLabel={"<"}
         nextLabel={">"}
@@ -454,7 +439,7 @@ const BorrowBookList = () => {
         breakLinkClassName={"page-link"}
         activeClassName={"active"}
       />
-
+  
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>

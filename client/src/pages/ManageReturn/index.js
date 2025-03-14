@@ -4,6 +4,7 @@ import axios from "axios";
 import AuthContext from "../../contexts/UserContext";
 import { toast, ToastContainer } from "react-toastify";
 import ReactPaginate from "react-paginate";
+import './index.css';
 
 function ManageReturn() {
   const [studentCode, setStudentCode] = useState("");
@@ -404,40 +405,40 @@ function ManageReturn() {
   const currentItems = bookList.slice(offset, offset + itemsPerPage);
 
   return (
-    <div className="container mt-4">
+    <div className="manage-return-container mt-4">
       <ToastContainer position="top-right" autoClose={3000} />
       <h2 className="mb-4">Quản Lý Trả Sách</h2>
-
-      <div className="row mb-4">
+  
+      <div className="search-section row mb-4">
         <div className="col-md-6">
           <div className="input-group">
             <input
               type="text"
-              className="form-control"
+              className="form-control search-input"
               placeholder="Nhập mã sinh viên"
               value={studentCode}
               onChange={(e) => setStudentCode(e.target.value)}
             />
             <button
-              className="btn btn-primary"
+              className="btn btn-primary search-button"
               onClick={handleSearchByStudentCode}
             >
               <i className="fa fa-search"></i> Tìm theo mã sinh viên
             </button>
           </div>
         </div>
-
+  
         <div className="col-md-6">
           <div className="input-group">
             <input
               type="text"
-              className="form-control"
+              className="form-control search-input"
               placeholder="Nhập mã định danh sách"
               value={identityCode}
               onChange={(e) => setIdentityCode(e.target.value)}
             />
             <button
-              className="btn btn-primary"
+              className="btn btn-primary search-button"
               onClick={handleSearchByIdentityCode}
             >
               <i className="fa fa-search"></i> Tìm theo mã sách
@@ -445,7 +446,7 @@ function ManageReturn() {
           </div>
         </div>
       </div>
-
+  
       <table className="table table-striped">
         <thead>
           <tr>
@@ -487,7 +488,7 @@ function ManageReturn() {
           )}
         </tbody>
       </table>
-
+  
       {bookList.length > itemsPerPage && (
         <ReactPaginate
           previousLabel={"<"}
@@ -509,7 +510,7 @@ function ManageReturn() {
           activeClassName={"active"}
         />
       )}
-
+  
       <Modal
         show={showReturnModal}
         onHide={handleCloseModal}
