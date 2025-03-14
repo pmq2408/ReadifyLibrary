@@ -107,17 +107,17 @@ const getOrderByIdentifierCode = async (req, res, next) => {
     // Tìm tất cả các đơn hàng có book_id thuộc danh sách bookIds
     const orders = await Order.find({
       book_id: { $in: bookIds },
-      status: "Received" // Chỉ lấy các đơn hàng có status là "Received"
+      status: "Received", // Chỉ lấy các đơn hàng có status là "Received"
     })
-        .populate({
-          path: "book_id", // Populate the book reference
-          populate: {
-            path: "bookSet_id", // Nested populate to get book set details
-            model: "BookSet", // Reference to the BookSet model
-          },
-        })
-        .populate("created_by", "fullName") // Populate the creator's full name
-        .populate("updated_by", "fullName"); // Populate the updater's full name
+      .populate({
+        path: "book_id", // Populate the book reference
+        populate: {
+          path: "bookSet_id", // Nested populate to get book set details
+          model: "BookSet", // Reference to the BookSet model
+        },
+      })
+      .populate("created_by", "fullName") // Populate the creator's full name
+      .populate("updated_by", "fullName"); // Populate the updater's full name
 
     // Kiểm tra xem có đơn hàng nào tìm thấy không
     if (!orders.length) {
@@ -156,15 +156,15 @@ const getManageOrderByIdentifierCode = async (req, res, next) => {
     const orders = await Order.find({
       book_id: { $in: bookIds },
     })
-        .populate({
-          path: "book_id", // Populate the book reference
-          populate: {
-            path: "bookSet_id", // Nested populate to get book set details
-            model: "BookSet", // Reference to the BookSet model
-          },
-        })
-        .populate("created_by", "fullName") // Populate the creator's full name
-        .populate("updated_by", "fullName"); // Populate the updater's full name
+      .populate({
+        path: "book_id", // Populate the book reference
+        populate: {
+          path: "bookSet_id", // Nested populate to get book set details
+          model: "BookSet", // Reference to the BookSet model
+        },
+      })
+      .populate("created_by", "fullName") // Populate the creator's full name
+      .populate("updated_by", "fullName"); // Populate the updater's full name
 
     // Kiểm tra xem có đơn hàng nào tìm thấy không
     if (!orders.length) {
@@ -253,16 +253,17 @@ const createBorrowOrder = async (req, res, next) => {
 
     if (userFines.length > 0) {
       return res.status(500).json({
-        message: "Người dùng cần phải thanh toán tiền phạt trước khi mượn sách mới",
+        message:
+          "Người dùng cần phải thanh toán tiền phạt trước khi mượn sách mới",
         data: null,
       });
     }
 
     const userOverdueOrders = await Order.find({
       created_by: userId,
-      status: "Overdue"
+      status: "Overdue",
     });
-    if(userOverdueOrders && userOverdueOrders > 0) {
+    if (userOverdueOrders && userOverdueOrders > 0) {
       return res.status(500).json({
         message: "Người dùng cần phải trả sách quá hạn trước khi mượn sách mới",
         data: null,
@@ -283,21 +284,24 @@ const createBorrowOrder = async (req, res, next) => {
         data: null,
       });
     }
-    const booksWithSameBookSet = await Book.find({ bookSet_id: book.bookSet_id });
-    const bookIds = booksWithSameBookSet.map(book => book._id);
+    const booksWithSameBookSet = await Book.find({
+      bookSet_id: book.bookSet_id,
+    });
+    const bookIds = booksWithSameBookSet.map((book) => book._id);
     const existingUserOrders = await Order.find({
       created_by: userId,
       book_id: { $in: bookIds },
       status: { $nin: ["Lost", "Returned", "Canceled"] }, // Loại bỏ các đơn với trạng thái Lost và Returned
-    }) .populate({
-      path: "book_id",
-      populate: {
-        path: "bookSet_id",
-        model: "BookSet",
-      },
     })
-        .populate("created_by", "fullName")
-        .populate("updated_by", "fullName");
+      .populate({
+        path: "book_id",
+        populate: {
+          path: "bookSet_id",
+          model: "BookSet",
+        },
+      })
+      .populate("created_by", "fullName")
+      .populate("updated_by", "fullName");
     console.log(existingUserOrders);
     if (existingUserOrders.length > 0) {
       return res.status(500).json({

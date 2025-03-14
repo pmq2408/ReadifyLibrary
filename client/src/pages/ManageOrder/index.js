@@ -3,7 +3,7 @@ import { Modal, Button } from "react-bootstrap";
 import axios from "axios";
 import AuthContext from "../../contexts/UserContext";
 import { toast, ToastContainer } from "react-toastify";
-import ReactPaginate from 'react-paginate';
+import ReactPaginate from "react-paginate";
 
 const BorrowBookList = () => {
   const [showModal, setShowModal] = useState(false);
@@ -26,11 +26,15 @@ const BorrowBookList = () => {
     try {
       let response;
       if (identifierCode) {
-        response = await axios.get(`http://localhost:9999/api/orders/manage-by-identifier-code/${identifierCode}`);
+        response = await axios.get(
+          `http://localhost:9999/api/orders/manage-by-identifier-code/${identifierCode}`
+        );
       } else if (status === "") {
         response = await axios.get(`http://localhost:9999/api/orders/getAll`);
       } else {
-        response = await axios.get(`http://localhost:9999/api/orders/filter?status=${status}`);
+        response = await axios.get(
+          `http://localhost:9999/api/orders/filter?status=${status}`
+        );
       }
       const data = response.data.data || [];
       const formattedData = Array.isArray(data) ? data : [data];
@@ -39,10 +43,14 @@ const BorrowBookList = () => {
         toast.info("Không tìm thấy sách với tiêu chí đã chọn.");
       }
 
-      const sortedData = formattedData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      const sortedData = formattedData.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
       setBorrowBooks(sortedData);
     } catch (error) {
-      const errorMessage = error.response ? error.response.data.message : "Đã xảy ra lỗi khi lấy sách đã mượn.";
+      const errorMessage = error.response
+        ? error.response.data.message
+        : "Đã xảy ra lỗi khi lấy sách đã mượn.";
       setBorrowBooks([]);
       console.error("Error fetching borrow books:", errorMessage);
     }
@@ -57,7 +65,6 @@ const BorrowBookList = () => {
     return () => clearInterval(interval); // Dọn dẹp interval khi component unmount hoặc khi status thay đổi
   }, [status]);
 
-
   const handleActionClick = (book, type) => {
     setSelectedBook(book);
     setModalType(type);
@@ -70,11 +77,14 @@ const BorrowBookList = () => {
       // Prefill renew_reason and renewalDate if the status is Renew Pending
       if (book.status === "Renew Pending") {
         setRenewReason(book.renew_reason || ""); // Set renew reason if available
-        setRenewalDate(book.renewalDate ? new Date(book.renewalDate).toISOString().slice(0, 10) : ""); // Format date as YYYY-MM-DD
+        setRenewalDate(
+          book.renewalDate
+            ? new Date(book.renewalDate).toISOString().slice(0, 10)
+            : ""
+        ); // Format date as YYYY-MM-DD
       }
     }
   };
-
 
   const handleConditionChange = (e) => {
     setCondition(e.target.value);
@@ -108,20 +118,29 @@ const BorrowBookList = () => {
       const updateData = {
         status: newStatus,
         updated_by: user.id,
-        ...(modalType === "receive" && { condition, condition_detail: conditionDetail })
+        ...(modalType === "receive" && {
+          condition,
+          condition_detail: conditionDetail,
+        }),
       };
 
       if (modalType === "reject") {
         updateData.reason_order = reason;
       }
 
-      await axios.put(`http://localhost:9999/api/orders/change-status/${selectedBook._id}`, updateData);
+      await axios.put(
+        `http://localhost:9999/api/orders/change-status/${selectedBook._id}`,
+        updateData
+      );
 
       if (modalType === "receive") {
-        await axios.put(`http://localhost:9999/api/books/update/${selectedBook.book_id._id}`, {
-          condition,
-          condition_detail: conditionDetail,
-        });
+        await axios.put(
+          `http://localhost:9999/api/books/update/${selectedBook.book_id._id}`,
+          {
+            condition,
+            condition_detail: conditionDetail,
+          }
+        );
         toast.success("Cập nhật trạng thái sách thành công!");
       }
 
@@ -131,9 +150,14 @@ const BorrowBookList = () => {
       setConditionDetail("");
       fetchBooks();
     } catch (error) {
-      const errorMessage = error.response ? error.response.data.message : "Đã xảy ra lỗi khi cập nhật trạng thái sách.";
+      const errorMessage = error.response
+        ? error.response.data.message
+        : "Đã xảy ra lỗi khi cập nhật trạng thái sách.";
       toast.error(errorMessage);
-      console.error(`Error ${modalType === 'approve' ? 'approving' : 'updating'} the book:`, error);
+      console.error(
+        `Error ${modalType === "approve" ? "approving" : "updating"} the book:`,
+        error
+      );
     }
   };
 
@@ -165,12 +189,17 @@ const BorrowBookList = () => {
         orderIds: selectedBooks,
         updated_by: user.id,
       };
-      await axios.put(`http://localhost:9999/api/orders/approve-all`, updateData);
+      await axios.put(
+        `http://localhost:9999/api/orders/approve-all`,
+        updateData
+      );
       toast.success("Đơn đã chọn đã duyệt thành công!");
       fetchBooks();
       setSelectedBooks([]);
     } catch (error) {
-      const errorMessage = error.response ? error.response.data.message : "Đã xảy ra lỗi khi duyệt đơn đã chọn.";
+      const errorMessage = error.response
+        ? error.response.data.message
+        : "Đã xảy ra lỗi khi duyệt đơn đã chọn.";
       toast.error(errorMessage);
       console.error("Error approving selected books:", error);
     }
@@ -184,7 +213,10 @@ const BorrowBookList = () => {
     setCurrentPage(selected);
   };
 
-  const currentBooks = borrowBooks.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
+  const currentBooks = borrowBooks.slice(
+    currentPage * itemsPerPage,
+    (currentPage + 1) * itemsPerPage
+  );
 
   return (
     <div className="mt-4">
@@ -193,12 +225,22 @@ const BorrowBookList = () => {
         <div className="search-bar d-flex align-items-center">
           <input
             type="text"
-            style={{ width: "300px", height: "40px", borderRadius: "10px", border: "1px solid #ccc" }}
+            style={{
+              width: "300px",
+              height: "40px",
+              borderRadius: "10px",
+              border: "1px solid #ccc",
+            }}
             placeholder=" Nhập mã định danh sách"
             value={identifierCode}
             onChange={(e) => setIdentifierCode(e.target.value)}
           />
-          <Button variant="primary" style={{ marginLeft: "10px" }} title="Tìm kiếm" onClick={handleSearchByIdentifierCode}>
+          <Button
+            variant="primary"
+            style={{ marginLeft: "10px" }}
+            title="Tìm kiếm"
+            onClick={handleSearchByIdentifierCode}
+          >
             <i className="fa fa-search" aria-hidden="true"></i>
           </Button>
         </div>
@@ -221,7 +263,12 @@ const BorrowBookList = () => {
           </select>
         </div>
         <div className="d-flex align-items-center">
-          <Button variant="primary" style={{ marginRight: "10px" }} title="Duyệt" onClick={handleApproveSelected}>
+          <Button
+            variant="primary"
+            style={{ marginRight: "10px" }}
+            title="Duyệt"
+            onClick={handleApproveSelected}
+          >
             Duyệt
           </Button>
         </div>
@@ -234,7 +281,10 @@ const BorrowBookList = () => {
                 type="checkbox"
                 title="Chọn tất cả"
                 onChange={handleSelectAll}
-                checked={selectedBooks.length === currentBooks.length && currentBooks.length > 0}
+                checked={
+                  selectedBooks.length === currentBooks.length &&
+                  currentBooks.length > 0
+                }
               />
             </th>
             <th>ID</th>
@@ -259,49 +309,116 @@ const BorrowBookList = () => {
                   />
                 </td>
                 <td>{index + 1}</td>
-                <td className="text-capitalize text-start" style={{ wordBreak: 'break-word', maxWidth: '18ch' }}>
+                <td
+                  className="text-capitalize text-start"
+                  style={{ wordBreak: "break-word", maxWidth: "18ch" }}
+                >
                   {book.book_id?.bookSet_id?.title}
                 </td>
                 <td>{new Date(book.borrowDate).toLocaleDateString()}</td>
                 <td>{new Date(book.dueDate).toLocaleDateString()}</td>
                 <td>{book.book_id?.identifier_code}</td>
                 <td>
-                  <span className={`text-${book.status === "Pending" ? "warning" : book.status === "Approved" ? "success" :
-                    book.status === "Rejected" ? "danger" : book.status === "Received" ? "info" : "secondary"}`}>
-                    {book.status === "Pending" ? "Đang chờ" : book.status === "Approved" ? "Đã duyệt"
-                      : book.status === "Rejected" ? "Đã từ chối" : book.status === "Received" ? "Đã nhận" : book.status === "Canceled" ? "Đã hủy"
-                        : book.status === "Returned" ? "Đã trả" : book.status === "Overdue" ? "Quá hạn" : book.status === "Lost" ? "Mất"
-                          : book.status === "Renew Pending" ? "Đang chờ duyệt gia hạn" : "Khác"}
+                  <span
+                    className={`text-${
+                      book.status === "Pending"
+                        ? "warning"
+                        : book.status === "Approved"
+                        ? "success"
+                        : book.status === "Rejected"
+                        ? "danger"
+                        : book.status === "Received"
+                        ? "info"
+                        : "secondary"
+                    }`}
+                  >
+                    {book.status === "Pending"
+                      ? "Đang chờ"
+                      : book.status === "Approved"
+                      ? "Đã duyệt"
+                      : book.status === "Rejected"
+                      ? "Đã từ chối"
+                      : book.status === "Received"
+                      ? "Đã nhận"
+                      : book.status === "Canceled"
+                      ? "Đã hủy"
+                      : book.status === "Returned"
+                      ? "Đã trả"
+                      : book.status === "Overdue"
+                      ? "Quá hạn"
+                      : book.status === "Lost"
+                      ? "Mất"
+                      : book.status === "Renew Pending"
+                      ? "Đang chờ duyệt gia hạn"
+                      : "Khác"}
                   </span>
                 </td>
-                <td>{book.book_id?.condition === "Good" ? "Tốt" : book.book_id?.condition === "Light" ? "Hư hỏng không đáng kể"
-                  : book.book_id?.condition === "Medium" ? "Hư hỏng nhẹ" : book.book_id?.condition === "Hard" ? "Hư hỏng nặng" : book.book_id?.condition === "Lost" ? "Mất sách" : "Khác"}</td>
+                <td>
+                  {book.book_id?.condition === "Good"
+                    ? "Tốt"
+                    : book.book_id?.condition === "Light"
+                    ? "Hư hỏng không đáng kể"
+                    : book.book_id?.condition === "Medium"
+                    ? "Hư hỏng nhẹ"
+                    : book.book_id?.condition === "Hard"
+                    ? "Hư hỏng nặng"
+                    : book.book_id?.condition === "Lost"
+                    ? "Mất sách"
+                    : "Khác"}
+                </td>
                 {book.status === "Pending" && (
                   <td>
-                    <Button variant="success" style={{ marginRight: '10px' }} title="Duyệt" onClick={() => handleActionClick(book, "approve")}>
+                    <Button
+                      variant="success"
+                      style={{ marginRight: "10px" }}
+                      title="Duyệt"
+                      onClick={() => handleActionClick(book, "approve")}
+                    >
                       <i className="fa fa-check" aria-hidden="true"></i>
                     </Button>
-                    <Button variant="danger" title="Từ chối" onClick={() => handleActionClick(book, "reject")}>
+                    <Button
+                      variant="danger"
+                      title="Từ chối"
+                      onClick={() => handleActionClick(book, "reject")}
+                    >
                       <i className="fa fa-times" aria-hidden="true"></i>
                     </Button>
                   </td>
                 )}
                 {book.status === "Approved" && (
                   <td>
-                    <Button variant="primary" style={{ marginRight: '10px' }} title="Nhận" onClick={() => handleActionClick(book, "receive")}>
+                    <Button
+                      variant="primary"
+                      style={{ marginRight: "10px" }}
+                      title="Nhận"
+                      onClick={() => handleActionClick(book, "receive")}
+                    >
                       <i className="fa fa-check" aria-hidden="true"></i>
                     </Button>
-                    <Button variant="danger" title="Từ chối" onClick={() => handleActionClick(book, "reject")}>
+                    <Button
+                      variant="danger"
+                      title="Từ chối"
+                      onClick={() => handleActionClick(book, "reject")}
+                    >
                       <i className="fa fa-times" aria-hidden="true"></i>
                     </Button>
                   </td>
                 )}
                 {book.status === "Renew Pending" && (
                   <td>
-                    <Button variant="primary" style={{ marginRight: '10px' }} title="Duyệt gia hạn" onClick={() => handleActionClick(book, "receive")}>
+                    <Button
+                      variant="primary"
+                      style={{ marginRight: "10px" }}
+                      title="Duyệt gia hạn"
+                      onClick={() => handleActionClick(book, "receive")}
+                    >
                       <i className="fa fa-check" aria-hidden="true"></i>
                     </Button>
-                    <Button variant="danger" title="Từ chối" onClick={() => handleActionClick(book, "reject")}>
+                    <Button
+                      variant="danger"
+                      title="Từ chối"
+                      onClick={() => handleActionClick(book, "reject")}
+                    >
                       <i className="fa fa-times" aria-hidden="true"></i>
                     </Button>
                   </td>
@@ -310,30 +427,32 @@ const BorrowBookList = () => {
             ))
           ) : (
             <tr>
-              <td colSpan="8" className="text-center">Không tìm thấy sách</td>
+              <td colSpan="8" className="text-center">
+                Không tìm thấy sách
+              </td>
             </tr>
           )}
         </tbody>
       </table>
 
       <ReactPaginate
-        previousLabel={'<'}
-        nextLabel={'>'}
-        breakLabel={'...'}
+        previousLabel={"<"}
+        nextLabel={">"}
+        breakLabel={"..."}
         pageCount={Math.ceil(borrowBooks.length / itemsPerPage)}
         marginPagesDisplayed={2}
         pageRangeDisplayed={5}
         onPageChange={handlePageChange}
-        containerClassName={'pagination justify-content-end'}
-        pageClassName={'page-item'}
-        pageLinkClassName={'page-link'}
-        previousClassName={'page-item'}
-        previousLinkClassName={'page-link'}
-        nextClassName={'page-item'}
-        nextLinkClassName={'page-link'}
-        breakClassName={'page-item'}
-        breakLinkClassName={'page-link'}
-        activeClassName={'active'}
+        containerClassName={"pagination justify-content-end"}
+        pageClassName={"page-item"}
+        pageLinkClassName={"page-link"}
+        previousClassName={"page-item"}
+        previousLinkClassName={"page-link"}
+        nextClassName={"page-item"}
+        nextLinkClassName={"page-link"}
+        breakClassName={"page-item"}
+        breakLinkClassName={"page-link"}
+        activeClassName={"active"}
       />
 
       <Modal show={showModal} onHide={() => setShowModal(false)}>
@@ -342,10 +461,10 @@ const BorrowBookList = () => {
             {modalType === "approve"
               ? "Xác nhận duyệt"
               : modalType === "receive"
-                ? "Xác nhận nhận sách"
-                : modalType === "Renew Pending"
-                  ? "Xác nhận gia hạn"
-                  : "Lý do từ chối"}
+              ? "Xác nhận nhận sách"
+              : modalType === "Renew Pending"
+              ? "Xác nhận gia hạn"
+              : "Lý do từ chối"}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -431,11 +550,12 @@ const BorrowBookList = () => {
             Hủy
           </Button>
           <Button variant="primary" onClick={handleSubmit}>
-            {modalType === "approve" || modalType === "receive" ? "Xác nhận" : "Gửi"}
+            {modalType === "approve" || modalType === "receive"
+              ? "Xác nhận"
+              : "Gửi"}
           </Button>
         </Modal.Footer>
       </Modal>
-
     </div>
   );
 };
