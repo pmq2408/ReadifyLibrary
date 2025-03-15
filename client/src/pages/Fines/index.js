@@ -39,6 +39,8 @@ function Fines() {
   const [searchTerm, setSearchTerm] = useState("");
   const finesPerPage = 10;
 
+  
+
   useEffect(() => {
     const code = `TX${Date.now()}${Math.random().toString(36).substring(2)}`;
     setTransactionCode(code);
@@ -122,7 +124,7 @@ function Fines() {
           clearTimeout(timeoutId);
           setShowQRCode(false);
 
-          if (!isSuccessToastShown) {
+          if (isSuccessToastShown === false) {
             toast.success("Thanh toán thành công");
             setIsSuccessToastShown(true);
           }
@@ -368,7 +370,7 @@ function Fines() {
           </div>
           <div className="qr-container">
             <img
-              src={`https://img.vietqr.io/image/mbbank-0985930695-compact2.jpg?amount=${totalAmount}&addInfo=start${transactionCode}end&accountName=FPTULibrary`}
+              src={`https://img.vietqr.io/image/MB-99240899999-compact2.png?amount=${totalAmount}&addInfo=start${transactionCode}end&accountName=Readify`}
               alt="QR Code for Payment"
               className="qr-code"
             />

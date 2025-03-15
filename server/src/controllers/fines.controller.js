@@ -443,9 +443,9 @@ const updateFinesStatus = async (req, res, next) => {
 const checkPayment = async (req, res, next) => {
   const { paymentKey } = req.params;
   const { fineId } = req.body;
-  const sheetId = "1KnvznxmaALff3bQN0Nv4hU55MpnkhcOjJ8URzco6iL4";
-  const apiKey = "AIzaSyDrXD0uTwJImmMV_A7mrOXUPKbZOr8nBC8";
-  const range = "Casso!A2:F100";
+  const sheetId = "1I4JMuL-hUneyCOpSMFWSP5dpSZ06NkBqzmjDfLE2Qgc";
+  const apiKey = "AIzaSyC8nQmWQqjxIjRVEYXVYVackObtgAjXx4w";
+  const range = "Sheet1!A2:F100";
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
 
   try {
@@ -496,18 +496,24 @@ const checkPayment = async (req, res, next) => {
   }
 };
 
-//chart fines by month
 const ChartFinesbyMonth = async (req, res, next) => {
   try {
-    // Get the current year or use the year from a query parameter if provided
-    const year = req.query.year || new Date().getFullYear();
+    // Lấy năm từ query hoặc lấy năm hiện tại
+    const year = parseInt(req.query.year) || new Date().getFullYear();
+
+    // Kiểm tra nếu year không hợp lệ
+    if (isNaN(year) || year < 2000 || year > 2100) {
+      return res.status(400).json({
+        message: "Invalid year provided",
+      });
+    }
 
     const monthlyFines = await Fines.aggregate([
       {
         $match: {
           createdAt: {
-            $gte: new Date(`${year}-01-01`),
-            $lte: new Date(`${year}-12-31`),
+            $gte: new Date(year, 0, 1), // 1 Jan, year
+            $lte: new Date(year, 11, 31, 23, 59, 59), // 31 Dec, year
           },
         },
       },
@@ -515,12 +521,10 @@ const ChartFinesbyMonth = async (req, res, next) => {
         $group: {
           _id: { month: { $month: "$createdAt" } },
           totalFinesAmount: { $sum: "$totalFinesAmount" },
-          count: { $sum: 1 }, // Counts the number of fines issued in each month
+          count: { $sum: 1 },
         },
       },
-      {
-        $sort: { "_id.month": 1 },
-      },
+      { $sort: { "_id.month": 1 } },
       {
         $project: {
           month: "$_id.month",
@@ -530,6 +534,14 @@ const ChartFinesbyMonth = async (req, res, next) => {
         },
       },
     ]);
+
+    // Kiểm tra nếu không có dữ liệu
+    if (!monthlyFines.length) {
+      return res.status(200).json({
+        message: "No fines data available for the selected year",
+        data: [],
+      });
+    }
 
     res.status(200).json({
       message: "Monthly fines stats retrieved successfully",
@@ -543,6 +555,7 @@ const ChartFinesbyMonth = async (req, res, next) => {
     });
   }
 };
+
 
 const FinesController = {
   getAllFines,
