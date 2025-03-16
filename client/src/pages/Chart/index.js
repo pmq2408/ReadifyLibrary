@@ -1,98 +1,64 @@
 import React, { useEffect, useState } from "react";
-import { Bar, Line } from "react-chartjs-2";
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title, Tooltip, Legend } from "chart.js";
+import { AgCharts } from "ag-charts-react";
 import axios from "axios";
 import { motion } from "framer-motion";
 
-// Register Chart.js components
-ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title, Tooltip, Legend);
-
 function Chart() {
-    const [orderData, setOrderData] = useState({ labels: [], datasets: [] });
+    const [orderData, setOrderData] = useState(null);
     const [totalOrder, setTotalOrder] = useState(0);
-    const [finesData, setFinesData] = useState({ labels: [], datasets: [] });
+    const [finesData, setFinesData] = useState(null);
     const [totalFines, setTotalFines] = useState(0);
 
     useEffect(() => {
-        axios.get(`${process.env.REACT_APP_API_URL}/orders/chart-order-by-month`)
-            .then((res) => {
-                const monthlyData = res.data.data;
-                const labels = monthlyData.map((item) => `Tháng ${item.month}`);
-                const statuses = Array.from(new Set(monthlyData.flatMap((item) => item.statuses.map((status) => status.status))));
+        const fetchChartData = async () => {
+            try {
+                const [ordersRes, totalOrdersRes, finesRes, totalFinesRes] = await Promise.all([
+                    axios.get(`http://localhost:9999/api/orders/chart-order-by-month`),
+                    axios.get(`http://localhost:9999/api/orders/getAll`),
+                    axios.get("http://localhost:9999/api/fines/chart-fines-by-month"),
+                    axios.get("http://localhost:9999/api/fines/getAll"),
+                ]);
 
-                const datasets = statuses.map((status) => ({
-                    label: status,
-                    data: monthlyData.map((month) => {
-                        const statusData = month.statuses.find((s) => s.status === status);
-                        return statusData ? statusData.count : 0;
-                    }),
-                    backgroundColor: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 0.6)`,
-                    borderColor: "rgba(75, 192, 192, 1)",
-                    borderWidth: 1,
+                // Xử lý dữ liệu đơn hàng
+                const orderChartData = ordersRes.data.data.map(item => ({
+                    month: `Tháng ${item.month}`,
+                    count: item.statuses.reduce((acc, s) => acc + s.count, 0),
                 }));
 
-                setOrderData({ labels, datasets });
-            })
-            .catch((error) => console.error("Error fetching order stats:", error));
-    }, []);
+                setOrderData({
+                    autoSize: true,
+                    data: orderChartData,
+                    series: [
+                        { type: "bar", xKey: "month", yKey: "count", yName: "Số đơn hàng" },
+                        { type: "line", xKey: "month", yKey: "count", yName: "Xu hướng đơn hàng", strokeWidth: 2, marker: { size: 5 } }
+                    ],
+                });
 
-    useEffect(() => {
-        axios.get(`${process.env.REACT_APP_API_URL}/orders/getAll`)
-            .then((res) => setTotalOrder(res.data.data.length))
-            .catch((error) => console.error("Error fetching total orders:", error));
-    }, []);
+                setTotalOrder(totalOrdersRes.data.data.length);
 
-    useEffect(() => {
-        axios.get("http://localhost:9999/api/fines/chart-fines-by-month")
-            .then((res) => {
-                const monthlyData = res.data.data;
-                const labels = monthlyData.map((item) => `Tháng ${item.month}`);
-                const data = monthlyData.map((item) => item.totalFinesAmount);
+                // Xử lý dữ liệu tiền phạt
+                const finesChartData = finesRes.data.data.map(item => ({
+                    month: `Tháng ${item.month}`,
+                    total: item.totalFinesAmount,
+                }));
 
                 setFinesData({
-                    labels,
-                    datasets: [{
-                        label: "Tổng tiền phạt",
-                        data,
-                        borderColor: "rgba(75, 192, 192, 1)",
-                        backgroundColor: "rgba(75, 192, 192, 0.2)",
-                        tension: 0.4,
-                        fill: true,
-                    }],
+                    autoSize: true,
+                    data: finesChartData,
+                    series: [
+                        { type: "bar", xKey: "month", yKey: "total", yName: "Tổng tiền phạt" },
+                        { type: "line", xKey: "month", yKey: "total", yName: "Xu hướng tiền phạt", strokeWidth: 2, marker: { size: 5 } }
+                    ],
                 });
-            })
-            .catch((error) => console.error("Error fetching fines stats:", error));
+
+                setTotalFines(totalFinesRes.data.data.length);
+            } catch (error) {
+                console.error("Lỗi khi tải dữ liệu:", error);
+            }
+        };
+
+        fetchChartData();
     }, []);
-
-    useEffect(() => {
-        axios.get("http://localhost:9999/api/fines/getAll")
-            .then((res) => setTotalFines(res.data.data.length))
-            .catch((error) => console.error("Error fetching total fines:", error));
-    }, []);
-
-    const barOptions = {
-        responsive: true,
-        plugins: {
-            legend: { display: true, position: "top" },
-            title: { display: true, text: "Thống kê đơn hàng theo tháng" },
-        },
-        scales: {
-            x: { title: { display: true, text: "Tháng" } },
-            y: { title: { display: true, text: "Số lượng đơn hàng" }, beginAtZero: true },
-        },
-    };
-
-    const lineOptions = {
-        responsive: true,
-        plugins: {
-            legend: { display: true, position: "top" },
-            title: { display: true, text: "Thống kê phạt theo tháng" },
-        },
-        scales: {
-            x: { title: { display: true, text: "Tháng" } },
-            y: { title: { display: true, text: "Tổng tiền phạt" }, beginAtZero: true },
-        },
-    };
 
     return (
         <div className="container mx-auto p-6">
@@ -104,7 +70,7 @@ function Chart() {
             >
                 📊 Thống kê dữ liệu
             </motion.h1>
-            
+
             <div className="grid grid-cols-2 gap-8">
                 {/* Biểu đồ đơn hàng */}
                 <motion.div 
@@ -113,13 +79,13 @@ function Chart() {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
                 >
-                    <h2 className="text-xl font-semibold text-gray-700 mb-4 flex items-center">
-                        🛒 Thống kê đơn hàng theo tháng
+                    <h2 className="text-xl font-semibold text-gray-700 mb-4">
+                        🛒 Thống kê đơn hàng theo tháng 
                     </h2>
                     <p>Tổng số đơn hàng: {totalOrder}</p>
-                    <Bar data={orderData} options={barOptions} />
+                    {orderData ? <AgCharts options={orderData} /> : <p>Đang tải dữ liệu...</p>}
                 </motion.div>
-                
+
                 {/* Biểu đồ tiền phạt */}
                 <motion.div 
                     className="bg-white shadow-xl rounded-xl p-6 border border-gray-200 hover:shadow-2xl transition-shadow duration-300"
@@ -127,11 +93,11 @@ function Chart() {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.5, delay: 0.4 }}
                 >
-                    <h2 className="text-xl font-semibold text-gray-700 mb-4 flex items-center">
-                        💰 Thống kê tiền phạt theo tháng
+                    <h2 className="text-xl font-semibold text-gray-700 mb-4">
+                        💰 Thống kê tiền phạt theo tháng 
                     </h2>
-                    <p>Tổng tiền phạt: {totalFines}</p>
-                    <Line data={finesData} options={lineOptions} />
+                    <p>Tổng số đơn phạt: {totalFines}</p>
+                    {finesData ? <AgCharts options={finesData} /> : <p>Đang tải dữ liệu...</p>}
                 </motion.div>
             </div>
         </div>

@@ -572,3 +572,4 @@ const FinesController = {
   ChartFinesbyMonth,
 };
 module.exports = FinesController;
+
