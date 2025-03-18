@@ -149,7 +149,6 @@ const ListNews = () => {
                     className="btn btn-success"
                     onClick={() => handleUpdate(news._id)}
                     title="Cập nhật"
-                    style={{ margin: "5px" }}
                   >
                     <i className="fa fa-pencil" aria-hidden="true"></i>
                   </button>
@@ -157,8 +156,9 @@ const ListNews = () => {
                     className="btn btn-primary "
                     onClick={() => handleDetail(news._id)}
                     title="Xem chi tiết"
+                    style={{ margin: "4px" }}
                   >
-                    <i className="fa fa-eye" aria-hidden="false"></i>
+                    <i className="fa fa-eye" aria-hidden="true"></i>
                   </button>
                   <button
                     className="btn btn-danger "
