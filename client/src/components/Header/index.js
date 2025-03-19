@@ -45,11 +45,6 @@ function Header() {
                     <p className='mt-3'><strong style={{ color: "black" }}>Open: 08:15 - 21:00 Weekday | 08:00 - 12:00 & 13:00 - 17:00 Weekend</strong></p>
                 </div>
 
-                <div>
-                    <h6 style={{
-                        color: "#0870b7", fontWeight: "bold"
-                    }}>Vietnamese | Login</h6>
-                </div>
                 <div className="header-icons" >
                     {user ? (
                         <div className="profile-container">

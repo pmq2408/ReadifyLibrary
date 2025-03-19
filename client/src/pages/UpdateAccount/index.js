@@ -111,6 +111,8 @@ const UpdateAccount = () => {
 
           <div className="col-md-9">
             <div className="form-group mt-3">
+            {!roles.some(role => role._id === formData.role_id && role.name === "admin") && (
+              <>
               <label htmlFor="Họ và tên">Họ và tên</label>
               <input
                 type="text"
@@ -121,6 +123,8 @@ const UpdateAccount = () => {
                 onChange={handleInputChange}
                 placeholder="Nhập Họ và tên"
               />
+              </>
+            )}
             </div>
             <div className="form-group mt-3">
               <label htmlFor="email">Email</label>
@@ -136,6 +140,8 @@ const UpdateAccount = () => {
               />
             </div>
             <div className="form-group mt-3">
+            {!roles.some(role => role._id === formData.role_id && role.name === "admin") && (
+              <>
               <label htmlFor="Số điện thoại">Số điện thoại</label>
               <input
                 type="text"
@@ -146,6 +152,8 @@ const UpdateAccount = () => {
                 onChange={handleInputChange}
                 placeholder="Nhập Số điện thoại"
               />
+              </>
+            )}
             </div>
             <div className="form-group mt-3">
               <label htmlFor="code">Mã người dùng</label>
@@ -162,20 +170,27 @@ const UpdateAccount = () => {
             </div>
 
             <div className="form-group mt-3">
-              <label htmlFor="role_id">Vai trò</label>
-              <select
-                name="role_id"
-                className="form-select"
-                value={formData["role_id"]}
-                onChange={handleInputChange}
-              >
-                {roles.map((role) => (
-                  <option key={role._id} value={role._id}>
-                    {role.name === "librarian" ? "Thủ thư" : role.name === "admin" ? "Quản trị viên" : role.name === "borrower" ? "Người mượn" : ""}
-                  </option>
-                ))}
-              </select>
-            </div>
+  {!roles.some(role => role._id === formData.role_id && role.name === "admin") && (
+    <>
+      <label htmlFor="role_id">Vai trò</label>
+      <select
+        name="role_id"
+        className="form-select"
+        value={formData["role_id"]}
+        onChange={handleInputChange}
+      >
+        {roles
+          .filter(role => role.name === "librarian" || role.name === "borrower")
+          .map((role) => (
+            <option key={role._id} value={role._id}>
+              {role.name === "librarian" ? "Thủ thư" : role.name === "borrower" ? "Người mượn" : ""}
+            </option>
+          ))}
+      </select>
+    </>
+  )}
+</div>
+
           </div>
         </div>
 
