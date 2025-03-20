@@ -4,9 +4,13 @@ const bookController = require("../controllers/book.controller");
 
 const bookRouter = express.Router();
 bookRouter.use(bodyParser.json());
-
+bookRouter.get("/borrowed-stats", bookController.borrowedStats);
+bookRouter.get("/books", bookController.getBookSetDetails);
 bookRouter.put("/update/:id", bookController.updateBook);
 bookRouter.delete("/delete/:id", bookController.deleteBook);
 bookRouter.get("/:id", bookController.getBookDetail);
 bookRouter.post("/list", bookController.listBooks);
+
+
+
 module.exports = bookRouter;
