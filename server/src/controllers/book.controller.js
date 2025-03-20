@@ -147,114 +147,7 @@ const listBooks = async (req, res) => {
 };
 
 
-const borrowedStats = async (req, res) => {
-  try {
-    const stats = await Order.aggregate([
-      // First lookup to get book information
-      {
-        $lookup: {
-          from: "books",
-          localField: "book_id",
-          foreignField: "_id",
-          as: "book",
-        },
-      },
-      { $unwind: "$book" },
-      {
-        $lookup: {
-          from: "booksets",
-          localField: "book.bookSet_id",
-          foreignField: "_id",
-          as: "bookSet",
-        },
-      },
-      { $unwind: "$bookSet" },
-      {
-        $group: {
-          _id: "$bookSet._id",
-          title: { $first: "$bookSet.title" },
-          totalCopies: { $first: "$bookSet.totalCopies" },
-          // Count all orders including Lost status
-          totalOrders: { $sum: 1 },
-          // Count total successful borrows
-          totalBorrowCount: {
-            $sum: {
-              $cond: {
-                if: {
-                  $and: [
-                    { $ne: ["$status", "Pending"] },
-                    { $ne: ["$status", "Rejected"] },
-                    { $ne: ["$status", "Canceled"] },
-                  ],
-                },
-                then: 1,
-                else: 0,
-              },
-            },
-          },
-          // Count currently borrowed books
-          currentlyBorrowed: {
-            $sum: {
-              $cond: {
-                if: {
-                  $in: ["$status", ["Approved", "Received", "Overdue", "Renew Pending"]],
-                },
-                then: 1,
-                else: 0,
-              },
-            },
-          },
-          // Count lost books
-          lostBooks: {
-            $sum: {
-              $cond: [{ $eq: ["$status", "Lost"] }, 1, 0],
-            },
-          },
-        },
-      },
-      {
-        $project: {
-          _id: 1,
-          title: 1,
-          totalCopies: 1,
-          totalOrders: 1,
-          totalBorrowCount: 1,
-          currentlyBorrowed: 1,
-          lostBooks: 1,
-          availableCopies: {
-            $subtract: ["$totalCopies", { $add: ["$currentlyBorrowed", "$lostBooks"] }],
-          },
-        },
-      },
-      // Sort by total orders in descending order to show most borrowed books
-      { $sort: { totalOrders: -1 } },
-    ]);
 
-    // Find the most borrowed book
-    const mostBorrowedBook = stats.reduce((prev, current) => {
-      return (prev.totalBorrowCount > current.totalBorrowCount) ? prev : current;
-    }, stats[0]);
-
-    return res.status(200).json({
-      message: "Book borrowing statistics retrieved successfully",
-      mostBorrowedBook: {
-        title: mostBorrowedBook.title,
-        totalBorrowCount: mostBorrowedBook.totalBorrowCount,
-        borrowRate: ((mostBorrowedBook.totalBorrowCount / mostBorrowedBook.totalCopies) * 100).toFixed(2) + "%",
-      },
-      stats: stats.map((book) => ({
-        ...book,
-        borrowRate: ((book.totalBorrowCount / book.totalCopies) * 100).toFixed(2) + "%",
-        totalBorrowRate: ((book.totalOrders / book.totalCopies) * 100).toFixed(2) + "%",
-      })),
-    });
-  } catch (error) {
-    return res.status(500).json({
-      message: "Error retrieving borrowing statistics",
-      error: error.message,
-    });
-  }
-};
 
 const getBookSetDetails = async (req, res) => {
   try {
@@ -273,7 +166,6 @@ const BookController = {
   deleteBook,
   getBookDetail,
   listBooks,
-  borrowedStats,
   getBookSetDetails
 };
 module.exports = BookController;
