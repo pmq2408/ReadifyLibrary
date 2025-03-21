@@ -1,16 +1,15 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Modal, Button } from "react-bootstrap";
 import SearchResults from "../../components/SearchResult";
 import AdvancedBookForm from "../../components/AdvancedSearchForm/index";
-import { FaSearch, FaBook, FaFilter, FaTimes } from "react-icons/fa";
+import { FaSearch, FaBook, FaFilter } from "react-icons/fa";
 import "./AdvancedSearch.scss";
 
 function AdvancedSearch() {
   const [searchResults, setSearchResults] = useState([]);
-  const [showModal, setShowModal] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [resultCount, setResultCount] = useState(0);
+  const [hasSearched, setHasSearched] = useState(false);
 
   // Hàm xử lý khi nhận kết quả tìm kiếm từ form
   const handleSearchResults = (results) => {
@@ -21,13 +20,8 @@ function AdvancedSearch() {
       setSearchResults(results);
       setResultCount(results.length);
       setIsSearching(false);
-      setShowModal(true); // Luôn hiển thị modal khi có kết quả tìm kiếm
+      setHasSearched(true); // Đánh dấu đã thực hiện tìm kiếm
     }, 500);
-  };
-
-  // Hàm đóng modal
-  const handleCloseModal = () => {
-    setShowModal(false);
   };
 
   return (
@@ -64,51 +58,39 @@ function AdvancedSearch() {
             </div>
           )}
         </div>
-      </div>
 
-      {/* Modal hiển thị kết quả tìm kiếm */}
-      <Modal
-        show={showModal}
-        onHide={handleCloseModal}
-        dialogClassName="search-results-modal"
-        size="xl"
-      >
-        <Modal.Header>
-          <Modal.Title>
-            <div className="modal-title-container">
-              <div className="modal-title-icon">
-                <FaBook />
+        {/* Hiển thị kết quả tìm kiếm trực tiếp trên trang */}
+        {hasSearched && !isSearching && (
+          <div className="search-results-container mt-4">
+            <div className="search-results-header">
+              <div className="d-flex align-items-center mb-3">
+                <FaBook className="me-2" />
+                <h3 className="mb-0">Kết quả tìm kiếm</h3>
+                <span className="badge bg-primary ms-3">
+                  Tìm thấy {resultCount} kết quả
+                </span>
               </div>
-              <div className="modal-title-text">Kết quả tìm kiếm</div>
             </div>
-          </Modal.Title>
-          <div className="result-count-badge">
-            Tìm thấy {resultCount} kết quả
+
+            <div className="search-results-content">
+              {searchResults.length > 0 ? (
+                <SearchResults books={searchResults} />
+              ) : (
+                <div className="empty-results text-center py-5">
+                  <img
+                    src="https://cdn-icons-png.flaticon.com/512/7486/7486754.png"
+                    alt="No results"
+                    className="empty-image"
+                    style={{ maxWidth: "150px" }}
+                  />
+                  <h4 className="mt-3">Không tìm thấy kết quả nào</h4>
+                  <p>Vui lòng thử lại với các tiêu chí tìm kiếm khác</p>
+                </div>
+              )}
+            </div>
           </div>
-          <Button
-            variant="link"
-            onClick={handleCloseModal}
-            className="close-button"
-          >
-            <FaTimes />
-          </Button>
-        </Modal.Header>
-        <Modal.Body>
-          {searchResults.length > 0 ? (
-            <SearchResults books={searchResults} />
-          ) : (
-            <div className="empty-results">
-              <img
-                src="https://cdn-icons-png.flaticon.com/512/7486/7486754.png"
-                alt="No results"
-                className="empty-image"
-              />
-              <h4>Không tìm thấy kết quả nào</h4>
-              <p>Vui lòng thử lại với các tiêu chí tìm kiếm khác</p>
-            </div>
-          )}
-        </Modal.Body>
-      </Modal>
+        )}
+      </div>
     </div>
   );
 }

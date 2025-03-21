@@ -22,13 +22,25 @@ function ReturnBook() {
     updated_by: null,
   });
   const [showModal, setShowModal] = useState(false);
-  const [returnDate, setReturnDate] = useState(
-    new Date().toISOString().split("T")[0]
-  );
+  const [returnDate, setReturnDate] = useState("");
   const [fineData, setFineData] = useState({ fine_reason: "" });
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10;
   const [flag, setFlag] = useState(false);
+
+  // Hàm lấy ngày hiện tại theo múi giờ địa phương
+  const getToday = () => {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  useEffect(() => {
+    // Thiết lập ngày trả sách mặc định là ngày hiện tại
+    setReturnDate(getToday());
+  }, []);
 
   const handleSearchByStudentID = async () => {
     try {

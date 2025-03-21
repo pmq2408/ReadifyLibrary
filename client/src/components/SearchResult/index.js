@@ -18,14 +18,22 @@ function SearchResults({ books = [], setBooks }) {
   const [loading, setLoading] = useState(false);
   const itemsPerPage = 10; // Hiển thị 10 sách mỗi trang
 
-
-
-
   const offset = currentPage * itemsPerPage;
-  const sortedBooks = books.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const sortedBooks = books.sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  );
   const currentBooks = sortedBooks.slice(offset, offset + itemsPerPage);
 
-  const today = new Date().toISOString().slice(0, 10);
+  // Cập nhật cách lấy ngày hiện tại để đảm bảo đúng ngày theo múi giờ địa phương
+  const getToday = () => {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const today = getToday();
 
   const calculateDueDate = (startDate, daysToAdd) => {
     const date = new Date(startDate);
@@ -37,12 +45,16 @@ function SearchResults({ books = [], setBooks }) {
     setSelectedBookId(bookId);
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:9999/api/book-sets/available/${bookId}`);
+      const response = await axios.get(
+        `http://localhost:9999/api/book-sets/available/${bookId}`
+      );
       setBookSet(response.data.bookSet);
       setBook(response.data.availableBooks);
       setShowModal(true);
-      setBorrowDate(today);
-      setDueDate(calculateDueDate(today, 14));
+      // Luôn lấy ngày hiện tại mới nhất khi mở modal
+      const currentToday = getToday();
+      setBorrowDate(currentToday);
+      setDueDate(calculateDueDate(currentToday, 14));
     } catch (error) {
       console.error("Lỗi khi lấy dữ liệu sách:", error);
       toast.error("Lỗi khi lấy dữ liệu sách.");
@@ -60,12 +72,15 @@ function SearchResults({ books = [], setBooks }) {
     setLoading(true);
     try {
       const firstBook = book[0];
-      const response = await axios.post(`http://localhost:9999/api/orders/create-borrow/${firstBook._id}`, {
-        book_id: firstBook._id,
-        userId: user.id,
-        borrowDate: borrowDate,
-        dueDate: dueDate,
-      });
+      const response = await axios.post(
+        `http://localhost:9999/api/orders/create-borrow/${firstBook._id}`,
+        {
+          book_id: firstBook._id,
+          userId: user.id,
+          borrowDate: borrowDate,
+          dueDate: dueDate,
+        }
+      );
       if (response.status === 200) {
         toast.success("Đã mượn sách thành công!");
         setShowModal(false);
@@ -97,25 +112,46 @@ function SearchResults({ books = [], setBooks }) {
           <div className="row no-gutters">
             <div className="col-md-3">
               <img
-                src={book.image ? book.image : "https://www.shutterstock.com/image-vector/default-ui-image-placeholder-wireframes-260nw-1037719192.jpg"}
+                src={
+                  book.image
+                    ? book.image
+                    : "https://www.shutterstock.com/image-vector/default-ui-image-placeholder-wireframes-260nw-1037719192.jpg"
+                }
                 alt={book.title}
               />
-
             </div>
             <div className="col-md-9">
               <div className="card-body">
                 <h5 className="card-title">{book.title}</h5>
-                <p className="card-text"><strong>Tác giả:</strong> {book.author}</p>
-                <p className="card-text"><strong>Nhà xuất bản:</strong> {book.publisher}</p>
-                <p className="card-text"><strong>Năm xuất bản:</strong> {new Date(book.publishedYear).getFullYear()}</p>
-                <p className="card-text"><strong>ISBN:</strong> {book.isbn}</p>
-                <p className="card-text"><strong>Tổng số bản:</strong> {book.totalCopies}</p>
-                <p className="card-text"><strong>Số bản có sẵn:</strong> {book.availableCopies}</p>
-                {user.role.name !== "admin" && user.role.name !== "librarian" && (
-                  <button className="btn btn-primary float-end" onClick={() => openBorrowModal(book._id)} disabled={loading}>
-                    {loading ? "Đang xử lý..." : "Mượn sách"}
-                  </button>
-                )}
+                <p className="card-text">
+                  <strong>Tác giả:</strong> {book.author}
+                </p>
+                <p className="card-text">
+                  <strong>Nhà xuất bản:</strong> {book.publisher}
+                </p>
+                <p className="card-text">
+                  <strong>Năm xuất bản:</strong>{" "}
+                  {new Date(book.publishedYear).getFullYear()}
+                </p>
+                <p className="card-text">
+                  <strong>ISBN:</strong> {book.isbn}
+                </p>
+                <p className="card-text">
+                  <strong>Tổng số bản:</strong> {book.totalCopies}
+                </p>
+                <p className="card-text">
+                  <strong>Số bản có sẵn:</strong> {book.availableCopies}
+                </p>
+                {user.role.name !== "admin" &&
+                  user.role.name !== "librarian" && (
+                    <button
+                      className="btn btn-primary float-end"
+                      onClick={() => openBorrowModal(book._id)}
+                      disabled={loading}
+                    >
+                      {loading ? "Đang xử lý..." : "Mượn sách"}
+                    </button>
+                  )}
               </div>
             </div>
           </div>
@@ -152,13 +188,26 @@ function SearchResults({ books = [], setBooks }) {
           <Form>
             <Form.Group controlId="borrowDate">
               <Form.Label>Ngày mượn</Form.Label>
-              <Form.Control type="date" value={borrowDate} min={today} onChange={handleBorrowDateChange} />
+              <Form.Control
+                type="date"
+                value={borrowDate}
+                min={today}
+                onChange={handleBorrowDateChange}
+              />
             </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={closeModal}>Hủy</Button>
-          <Button variant="primary" onClick={handleBorrowSubmit} disabled={loading}>{loading ? "Đang xử lý..." : "Xác nhận mượn"}</Button>
+          <Button variant="secondary" onClick={closeModal}>
+            Hủy
+          </Button>
+          <Button
+            variant="primary"
+            onClick={handleBorrowSubmit}
+            disabled={loading}
+          >
+            {loading ? "Đang xử lý..." : "Xác nhận mượn"}
+          </Button>
         </Modal.Footer>
       </Modal>
     </Container>

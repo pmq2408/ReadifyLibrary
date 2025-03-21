@@ -168,11 +168,6 @@ const authController = {
       const email = payload.email;
       const fullName = payload.name || payload.email.split("@")[0];
 
-      // Kiểm tra tên miền email
-      if (!email.endsWith("@fpt.edu.vn") && !email.endsWith("@fe.edu.vn")) {
-        return res.status(400).json({ message: "Email domain not allowed" });
-      }
-
       const code = email.split("@")[0];
 
       // Kiểm tra xem người dùng đã tồn tại
@@ -185,8 +180,8 @@ const authController = {
         }
 
         const randomPassword = bcrypt.hashSync(
-            Math.random().toString(36).slice(-8),
-            10
+          Math.random().toString(36).slice(-8),
+          10
         );
 
         user = new User({
@@ -203,7 +198,8 @@ const authController = {
 
       if (!user.isActive) {
         return res.status(403).json({
-          message: "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ thư viện để được hỗ trợ.",
+          message:
+            "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ thư viện để được hỗ trợ.",
         });
       }
 

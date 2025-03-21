@@ -13,7 +13,9 @@ function BookSetDetail() {
   useEffect(() => {
     const fetchBookSetDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:9999/api/book-sets/available/${bookId}`);
+        const response = await axios.get(
+          `http://localhost:9999/api/book-sets/available/${bookId}`
+        );
         setBookSet(response.data.bookSet); // Lưu thông tin bộ sách
         setBooks(response.data.books); // Lưu danh sách các quyển sách
       } catch (error) {
@@ -24,17 +26,42 @@ function BookSetDetail() {
     fetchBookSetDetails();
   }, [bookId]);
 
+  // Hàm lấy ngày hiện tại theo múi giờ địa phương
+  const getToday = () => {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  // Hàm tính ngày hẹn trả (n ngày sau ngày mượn)
+  const calculateDueDate = (startDate, daysToAdd) => {
+    const date = new Date(startDate);
+    date.setDate(date.getDate() + daysToAdd);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
   // Hàm xử lý khi người dùng nhấn "Borrow this book"
   const handleBorrowClick = async () => {
     if (books.length > 0) {
       const firstBook = books[0]; // Lấy quyển sách đầu tiên trong danh sách
+      const today = getToday();
+      const dueDate = calculateDueDate(today, 14); // 14 ngày từ ngày hiện tại
+
       try {
-        await axios.post(`http://localhost:9999/api/orders/create-borrow/${firstBook._id}`, {
-          book_id: firstBook._id,
-          userId: user.id,
-          borrowDate: new Date().toISOString(),
-          dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(), // 14 ngày từ ngày hiện tại
-        });
+        await axios.post(
+          `http://localhost:9999/api/orders/create-borrow/${firstBook._id}`,
+          {
+            book_id: firstBook._id,
+            userId: user.id,
+            borrowDate: today,
+            dueDate: dueDate,
+          }
+        );
         // Điều hướng đến trang danh sách sách đã mượn sau khi hoàn thành
         navigate(`/list-book-borrowed`);
       } catch (error) {
@@ -49,12 +76,25 @@ function BookSetDetail() {
         <>
           {/* Hiển thị thông tin bộ sách */}
           <h3>{bookSet.title}</h3>
-          <p><strong>Author:</strong> {bookSet.author}</p>
-          <p><strong>Publisher:</strong> {bookSet.publisher}</p>
-          <p><strong>Published Year:</strong> {new Date(bookSet.publishedYear).getFullYear()}</p>
-          <p><strong>Physical Description:</strong> {bookSet.physicalDescription}</p>
-          <p><strong>Total Copies:</strong> {bookSet.totalCopies}</p>
-          <p><strong>Available Copies:</strong> {bookSet.availableCopies}</p>
+          <p>
+            <strong>Author:</strong> {bookSet.author}
+          </p>
+          <p>
+            <strong>Publisher:</strong> {bookSet.publisher}
+          </p>
+          <p>
+            <strong>Published Year:</strong>{" "}
+            {new Date(bookSet.publishedYear).getFullYear()}
+          </p>
+          <p>
+            <strong>Physical Description:</strong> {bookSet.physicalDescription}
+          </p>
+          <p>
+            <strong>Total Copies:</strong> {bookSet.totalCopies}
+          </p>
+          <p>
+            <strong>Available Copies:</strong> {bookSet.availableCopies}
+          </p>
 
           {/* Hiển thị danh sách các quyển sách */}
           <h4>Books in this set:</h4>
@@ -62,8 +102,13 @@ function BookSetDetail() {
             <ul className="list-group">
               {books.map((book, index) => (
                 <li key={book._id} className="list-group-item">
-                  <p><strong>Book Identifier Code:</strong> {book.identifier_code}</p>
-                  <p><strong>Condition:</strong> {book.condition}</p>
+                  <p>
+                    <strong>Book Identifier Code:</strong>{" "}
+                    {book.identifier_code}
+                  </p>
+                  <p>
+                    <strong>Condition:</strong> {book.condition}
+                  </p>
                 </li>
               ))}
             </ul>
@@ -72,7 +117,10 @@ function BookSetDetail() {
           )}
 
           {books.length > 0 && (
-            <button className="btn btn-primary mt-3" onClick={handleBorrowClick}>
+            <button
+              className="btn btn-primary mt-3"
+              onClick={handleBorrowClick}
+            >
               Borrow this book
             </button>
           )}
