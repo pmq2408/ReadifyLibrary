@@ -233,6 +233,103 @@ const getOrderByUserId = async (req, res, next) => {
   }
 };
 
+// Function to check book availability for a specific user with priority handling
+const getBookAvailabilityForUser = async (
+  bookId,
+  userId,
+  requestedBorrowDate
+) => {
+  try {
+    // Find the book
+    const book = await Book.findById(bookId);
+    if (!book) {
+      return { available: false, message: "Sách không tồn tại" };
+    }
+
+    if (book.status !== "Available") {
+      return {
+        available: false,
+        message: "Sách đã được mượn hoặc không có sẵn",
+      };
+    }
+
+    // Convert requested borrow date to Date object and normalize time
+    const borrowDateObj = new Date(requestedBorrowDate);
+    borrowDateObj.setHours(0, 0, 0, 0);
+
+    // Get all existing orders for this book that are not rejected, canceled, or returned
+    const existingOrders = await Order.find({
+      book_id: bookId,
+      status: { $nin: ["Rejected", "Canceled", "Returned", "Lost"] },
+    })
+      .sort({ requestDate: 1 })
+      .populate("created_by");
+
+    // If no orders exist, the book is available
+    if (existingOrders.length === 0) {
+      return { available: true, message: "Sách có sẵn để mượn" };
+    }
+
+    // Find orders with the same requested borrow date (user wants to borrow on the same day)
+    const ordersOnSameBorrowDate = existingOrders.filter((order) => {
+      const orderBorrowDate = new Date(order.borrowDate);
+      orderBorrowDate.setHours(0, 0, 0, 0);
+      return orderBorrowDate.getTime() === borrowDateObj.getTime();
+    });
+
+    // If no orders on the same borrow date, book is available
+    if (ordersOnSameBorrowDate.length === 0) {
+      return { available: true, message: "Sách có sẵn vào ngày này" };
+    }
+
+    // Find orders that finish before the requested borrow date (books that will be returned before this date)
+    const ordersFinishingBeforeBorrowDate = existingOrders.filter((order) => {
+      const orderDueDate = new Date(order.dueDate);
+      orderDueDate.setHours(0, 0, 0, 0);
+      return orderDueDate.getTime() < borrowDateObj.getTime();
+    });
+
+    // If there's an order that finishes before the requested borrow date, book is available
+    // since the previous user will return it before the new user wants to borrow
+    if (ordersFinishingBeforeBorrowDate.length > 0) {
+      return {
+        available: true,
+        message: "Sách sẽ được trả trước ngày mượn của bạn",
+      };
+    }
+
+    // If the current user already has a pending order for this book on the same date
+    const userOrderOnSameDate = ordersOnSameBorrowDate.find(
+      (order) => order.created_by._id.toString() === userId.toString()
+    );
+
+    if (userOrderOnSameDate) {
+      return {
+        available: false,
+        message: "Bạn đã đặt mượn sách này vào ngày này rồi",
+      };
+    }
+
+    // Sort existing orders by request date (first come first serve priority)
+    ordersOnSameBorrowDate.sort((a, b) => a.requestDate - b.requestDate);
+
+    // The user trying to borrow is not the first in queue
+    if (ordersOnSameBorrowDate.length > 0) {
+      return {
+        available: false,
+        message: "Sách này đã được người khác đặt mượn trước vào ngày này",
+        queuePosition: ordersOnSameBorrowDate.length + 1,
+      };
+    }
+
+    return { available: true, message: "Sách có sẵn để mượn" };
+  } catch (error) {
+    console.error("Error checking book availability: ", error);
+    return { available: false, message: "Lỗi kiểm tra tình trạng sách" };
+  }
+};
+
+// Modify the createBorrowOrder function to use this availability check
 const createBorrowOrder = async (req, res, next) => {
   try {
     const { borrowDate, dueDate, userId } = req.body;
@@ -249,7 +346,7 @@ const createBorrowOrder = async (req, res, next) => {
       status: "Pending",
     });
 
-    console.log("User fines found:", userFines); // Kiểm tra kết quả truy vấn
+    console.log("User fines found:", userFines);
 
     if (userFines.length > 0) {
       return res.status(500).json({
@@ -270,20 +367,23 @@ const createBorrowOrder = async (req, res, next) => {
       });
     }
 
-    // Check if book exists
+    // Check book availability with priority handling
+    const bookAvailability = await getBookAvailabilityForUser(
+      bookId,
+      userId,
+      borrowDate
+    );
+
+    if (!bookAvailability.available) {
+      return res.status(500).json({
+        message: bookAvailability.message,
+        data: null,
+        queuePosition: bookAvailability.queuePosition,
+      });
+    }
+
+    // The rest of the existing book validation logic
     const book = await Book.findById(bookId);
-    if (!book) {
-      return res.status(500).json({
-        message: "Book not found",
-        data: null,
-      });
-    }
-    if (book.status !== "Available") {
-      return res.status(500).json({
-        message: "Sách đã được mượn hoặc không đủ điều kiện để mượn.",
-        data: null,
-      });
-    }
     const booksWithSameBookSet = await Book.find({
       bookSet_id: book.bookSet_id,
     });
@@ -291,7 +391,7 @@ const createBorrowOrder = async (req, res, next) => {
     const existingUserOrders = await Order.find({
       created_by: userId,
       book_id: { $in: bookIds },
-      status: { $nin: ["Lost", "Returned", "Canceled"] }, // Loại bỏ các đơn với trạng thái Lost và Returned
+      status: { $nin: ["Lost", "Returned", "Canceled"] },
     })
       .populate({
         path: "book_id",
@@ -346,8 +446,24 @@ const createBorrowOrder = async (req, res, next) => {
     const borrowDateObj = new Date(borrowDate);
     const dueDateObj = new Date(dueDate);
 
-    const differenceInDays =
-      (dueDateObj - borrowDateObj) / (1000 * 60 * 60 * 24);
+    // Kiểm tra ngày mượn không được trong quá khứ
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Đặt về đầu ngày để so sánh chính xác theo ngày
+    borrowDateObj.setHours(0, 0, 0, 0);
+    dueDateObj.setHours(0, 0, 0, 0);
+
+    if (borrowDateObj < today) {
+      return res.status(500).json({
+        message: "Ngày mượn sách không thể là ngày trong quá khứ",
+        data: null,
+      });
+    }
+
+    // Tính toán chính xác số ngày giữa hai ngày
+    const diffTime = Math.abs(dueDateObj - borrowDateObj);
+    const differenceInDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    console.log("Số ngày chênh lệch: ", differenceInDays);
 
     if (differenceInDays > 14) {
       return res.status(500).json({
@@ -366,17 +482,6 @@ const createBorrowOrder = async (req, res, next) => {
     if (dueDateObj <= borrowDateObj) {
       return res.status(500).json({
         message: "Ngày trả sách phải sau ngày mượn sách",
-        data: null,
-      });
-    }
-
-    // Check if due date is more than 14 days after borrow date
-    const maxDueDate = new Date(borrowDateObj);
-    maxDueDate.setDate(maxDueDate.getDate() + 14); // Add 14 days
-
-    if (dueDateObj > maxDueDate) {
-      return res.status(500).json({
-        message: "Ngày trả sách không được quá 14 ngày sau ngày mượn sách",
         data: null,
       });
     }
@@ -493,6 +598,24 @@ async function changeOrderStatus(req, res, next) {
         return res.status(500).json({ message: "Lý do từ chối là bắt buộc." });
       }
       order.reason_order = reason_order;
+
+      // Cập nhật trạng thái sách thành "Available" và tăng số lượng sách có sẵn
+      if (order.status === "Pending") {
+        book.status = "Available";
+        await book.save();
+
+        bookSet.availableCopies += 1;
+        await bookSet.save();
+      }
+
+      // Nếu từ chối yêu cầu gia hạn, đặt lại ngày trả sách và trạng thái về "Received"
+      if (order.status === "Renew Pending") {
+        // Lưu lại ngày dự kiến trả sách trước khi yêu cầu gia hạn
+        const renewalDate = new Date(order.renewalDate);
+        renewalDate.setDate(renewalDate.getDate() - 1); // Lấy ngày trước khi gia hạn
+        order.dueDate = renewalDate;
+        order.status = "Received"; // Đặt lại trạng thái về "Received"
+      }
     }
 
     // Check if the order is overdue or lost and the status is being changed to Renew Pending
@@ -568,6 +691,19 @@ async function changeOrderStatus(req, res, next) {
 
     switch (status) {
       case "Approved":
+        // Kiểm tra ngày mượn không được trong quá khứ
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Đặt về đầu ngày để so sánh chính xác theo ngày
+        const borrowDateObj = new Date(order.borrowDate);
+        borrowDateObj.setHours(0, 0, 0, 0);
+
+        if (borrowDateObj < today) {
+          return res.status(500).json({
+            message: "Không thể duyệt yêu cầu mượn có ngày mượn trong quá khứ",
+            data: null,
+          });
+        }
+
         notificationMessage = `Yêu cầu mượn sách ${
           bookSet.title
         } với mã định danh #${
@@ -1503,7 +1639,6 @@ const ChartOrderbyMonth = async (req, res, next) => {
     });
   }
 };
-
 
 // Schedule a cron job to run every day at midnight to check overdue orders
 // cron.schedule("0 0 * * *", () => {

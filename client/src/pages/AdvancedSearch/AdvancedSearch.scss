@@ -70,63 +70,39 @@
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   padding: 20px;
-}
+  margin-top: 30px;
 
-.search-results-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid #e0e0e0;
-}
+  .search-results-header {
+    margin-bottom: 20px;
 
-.results-icon {
-  font-size: 20px;
-  margin-right: 10px;
-  color: #f26f21;
-}
+    h3 {
+      font-size: 20px;
+      font-weight: 600;
+      color: #333;
+      margin: 0;
+    }
 
-.search-results-header h3 {
-  font-size: 18px;
-  font-weight: 600;
-  color: #333;
-  margin: 0;
-  flex-grow: 1;
-}
+    .badge {
+      background-color: #f26f21;
+      font-weight: 500;
+      font-size: 14px;
+      padding: 0.5em 0.8em;
+    }
+  }
 
-.results-count {
-  background-color: #f26f21;
-  color: white;
-  padding: 5px 10px;
-  border-radius: 20px;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.loading-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 50px 0;
-
-  p {
-    margin-top: 15px;
-    color: #6c757d;
+  .search-results-content {
+    padding: 15px 0;
   }
 }
 
-.empty-results,
-.search-prompt {
+.empty-results {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 50px 0;
-  text-align: center;
+  padding: 60px 0;
 
-  .empty-image,
-  .prompt-image {
+  .empty-image {
     width: 120px;
     height: 120px;
     margin-bottom: 20px;
@@ -142,6 +118,7 @@
   p {
     color: #6c757d;
     max-width: 400px;
+    margin: 0 auto;
   }
 }
 
@@ -185,104 +162,6 @@
   }
 }
 
-// Styles cho modal kết quả tìm kiếm
-.search-results-modal {
-  .modal-dialog {
-    max-width: 90%;
-    margin: 1.75rem auto;
-  }
-
-  .modal-content {
-    border-radius: 8px;
-    border: none;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
-  }
-
-  .modal-header {
-    display: flex;
-    align-items: center;
-    padding: 15px 20px;
-    border-bottom: 1px solid #e0e0e0;
-
-    .modal-title {
-      display: flex;
-      align-items: center;
-      flex-grow: 1;
-
-      .modal-title-container {
-        display: flex;
-        align-items: center;
-      }
-
-      .modal-title-icon {
-        color: #f26f21;
-        font-size: 20px;
-        margin-right: 10px;
-      }
-
-      .modal-title-text {
-        font-size: 18px;
-        font-weight: 600;
-        color: #333;
-      }
-    }
-
-    .result-count-badge {
-      background-color: #f26f21;
-      color: white;
-      padding: 5px 15px;
-      border-radius: 20px;
-      font-size: 14px;
-      font-weight: 500;
-      margin-right: 15px;
-    }
-
-    .close-button {
-      color: #6c757d;
-      padding: 0;
-      font-size: 20px;
-
-      &:hover {
-        color: #343a40;
-      }
-    }
-  }
-
-  .modal-body {
-    padding: 20px;
-    max-height: 70vh;
-    overflow-y: auto;
-  }
-}
-
-// Styles cho empty results trong modal
-.empty-results {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 50px 0;
-  text-align: center;
-
-  .empty-image {
-    width: 120px;
-    height: 120px;
-    margin-bottom: 20px;
-    opacity: 0.7;
-  }
-
-  h4 {
-    font-size: 18px;
-    color: #495057;
-    margin-bottom: 10px;
-  }
-
-  p {
-    color: #6c757d;
-    max-width: 400px;
-  }
-}
-
 // Thêm styles cho loading container trong form
 .search-form-container {
   .loading-container {
@@ -292,29 +171,5 @@
 
   .search-prompt {
     margin-top: 20px;
-  }
-}
-
-// Responsive styles cho modal
-@media (max-width: 768px) {
-  .search-results-modal {
-    .modal-dialog {
-      max-width: 95%;
-      margin: 1rem auto;
-    }
-
-    .modal-body {
-      max-height: 60vh;
-      padding: 15px;
-    }
-
-    .modal-header {
-      padding: 10px 15px;
-
-      .result-count-badge {
-        padding: 3px 10px;
-        font-size: 12px;
-      }
-    }
   }
 }

@@ -4,7 +4,7 @@ import axios from "axios";
 import AuthContext from "../../contexts/UserContext";
 import { toast, ToastContainer } from "react-toastify";
 import ReactPaginate from "react-paginate";
-import './index.css';
+import "./index.css";
 
 function ManageReturn() {
   const [studentCode, setStudentCode] = useState("");
@@ -21,6 +21,22 @@ function ManageReturn() {
   });
   const itemsPerPage = 10;
   const { user } = useContext(AuthContext);
+
+  // Hàm lấy ngày hiện tại theo múi giờ địa phương
+  const getToday = () => {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  // Cập nhật tất cả trạng thái có sử dụng ngày hiện tại
+  const initialFormState = {
+    condition: "Good",
+    condition_detail: "",
+    returnDate: getToday(),
+  };
 
   const getConditionText = (condition) => {
     switch (condition) {
@@ -110,7 +126,7 @@ function ManageReturn() {
     setReturnDetails({
       condition: "Good",
       condition_detail: "",
-      returnDate: new Date().toISOString().split("T")[0],
+      returnDate: getToday(),
       fine_reason: "",
     });
   };
@@ -120,7 +136,7 @@ function ManageReturn() {
     setReturnDetails({
       condition: "Good",
       condition_detail: "",
-      returnDate: new Date().toISOString().split("T")[0],
+      returnDate: getToday(),
       fine_reason: "",
     });
     setShowReturnModal(true);
@@ -408,7 +424,7 @@ function ManageReturn() {
     <div className="manage-return-container mt-4">
       <ToastContainer position="top-right" autoClose={3000} />
       <h2 className="mb-4">Quản Lý Trả Sách</h2>
-  
+
       <div className="search-section row mb-4">
         <div className="col-md-6">
           <div className="input-group">
@@ -427,7 +443,7 @@ function ManageReturn() {
             </button>
           </div>
         </div>
-  
+
         <div className="col-md-6">
           <div className="input-group">
             <input
@@ -446,7 +462,7 @@ function ManageReturn() {
           </div>
         </div>
       </div>
-  
+
       <table className="table table-striped">
         <thead>
           <tr>
@@ -488,7 +504,7 @@ function ManageReturn() {
           )}
         </tbody>
       </table>
-  
+
       {bookList.length > itemsPerPage && (
         <ReactPaginate
           previousLabel={"<"}
@@ -510,7 +526,7 @@ function ManageReturn() {
           activeClassName={"active"}
         />
       )}
-  
+
       <Modal
         show={showReturnModal}
         onHide={handleCloseModal}
