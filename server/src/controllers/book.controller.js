@@ -13,13 +13,19 @@ const updateBook = async (req, res, next) => {
       return res.status(404).json({ message: "Không tìm thấy sách." });
     }
     var update_status = status;
-    if(book.status !== 'Destroyed' && (condition === 'Lost' || condition === 'Hard')) {
+    if (
+      book.status !== "Destroyed" &&
+      (condition === "Lost" || condition === "Hard")
+    ) {
       const bookSet = await BookSet.findById(book.bookSet_id);
       bookSet.availableCopies -= 1;
       bookSet.save();
-      update_status = 'Destroyed';
+      update_status = "Destroyed";
     }
-    if(book.status === 'Destroyed' && (condition === 'Good' || condition === 'Light' || condition === 'Medium')) {
+    if (
+      book.status === "Destroyed" &&
+      (condition === "Good" || condition === "Light" || condition === "Medium")
+    ) {
       const bookSet = await BookSet.findById(book.bookSet_id);
       bookSet.availableCopies += 1;
       bookSet.save();
@@ -58,7 +64,7 @@ const deleteBook = async (req, res, next) => {
     await book.deleteOne();
 
     bookSet.totalCopies -= 1;
-    if(book.condition !== 'Hard' && book.condition !== 'Lost') {
+    if (book.condition !== "Hard" && book.condition !== "Lost") {
       bookSet.availableCopies -= 1;
     }
     await bookSet.save();
@@ -96,7 +102,14 @@ const getBookDetail = async (req, res, next) => {
 };
 const listBooks = async (req, res) => {
   try {
-    const { condition, status, bookSet_id, identifier_code, page = 1, limit = 10 } = req.body;
+    const {
+      condition,
+      status,
+      bookSet_id,
+      identifier_code,
+      page = 1,
+      limit = 10,
+    } = req.body;
     let filter = {};
 
     // Kiểm tra từng điều kiện và thêm vào filter nếu có
@@ -118,11 +131,11 @@ const listBooks = async (req, res) => {
 
     // Tìm kiếm sách dựa trên filter, áp dụng phân trang
     const books = await Book.find(filter)
-        .populate('bookSet_id', 'title') // Populate để lấy thông tin tiêu đề của bộ sách nếu cần
-        .populate('created_by', 'name') // Populate thông tin người tạo nếu cần
-        .populate('updated_by', 'name') // Populate thông tin người cập nhật nếu cần
-        .skip(skip)
-        .limit(parseInt(limit));
+      .populate("bookSet_id", "title") // Populate để lấy thông tin tiêu đề của bộ sách nếu cần
+      .populate("created_by", "name") // Populate thông tin người tạo nếu cần
+      .populate("updated_by", "name") // Populate thông tin người cập nhật nếu cần
+      .skip(skip)
+      .limit(parseInt(limit));
 
     // Lấy tổng số lượng sách thoả mãn điều kiện để tính tổng số trang
     const totalBooks = await Book.countDocuments(filter);
@@ -146,26 +159,122 @@ const listBooks = async (req, res) => {
   }
 };
 
-
-
-
 const getBookSetDetails = async (req, res) => {
   try {
-    const books = await BookSet.find({}, "title totalCopies availableCopies price");
+    const books = await BookSet.find(
+      {},
+      "title totalCopies availableCopies price"
+    );
 
     res.status(200).json(books);
   } catch (error) {
     console.error("Error fetching book details:", error);
-    res.status(500).json({ message: "Internal Server Error", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
 };
 
+const searchBookByIdentifier = async (req, res) => {
+  try {
+    const { identifier } = req.params;
+    const book = await Book.findOne({ identifier_code: identifier }).populate(
+      "bookSet_id"
+    );
+
+    if (!book) {
+      return res.status(404).json({
+        message: "Không tìm thấy sách",
+        data: null,
+      });
+    }
+
+    return res.status(200).json({
+      message: "Tìm thấy sách thành công",
+      data: book,
+    });
+  } catch (error) {
+    console.error("Error in searchBookByIdentifier:", error);
+    return res.status(500).json({
+      message: "Lỗi server",
+      data: null,
+    });
+  }
+};
+
+const searchBooksByTitle = async (req, res) => {
+  try {
+    const { searchTerm } = req.query;
+    console.log("Searching for books with term:", searchTerm);
+
+    if (!searchTerm) {
+      console.log("No search term provided");
+      return res.status(200).json({
+        message: "Vui lòng nhập từ khóa tìm kiếm",
+        data: [],
+      });
+    }
+
+    // Tìm tất cả các BookSet có title chứa searchTerm (case insensitive) và có sách available
+    const bookSets = await BookSet.find({
+      title: { $regex: searchTerm, $options: "i" },
+      availableCopies: { $gt: 0 }, // Chỉ lấy những BookSet có sách available
+    });
+    console.log("Found bookSets:", bookSets.length);
+
+    if (bookSets.length === 0) {
+      return res.status(200).json({
+        message: "Không tìm thấy sách nào có sẵn để mượn",
+        data: [],
+      });
+    }
+
+    // Lấy tất cả các sách thuộc các bookSet tìm được và có status = "Available"
+    const availableBooks = await Book.find({
+      bookSet_id: { $in: bookSets.map((bs) => bs._id) },
+      status: "Available",
+    }).populate({
+      path: "bookSet_id",
+      select: "title author availableCopies", // Thêm availableCopies vào kết quả
+    });
+    console.log("Found available books:", availableBooks.length);
+
+    // Format kết quả trả về
+    const formattedBooks = availableBooks.map((book) => ({
+      value: book.identifier_code,
+      label: `${book.bookSet_id.title} - Mã sách: ${book.identifier_code} (Còn ${book.bookSet_id.availableCopies} quyển)`,
+      book: {
+        identifier_code: book.identifier_code,
+        title: book.bookSet_id.title,
+        author: book.bookSet_id.author,
+        status: book.status,
+        availableCopies: book.bookSet_id.availableCopies,
+      },
+    }));
+
+    return res.status(200).json({
+      message:
+        formattedBooks.length > 0
+          ? "Tìm kiếm sách thành công"
+          : "Không tìm thấy sách có sẵn",
+      data: formattedBooks,
+    });
+  } catch (error) {
+    console.error("Error in searchBooksByTitle:", error);
+    return res.status(500).json({
+      message: "Lỗi server: " + error.message,
+      data: [],
+    });
+  }
+};
 
 const BookController = {
   updateBook,
   deleteBook,
   getBookDetail,
   listBooks,
-  getBookSetDetails
+  getBookSetDetails,
+  searchBookByIdentifier,
+  searchBooksByTitle,
 };
 module.exports = BookController;

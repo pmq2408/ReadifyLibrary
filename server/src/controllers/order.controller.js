@@ -22,6 +22,200 @@ let transporter = nodemailer.createTransport({
   },
 });
 
+// Thủ thư mượn hộ người dùng
+const createBorrowOrderByLibrarian = async (req, res, next) => {
+  try {
+    const { borrowDate, dueDate, userId, librarianId } = req.body;
+    const { bookId } = req.params; // bookId here is actually the identifier_code
+
+    // Check if user exists
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(500).json({ message: "Không tìm thấy người dùng" });
+    }
+
+    // Check if librarian exists and has librarian role
+    const librarian = await User.findById(librarianId).populate("role_id");
+    if (!librarian || librarian.role_id.name !== "librarian") {
+      return res
+        .status(500)
+        .json({ message: "Không có quyền thực hiện thao tác này" });
+    }
+
+    // Kiểm tra tiền phạt chưa thanh toán
+    const userFines = await Fines.find({
+      user_id: userId,
+      status: "Pending",
+    });
+
+    if (userFines.length > 0) {
+      return res.status(500).json({
+        message:
+          "Người dùng cần phải thanh toán tiền phạt trước khi mượn sách mới",
+        data: null,
+      });
+    }
+
+    // Kiểm tra sách quá hạn
+    const userOverdueOrders = await Order.find({
+      created_by: userId,
+      status: "Overdue",
+    });
+    if (userOverdueOrders && userOverdueOrders.length > 0) {
+      return res.status(500).json({
+        message: "Người dùng cần phải trả sách quá hạn trước khi mượn sách mới",
+        data: null,
+      });
+    }
+
+    // Check book availability using identifier_code
+    const requestedBook = await Book.findOne({ identifier_code: bookId });
+    if (!requestedBook) {
+      return res.status(500).json({ message: "Không tìm thấy sách" });
+    }
+
+    // Nếu quyển sách được yêu cầu không available, tìm quyển khác trong cùng bookSet
+    let bookToUse = requestedBook;
+    if (requestedBook.status !== "Available") {
+      // Tìm một quyển sách available khác trong cùng bookSet
+      const availableBook = await Book.findOne({
+        bookSet_id: requestedBook.bookSet_id,
+        status: "Available",
+        condition: { $ne: "Lost" },
+      });
+
+      if (!availableBook) {
+        return res.status(500).json({
+          message: "Không có quyển sách nào trong bộ này có sẵn để mượn",
+        });
+      }
+      bookToUse = availableBook;
+    }
+
+    // Kiểm tra người dùng đã mượn sách này chưa
+    const booksWithSameBookSet = await Book.find({
+      bookSet_id: bookToUse.bookSet_id,
+    });
+    console.log("Books in same set:", booksWithSameBookSet);
+
+    const bookIds = booksWithSameBookSet.map((book) => book._id);
+    console.log("Book IDs to check:", bookIds);
+    console.log("Checking orders for user:", userId);
+
+    const existingUserOrders = await Order.find({
+      created_by: userId,
+      book_id: { $in: bookIds },
+      status: { $in: ["Received", "Approved", "Overdue"] },
+    }).populate("book_id");
+
+    console.log("Existing orders found:", existingUserOrders);
+
+    if (existingUserOrders.length > 0) {
+      return res.status(500).json({
+        message: "Người dùng đã mượn sách này rồi",
+        data: null,
+      });
+    }
+
+    // Kiểm tra ngày mượn và ngày trả
+    if (!borrowDate || !dueDate) {
+      return res.status(500).json({
+        message: "Ngày mượn và ngày trả sách là bắt buộc",
+        data: null,
+      });
+    }
+
+    const borrowDateObj = new Date(borrowDate);
+    const dueDateObj = new Date(dueDate);
+    borrowDateObj.setHours(0, 0, 0, 0);
+    dueDateObj.setHours(0, 0, 0, 0);
+
+    // Tính số ngày mượn
+    const diffTime = Math.abs(dueDateObj - borrowDateObj);
+    const differenceInDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (differenceInDays > 14) {
+      return res.status(500).json({
+        message: "Thời hạn mượn sách tối đa là 14 ngày",
+        data: null,
+      });
+    }
+
+    if (dueDateObj <= borrowDateObj) {
+      return res.status(500).json({
+        message: "Ngày trả sách phải sau ngày mượn sách",
+        data: null,
+      });
+    }
+
+    // Create new order with Received status (skip Pending and Approved)
+    const order = new Order({
+      book_id: bookToUse._id, // Use the book's _id here
+      created_by: userId,
+      updated_by: librarianId,
+      status: "Received", // Trạng thái nhận sách luôn vì thủ thư tạo
+      requestDate: new Date(),
+      borrowDate: borrowDateObj,
+      dueDate: dueDateObj,
+      returnDate: null,
+      reason_order: "Mượn sách trực tiếp tại thư viện",
+      renewalCount: 0,
+      renewalDate: null,
+    });
+
+    const newOrder = await order.save();
+
+    // Update book status
+    bookToUse.status = "Borrowed";
+    await bookToUse.save();
+
+    // Update bookSet available copies
+    const bookSet = await BookSet.findById(bookToUse.bookSet_id);
+    bookSet.availableCopies -= 1;
+    await bookSet.save();
+
+    // Create notification for user
+    const notification = new Notification({
+      userId: userId,
+      type: "Received",
+      message: `Bạn đã mượn sách ${bookSet.title} với mã định danh #${
+        bookToUse.identifier_code
+      }. Ngày trả sách là ${dueDateObj.toLocaleDateString(
+        "vi-VN"
+      )}. Vui lòng trả sách đúng hạn.`,
+    });
+    await notification.save();
+
+    // Send confirmation email
+    const userEmail = user.email;
+    let info = await transporter.sendMail({
+      from: '"Thông Báo Thư Viện" <titi2024hd@gmail.com>',
+      to: userEmail,
+      subject: "Xác Nhận Mượn Sách",
+      text: `Xin chào, bạn đã mượn sách ${bookSet.title} với mã định danh #${
+        bookToUse.identifier_code
+      }. Ngày trả sách của bạn là ${dueDateObj.toLocaleDateString(
+        "vi-VN"
+      )}. Vui lòng trả sách đúng hạn. Cảm ơn bạn đã sử dụng dịch vụ của thư viện.`,
+      html: `<b>Xin chào</b>, bạn đã mượn sách ${
+        bookSet.title
+      } với mã định danh <strong>#${
+        bookToUse.identifier_code
+      }</strong>.<br>Ngày trả sách của bạn là <strong>${dueDateObj.toLocaleDateString(
+        "vi-VN"
+      )}</strong>.<br>Vui lòng trả sách đúng hạn.<br><br>Cảm ơn bạn đã sử dụng dịch vụ của thư viện.`,
+    });
+
+    res.status(200).json({
+      message: "Tạo đơn mượn sách thành công",
+      data: newOrder,
+    });
+  } catch (error) {
+    console.error("Error creating order by librarian", error);
+    res.status(500).send({ message: error.message });
+  }
+};
+
 //Get all order
 const getAllOrder = async (req, res, next) => {
   try {
@@ -968,6 +1162,10 @@ async function returnOrder(req, res, next) {
     const bookSet = await BookSet.findById(book.bookSet_id);
     var isDestroyed = false;
     var fineReasonType = "";
+    // Đặt giá trị mặc định cho condition_detail
+    const defaultConditionDetail = "Tình trạng bình thường";
+    const bookConditionDetail = condition_detail || defaultConditionDetail;
+
     if (book_condition !== book.condition) {
       switch (book_condition) {
         default:
@@ -1055,12 +1253,12 @@ async function returnOrder(req, res, next) {
     if (order.status === "Lost" || isDestroyed) {
       book.status = "Destroyed";
       book.condition = book_condition;
-      if (condition_detail) book.condition_detail = condition_detail;
+      book.condition_detail = bookConditionDetail;
       await book.save();
     } else {
       book.status = "Available";
       book.condition = book_condition;
-      if (condition_detail) book.condition_detail = condition_detail;
+      book.condition_detail = bookConditionDetail;
       await book.save();
       const bookSet = await BookSet.findById(book.bookSet_id);
       console.log(book);
@@ -1070,14 +1268,14 @@ async function returnOrder(req, res, next) {
 
     order.status = "Returned";
     order.returnDate = new Date(returnDate);
-    if (condition_detail) order.book_condition_detail = condition_detail;
+    order.book_condition_detail = bookConditionDetail;
 
     await order.save();
 
     const notification = new Notification({
       userId: userId,
       type: "Returned",
-      message: `Bạn đã trả sách ${bookSet.title} thành công với mã định danh #${order.book_id.identifier_code} vào ngày ${order.returnDate}. Tình trạng sách: ${condition_detail}. Cảm ơn bạn!`,
+      message: `Bạn đã trả sách ${bookSet.title} thành công với mã định danh #${order.book_id.identifier_code} vào ngày ${order.returnDate}. Tình trạng sách: ${bookConditionDetail}. Cảm ơn bạn!`,
     });
 
     await notification.save();
@@ -1111,8 +1309,8 @@ async function returnOrder(req, res, next) {
       from: '"Thông Báo Thư Viện" <titi2024hd@gmail.com>',
       to: userEmail,
       subject: "Xác Nhận Trả Sách",
-      text: `Xin chào, bạn đã trả sách ${bookSet.title} thành công với mã định danh #${order.book_id.identifier_code} vào ngày ${order.returnDate}. Tình trạng sách: ${condition_detail}. ${fineDetailsFormatted}`,
-      html: `<b>Xin chào</b>, bạn đã trả sách ${bookSet.title} thành công với mã định danh <strong>#${order.book_id.identifier_code}</strong> vào ngày ${order.returnDate}.<br>Tình trạng sách: <strong>${condition_detail}</strong>.<br>${fineDetailsFormatted}<br><br>Cảm ơn bạn!`,
+      text: `Xin chào, bạn đã trả sách ${bookSet.title} thành công với mã định danh #${order.book_id.identifier_code} vào ngày ${order.returnDate}. Tình trạng sách: ${bookConditionDetail}. ${fineDetailsFormatted}`,
+      html: `<b>Xin chào</b>, bạn đã trả sách ${bookSet.title} thành công với mã định danh <strong>#${order.book_id.identifier_code}</strong> vào ngày ${order.returnDate}.<br>Tình trạng sách: <strong>${bookConditionDetail}</strong>.<br>${fineDetailsFormatted}<br><br>Cảm ơn bạn!`,
     });
 
     console.log(
@@ -1670,5 +1868,6 @@ const OrderController = {
   reminderDueDatesOrder,
   reminderOverdueOrder,
   ChartOrderbyMonth,
+  createBorrowOrderByLibrarian,
 };
 module.exports = OrderController;

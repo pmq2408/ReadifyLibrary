@@ -1,0 +1,184 @@
+.borrow-onbehalf-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.borrow-onbehalf-card {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.borrow-onbehalf-card .ant-card-head {
+  background-color: #1890ff;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.borrow-onbehalf-card .ant-card-head-title {
+  color: white;
+  font-size: 1.25rem;
+  padding: 12px 0;
+}
+
+.student-info,
+.book-info {
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #e8e8e8;
+}
+
+.student-info h3,
+.book-info h3 {
+  color: #1890ff;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.student-info p,
+.book-info p {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.student-info strong,
+.book-info strong {
+  color: #262626;
+  margin-right: 0.5rem;
+  min-width: 100px;
+  display: inline-block;
+}
+
+/* Form styling */
+.ant-form-item-label > label {
+  font-weight: 500;
+  color: #262626;
+}
+
+.ant-input-search-button {
+  height: 40px;
+}
+
+.ant-input-search .ant-input {
+  height: 40px;
+}
+
+.ant-picker {
+  height: 40px;
+}
+
+.ant-btn {
+  height: 40px;
+  font-weight: 500;
+}
+
+.ant-auto-complete {
+  width: 100%;
+}
+
+/* Hover effects */
+.borrow-onbehalf-card:hover {
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+/* Loading states */
+.ant-btn-loading {
+  opacity: 0.8;
+}
+
+/* Responsive design */
+@media (max-width: 576px) {
+  .borrow-onbehalf-container {
+    margin: 1rem auto;
+  }
+
+  .student-info strong,
+  .book-info strong {
+    min-width: 80px;
+  }
+
+  .ant-form-item {
+    margin-bottom: 16px;
+  }
+}
+
+/* Animation for info boxes */
+.student-info,
+.book-info {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom scrollbar */
+.borrow-onbehalf-card {
+  scrollbar-width: thin;
+  scrollbar-color: #1890ff #f0f0f0;
+}
+
+.borrow-onbehalf-card::-webkit-scrollbar {
+  width: 6px;
+}
+
+.borrow-onbehalf-card::-webkit-scrollbar-track {
+  background: #f0f0f0;
+}
+
+.borrow-onbehalf-card::-webkit-scrollbar-thumb {
+  background-color: #1890ff;
+  border-radius: 3px;
+}
+
+/* AutoComplete dropdown styling */
+.ant-select-dropdown {
+  border-radius: 6px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.ant-select-item {
+  padding: 8px 12px;
+}
+
+.ant-select-item-option-active {
+  background-color: #e6f7ff;
+}
+
+.ant-select-item-option-selected {
+  background-color: #1890ff;
+  color: white;
+}
+
+/* Error state styling */
+.ant-form-item-explain-error {
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+/* Success message styling */
+.ant-message-success {
+  background-color: #f6ffed;
+  border: 1px solid #b7eb8f;
+  padding: 8px 16px;
+  border-radius: 4px;
+}
+
+/* Error message styling */
+.ant-message-error {
+  background-color: #fff2f0;
+  border: 1px solid #ffccc7;
+  padding: 8px 16px;
+  border-radius: 4px;
+}
