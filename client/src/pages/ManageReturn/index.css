@@ -1,0 +1,38 @@
+.manage-return-container {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .search-section {
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .search-input {
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    padding: 0 10px;
+  }
+  
+  .search-button {
+    margin-left: 10px;
+  }
+  
+  .table {
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  .table th,
+  .table td {
+    vertical-align: middle;
+  }
+  
+  .pagination {
+    margin-top: 20px;
+  }
