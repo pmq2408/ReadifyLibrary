@@ -15,50 +15,125 @@ import { FcStatistics } from "react-icons/fc";
 
 function Footer() {
   return (
-    <>
-      <hr style={{ height: "5px" }} />
-      <footer className="footer d-flex justify-content-around pt-2" >
-        <div>
-          <p><strong>FPT UNIVERSITY LIBRARY</strong></p>
-          <p><FaLocationArrow /> <span></span>
-            Phòng 107 tòa nhà Delta, Trường Đại học FPT, Khu CNC Hòa Lạc,</p>
-          <span className="ms-3">Km29 Đại Lộ Thăng Long, Thạch Thất, Hà Nội</span>
-          <p className="mt-2"><MdEmail /> <span></span>
-            thuvien_fu_hoalac@fpt.edu.vn
-          </p>
-          <p><FaPhoneAlt />
-            <span></span> 02466 805 912
-          </p>
-        </div>
-        <div>
-          <h5>FOLLOW US</h5>
-          <div className="d-flex justify-content-around fs-4">
-            <p><FaFacebook />
-            </p>
-            <p><FaYoutube /></p>
-            <p><FaTwitter /></p>
+    <footer className="footer py-4 mt-5">
+      <div className="container">
+        <div className="row">
+          <div className="col-lg-4 mb-4 mb-lg-0">
+            <h4 className="footer-title">FPT UNIVERSITY LIBRARY</h4>
+            <ul className="footer-contact">
+              <li>
+                <FaLocationArrow className="footer-icon" />
+                <div>
+                  <p className="mb-0">
+                    Phòng 107 tòa nhà Delta, Trường Đại học FPT,
+                  </p>
+                  <p className="mb-0">
+                    Khu CNC Hòa Lạc, Km29 Đại Lộ Thăng Long,
+                  </p>
+                  <p className="mb-0">Thạch Thất, Hà Nội</p>
+                </div>
+              </li>
+              <li>
+                <MdEmail className="footer-icon" />
+                <p className="mb-0">thuvien_fu_hoalac@fpt.edu.vn</p>
+              </li>
+              <li>
+                <FaPhoneAlt className="footer-icon" />
+                <p className="mb-0">02466 805 912</p>
+              </li>
+            </ul>
           </div>
 
-        </div>
-        <div>
-          <h5>WEBSITE ACCESS STATISTICS
-          </h5>
-          <p><FaSmile /> Online: 309
-          </p>
-          <p><FaUser /> Today: 13305
-          </p>
-          <p><FaCalendarDays /> Yesterday: 21546
-          </p>
-          <p><MdCalendarMonth /> This month: 166963
-          </p>
-          <p><MdCalendarMonth /> Last month: 329623
-          </p>
-          <p><FcStatistics /> All: 7221262
-          </p>
-        </div>
-      </footer>
-    </>
+          <div className="col-lg-4 mb-4 mb-lg-0">
+            <h4 className="footer-title">FOLLOW US</h4>
+            <div className="social-icons">
+              <a
+                href="https://www.facebook.com/FPTU.HCM"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="social-icon"
+              >
+                <FaFacebook />
+              </a>
+              <a
+                href="https://www.youtube.com/channel/UCfNrlxNgcTZDJ3jZeSSSJxg"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="social-icon"
+              >
+                <FaYoutube />
+              </a>
+              <a
+                href="https://twitter.com/fptu_hcm"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="social-icon"
+              >
+                <FaTwitter />
+              </a>
+            </div>
 
+            <div className="mt-4">
+              <h5 className="footer-subtitle">OPENING HOURS</h5>
+              <p className="mb-1">
+                <strong>Weekdays:</strong> 08:15 - 21:00
+              </p>
+              <p className="mb-1">
+                <strong>Weekend:</strong> 08:00 - 12:00 & 13:00 - 17:00
+              </p>
+            </div>
+          </div>
+
+          <div className="col-lg-4">
+            <h4 className="footer-title">WEBSITE STATISTICS</h4>
+            <div className="stats-container">
+              <div className="stat-item">
+                <FaSmile className="stat-icon" />
+                <div>
+                  <p className="stat-label">Online</p>
+                  <p className="stat-value">309</p>
+                </div>
+              </div>
+              <div className="stat-item">
+                <FaUser className="stat-icon" />
+                <div>
+                  <p className="stat-label">Today</p>
+                  <p className="stat-value">13,305</p>
+                </div>
+              </div>
+              <div className="stat-item">
+                <FaCalendarDays className="stat-icon" />
+                <div>
+                  <p className="stat-label">Yesterday</p>
+                  <p className="stat-value">21,546</p>
+                </div>
+              </div>
+              <div className="stat-item">
+                <MdCalendarMonth className="stat-icon" />
+                <div>
+                  <p className="stat-label">This month</p>
+                  <p className="stat-value">166,963</p>
+                </div>
+              </div>
+              <div className="stat-item">
+                <FcStatistics className="stat-icon" />
+                <div>
+                  <p className="stat-label">All time</p>
+                  <p className="stat-value">7,221,262</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="footer-bottom mt-4 pt-3">
+          <p className="text-center mb-0">
+            © {new Date().getFullYear()} FPT University Library. All rights
+            reserved.
+          </p>
+        </div>
+      </div>
+    </footer>
   );
 }
 

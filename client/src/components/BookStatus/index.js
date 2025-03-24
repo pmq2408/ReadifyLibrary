@@ -6,14 +6,31 @@ import "react-toastify/dist/ReactToastify.css";
 function BookStatus({ bookID, onPreviousStep }) {
   const [bookData, setBookData] = useState({});
   const [fineData, setFineData] = useState({ fine_reason: "" });
-  const [returnDate, setReturnDate] = useState(new Date().toISOString().split("T")[0]);
-  const [bookCondition, setBookCondition] = useState("Good");
+  const [selectedCondition, setSelectedCondition] = useState("Good");
+  const [conditionDetails, setConditionDetails] = useState("");
+
+  // Hàm lấy ngày hiện tại theo múi giờ địa phương
+  const getToday = () => {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const [returnDate, setReturnDate] = useState(getToday());
 
   useEffect(() => {
     axios
       .get(`http://localhost:9999/api/orders/by-order/${bookID}`)
       .then((response) => {
-        const { book_id: book, borrowDate, dueDate, created_by, updated_by } = response.data.data;
+        const {
+          book_id: book,
+          borrowDate,
+          dueDate,
+          created_by,
+          updated_by,
+        } = response.data.data;
         setBookData({ book, borrowDate, dueDate, created_by, updated_by });
       })
       .catch((error) => {
@@ -33,12 +50,15 @@ function BookStatus({ bookID, onPreviousStep }) {
       returnDate: new Date(returnDate).toISOString(),
       createBy: bookData.created_by?._id || "",
       updateBy: bookData.updated_by?._id || "",
-      book_condition: bookCondition,
+      book_condition: selectedCondition,
       fine_reason: fineData.fine_reason,
     };
 
     try {
-      const response = await axios.post(`http://localhost:9999/api/orders/return/${bookID}`, payload);
+      const response = await axios.post(
+        `http://localhost:9999/api/orders/return/${bookID}`,
+        payload
+      );
 
       if (response.status === 200) {
         toast.success("Book return confirmed successfully!");
@@ -54,7 +74,6 @@ function BookStatus({ bookID, onPreviousStep }) {
 
   return (
     <div className="container mt-4">
-       
       <button className="btn btn-primary mb-3" onClick={onPreviousStep}>
         Previous Step
       </button>
@@ -81,7 +100,11 @@ function BookStatus({ bookID, onPreviousStep }) {
               type="text"
               id="borrowDate"
               className="form-control"
-              value={bookData.borrowDate ? new Date(bookData.borrowDate).toLocaleDateString("en-GB") : ""}
+              value={
+                bookData.borrowDate
+                  ? new Date(bookData.borrowDate).toLocaleDateString("en-GB")
+                  : ""
+              }
               readOnly
             />
           </div>
@@ -91,7 +114,11 @@ function BookStatus({ bookID, onPreviousStep }) {
               type="text"
               id="bookReturnDate"
               className="form-control"
-              value={bookData.dueDate ? new Date(bookData.dueDate).toLocaleDateString("en-GB") : ""}
+              value={
+                bookData.dueDate
+                  ? new Date(bookData.dueDate).toLocaleDateString("en-GB")
+                  : ""
+              }
               readOnly
             />
           </div>
@@ -115,8 +142,8 @@ function BookStatus({ bookID, onPreviousStep }) {
             <select
               id="bookStatus"
               className="form-control"
-              value={bookCondition}
-              onChange={(e) => setBookCondition(e.target.value)}
+              value={selectedCondition}
+              onChange={(e) => setSelectedCondition(e.target.value)}
               required
             >
               <option value="Good">Good</option>

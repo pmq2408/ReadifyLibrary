@@ -1,0 +1,91 @@
+.manage-order-container {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .header {
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .search-input {
+    width: 300px;
+    height: 40px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    padding: 0 10px;
+  }
+  
+  .search-button {
+    margin-left: 10px;
+  }
+  
+  .status-select {
+    width: 200px;
+  }
+  
+  .approve-button,
+  .reject-button,
+  .receive-button,
+  .renew-button {
+    margin-right: 10px;
+  }
+  
+  .table {
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  .table th,
+  .table td {
+    vertical-align: middle;
+  }
+  
+  .book-title {
+    word-break: break-word;
+    max-width: 18ch;
+  }
+  
+  .status-label {
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: #fff;
+  }
+  
+  .status-label.pending {
+    background-color: #ffc107;
+  }
+  
+  .status-label.approved {
+    background-color: #28a745;
+  }
+  
+  .status-label.rejected {
+    background-color: #dc3545;
+  }
+  
+  .status-label.received {
+    background-color: #17a2b8;
+  }
+  
+  .status-label.canceled,
+  .status-label.returned,
+  .status-label.overdue,
+  .status-label.lost,
+  .status-label.renew-pending {
+    background-color: #6c757d;
+  }
+  
+  .action-buttons {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .pagination {
+    margin-top: 20px;
+  }
