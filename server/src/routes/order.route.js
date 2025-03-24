@@ -21,6 +21,10 @@ orderRouter.get(
 );
 
 orderRouter.post("/create-borrow/:bookId", orderController.createBorrowOrder);
+orderRouter.post(
+  "/librarian-borrow/:bookId",
+  orderController.createBorrowOrderByLibrarian
+);
 
 orderRouter.put("/change-status/:orderId", orderController.changeOrderStatus);
 

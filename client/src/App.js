@@ -6,6 +6,7 @@ import AuthContext, {
   isTokenExpired,
 } from "./contexts/UserContext";
 import "font-awesome/css/font-awesome.min.css";
+import "antd/dist/reset.css";
 import { ToastContainer } from "react-toastify";
 
 // Import các trang
@@ -13,6 +14,7 @@ import LoginPage from "./pages/Login";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import Sidebar from "./components/SideBar/index";
+import BorrowOnBehalf from "./components/BorrowOnBehalf/BorrowOnBehalf";
 
 import AdvancedSearch from "./pages/AdvancedSearch";
 import HomePage from "./pages/Home";
@@ -237,6 +239,14 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
+                <Route
+                  path="/borrow-onbehalf"
+                  element={
+                    <ProtectedRoute roles={["librarian"]}>
+                      <BorrowOnBehalf />
+                    </ProtectedRoute>
+                  }
+                />
 
                 {/* Admin Routes */}
                 <Route
@@ -354,22 +364,32 @@ const ProtectedRoute = ({ roles, children }) => {
     librarian: [
       { path: "/", label: "Trang chủ", icon: "fa fa-home" },
       {
-        path: "/manage-order",
-        label: "Quản lý mượn sách",
-        icon: "fa fa-tasks",
+        path: "/advanced-search",
+        label: "Tìm kiếm nâng cao",
+        icon: "fa fa-search",
       },
-      { path: "/manage-return", label: "Quản lý trả sách", icon: "fa fa-undo" },
+      { path: "/manage-order", label: "Quản lý mượn sách", icon: "fa fa-book" },
+      {
+        path: "/borrow-onbehalf",
+        label: "Mượn hộ sinh viên",
+        icon: "fa fa-user-plus",
+      },
+      {
+        path: "/manage-return",
+        label: "Quản lý trả sách",
+        icon: "fa fa-refresh",
+      },
       {
         path: "/list-news-admin",
         label: "Quản lý tin tức",
         icon: "fa fa-newspaper-o",
       },
-      { path: "/chart", label: "Thống kê", icon: "fa fa-bar-chart" },
       {
         path: "/list-fines",
         label: "Danh sách tiền phạt",
         icon: "fa fa-money",
       },
+      { path: "/chart", label: "Thống kê", icon: "fa fa-bar-chart" },
     ],
     admin: [
       { path: "/", label: "Trang chủ", icon: "fa fa-home" },
