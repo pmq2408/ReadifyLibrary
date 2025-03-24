@@ -1,47 +1,241 @@
+/* Container styles */
 .list-news-container {
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Header section */
+.header {
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.create-news-button {
+  background-color: #1890ff;
+  border: none;
+  padding: 0.8rem 1.2rem;
+  border-radius: 8px;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.create-news-button:hover {
+  background-color: #40a9ff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Table styles */
+.table {
+  background-color: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+  margin-bottom: 1.5rem;
+}
+
+.table th {
+  background-color: #fafafa;
+  font-weight: 600;
+  padding: 1rem;
+  border-bottom: 2px solid #f0f0f0;
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 1rem;
+  border-bottom: 1px solid #f0f0f0;
+  vertical-align: middle;
+}
+
+.table tr:hover {
+  background-color: #fafafa;
+}
+
+/* News thumbnail */
+.news-thumbnail {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 6px;
+  transition: transform 0.3s ease;
+}
+
+.news-thumbnail:hover {
+  transform: scale(1.05);
+}
+
+/* Content preview */
+.content-preview {
+  max-height: 100px;
+  overflow: hidden;
+  color: #666;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* Action buttons */
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.btn i {
+  font-size: 1rem;
+}
+
+.btn-success {
+  background-color: #52c41a;
+}
+
+.btn-success:hover {
+  background-color: #73d13d;
+}
+
+.btn-primary {
+  background-color: #1890ff;
+}
+
+.btn-primary:hover {
+  background-color: #40a9ff;
+}
+
+.btn-danger {
+  background-color: #ff4d4f;
+}
+
+.btn-danger:hover {
+  background-color: #ff7875;
+}
+
+/* Pagination */
+.pagination {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.page-link {
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  color: #1890ff;
+  border: 1px solid #d9d9d9;
+  transition: all 0.3s ease;
+}
+
+.page-item.active .page-link {
+  background-color: #1890ff;
+  border-color: #1890ff;
+}
+
+.page-link:hover {
+  background-color: #f0f0f0;
+}
+
+/* Modal styles */
+.modal-content {
+  border-radius: 10px;
+  border: none;
+}
+
+.modal-header {
+  background-color: #fafafa;
+  border-bottom: 1px solid #f0f0f0;
+  padding: 1rem 1.5rem;
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-footer {
+  border-top: 1px solid #f0f0f0;
+  padding: 1rem 1.5rem;
+}
+
+/* Alert messages */
+.alert {
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+  border: none;
+}
+
+.alert-success {
+  background-color: #f6ffed;
+  border: 1px solid #b7eb8f;
+  color: #52c41a;
+}
+
+.alert-danger {
+  background-color: #fff2f0;
+  border: 1px solid #ffccc7;
+  color: #ff4d4f;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .list-news-container {
+    padding: 1rem;
   }
-  
+
   .header {
-    background-color: #fff;
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    flex-direction: column;
+    gap: 1rem;
   }
-  
-  .create-news-button {
-    background-color: #cc99ff;
-    border-color: #cc99ff;
-  }
-  
+
   .table {
-    background-color: #fff;
-    border-radius: 10px;
-    overflow: hidden;
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
   }
-  
-  .table th,
-  .table td {
-    vertical-align: middle;
-  }
-  
+
   .news-thumbnail {
-    width: 120px;
-    height: 120px;
+    width: 80px;
+    height: 80px;
   }
-  
-  .action-button {
-    margin-right: 10px;
+
+  .action-buttons {
+    flex-wrap: wrap;
   }
-  
-  .action-button i {
-    visibility: visible;
+
+  .btn {
+    padding: 0.4rem 0.8rem;
   }
-  
-  .pagination {
-    margin-top: 20px;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
   }
-  
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.list-news-container {
+  animation: fadeIn 0.3s ease;
+}
