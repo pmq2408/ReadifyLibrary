@@ -1,43 +1,206 @@
+/* Container styles */
 .list-fines-container {
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: #f8f9fa;
+  min-height: calc(100vh - 4rem);
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Search section styles */
+.search-section {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+  border: 1px solid #e9ecef;
+}
+
+.search-input {
+  height: 45px;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+
+.search-button {
+  height: 45px;
+  border-radius: 8px;
+  background-color: #3498db;
+  border: none;
+  padding: 0 1.5rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.search-button:hover {
+  background-color: #2980b9;
+  transform: translateY(-1px);
+}
+
+.status-select {
+  height: 45px;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.status-select:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+
+/* Table styles */
+.fines-table {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+}
+
+.fines-table thead {
+  background-color: #f8f9fa;
+}
+
+.fines-table th {
+  padding: 1rem;
+  font-weight: 600;
+  color: #2c3e50;
+  border-bottom: 2px solid #e9ecef;
+  white-space: nowrap;
+}
+
+.fines-table td {
+  padding: 1rem;
+  color: #495057;
+  border-bottom: 1px solid #e9ecef;
+  vertical-align: middle;
+}
+
+.fines-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* Status badges */
+.status-badge {
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  display: inline-block;
+}
+
+.status-pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-paid {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-overdue {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* Pagination styles */
+.pagination {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.page-item .page-link {
+  border-radius: 8px;
+  border: none;
+  padding: 0.5rem 1rem;
+  color: #2c3e50;
+  transition: all 0.3s ease;
+}
+
+.page-item.active .page-link {
+  background-color: #3498db;
+  color: white;
+}
+
+.page-item:not(.active) .page-link:hover {
+  background-color: #e9ecef;
+  color: #2c3e50;
+  transform: translateY(-1px);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .list-fines-container {
+    padding: 1rem;
   }
-  
+
   .search-section {
-    background-color: #fff;
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
   }
-  
-  .search-input {
-    border-radius: 10px;
-    border: 1px solid #ccc;
-    padding: 0 10px;
-    margin-right: 10px;
-  }
-  
-  .search-button {
-    margin-left: 10px;
-  }
-  
+
+  .search-input,
   .status-select {
-    width: 100%;
+    margin-bottom: 1rem;
   }
-  
+
   .fines-table {
-    background-color: #fff;
-    border-radius: 10px;
-    overflow: hidden;
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
   }
-  
-  .fines-table th,
-  .fines-table td {
-    vertical-align: middle;
-  }
-  
+
   .pagination {
-    margin-top: 20px;
+    justify-content: center;
+    margin-top: 1rem;
   }
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
