@@ -138,7 +138,7 @@ function Chart() {
   ];
 
   return (
-    <div className="container fade-in">
+    <div className="containerChart fade-in">
       <h1 className="chart-header">📊 Thống kê dữ liệu</h1>
 
       <div className="tab-navigation">
