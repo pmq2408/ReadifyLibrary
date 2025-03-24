@@ -1,91 +1,272 @@
+/* Container styles */
 .manage-order-container {
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Header section */
+.header {
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* Search section */
+.search-bar {
+  flex: 1;
+  min-width: 300px;
+  max-width: 500px;
+}
+
+.search-input {
+  width: 100%;
+  height: 42px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  padding: 0 1rem;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  background-color: #f8f9fa;
+}
+
+.search-input:focus {
+  border-color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
+  background-color: #fff;
+}
+
+.search-button {
+  margin-left: 0.5rem;
+  height: 42px;
+  min-width: 42px;
+  border-radius: 8px;
+  background-color: #1890ff;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.search-button:hover {
+  background-color: #40a9ff;
+  transform: translateY(-1px);
+}
+
+/* Filter section */
+.filter {
+  min-width: 200px;
+}
+
+.status-select {
+  width: 100%;
+  height: 42px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  padding: 0 1rem;
+  background-color: #fff;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.status-select:focus {
+  border-color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
+}
+
+/* Table styles */
+.table {
+  background-color: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+  margin-bottom: 1.5rem;
+}
+
+.table th {
+  background-color: #fafafa;
+  font-weight: 600;
+  padding: 1rem;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.table td {
+  padding: 1rem;
+  border-bottom: 1px solid #f0f0f0;
+  vertical-align: middle;
+}
+
+.table tr:hover {
+  background-color: #fafafa;
+}
+
+.book-title {
+  word-break: break-word;
+  max-width: 250px;
+  font-weight: 500;
+  color: #1890ff;
+}
+
+/* Status labels */
+.status-label {
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: inline-block;
+  min-width: 100px;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.status-label.pending {
+  background-color: #faad14;
+}
+
+.status-label.approved {
+  background-color: #52c41a;
+}
+
+.status-label.rejected {
+  background-color: #ff4d4f;
+}
+
+.status-label.received {
+  background-color: #13c2c2;
+}
+
+.status-label.canceled {
+  background-color: #8c8c8c;
+}
+
+.status-label.returned {
+  background-color: #722ed1;
+}
+
+.status-label.overdue {
+  background-color: #eb2f96;
+}
+
+.status-label.lost {
+  background-color: #595959;
+}
+
+.status-label.renew-pending {
+  background-color: #1890ff;
+}
+
+/* Action buttons */
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.action-buttons button {
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.approve-button {
+  background-color: #52c41a;
+  border-color: #52c41a;
+}
+
+.reject-button {
+  background-color: #ff4d4f;
+  border-color: #ff4d4f;
+}
+
+.receive-button {
+  background-color: #13c2c2;
+  border-color: #13c2c2;
+}
+
+.renew-button {
+  background-color: #1890ff;
+  border-color: #1890ff;
+}
+
+/* Pagination */
+.pagination {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.pagination .page-item .page-link {
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  color: #1890ff;
+  border: 1px solid #d9d9d9;
+  transition: all 0.3s ease;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #1890ff;
+  border-color: #1890ff;
+  color: #fff;
+}
+
+.pagination .page-item .page-link:hover {
+  background-color: #f0f0f0;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .manage-order-container {
+    padding: 1rem;
   }
-  
+
   .header {
-    background-color: #fff;
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    flex-direction: column;
   }
-  
-  .search-input {
-    width: 300px;
-    height: 40px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-    padding: 0 10px;
+
+  .search-bar,
+  .filter {
+    width: 100%;
+    max-width: none;
   }
-  
-  .search-button {
-    margin-left: 10px;
-  }
-  
-  .status-select {
-    width: 200px;
-  }
-  
-  .approve-button,
-  .reject-button,
-  .receive-button,
-  .renew-button {
-    margin-right: 10px;
-  }
-  
+
   .table {
-    background-color: #fff;
-    border-radius: 10px;
-    overflow: hidden;
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
   }
-  
-  .table th,
-  .table td {
-    vertical-align: middle;
-  }
-  
-  .book-title {
-    word-break: break-word;
-    max-width: 18ch;
-  }
-  
-  .status-label {
-    padding: 5px 10px;
-    border-radius: 5px;
-    color: #fff;
-  }
-  
-  .status-label.pending {
-    background-color: #ffc107;
-  }
-  
-  .status-label.approved {
-    background-color: #28a745;
-  }
-  
-  .status-label.rejected {
-    background-color: #dc3545;
-  }
-  
-  .status-label.received {
-    background-color: #17a2b8;
-  }
-  
-  .status-label.canceled,
-  .status-label.returned,
-  .status-label.overdue,
-  .status-label.lost,
-  .status-label.renew-pending {
-    background-color: #6c757d;
-  }
-  
+
   .action-buttons {
-    display: flex;
     justify-content: center;
   }
-  
-  .pagination {
-    margin-top: 20px;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.manage-order-container {
+  animation: fadeIn 0.3s ease;
+}
