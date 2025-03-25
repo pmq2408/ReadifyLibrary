@@ -85,7 +85,7 @@ function App() {
                 <Route
                   path="/news"
                   element={
-                    <ProtectedRoute roles={["borrower", "librarian"]}>
+                    <ProtectedRoute roles={["borrower", "librarian","admin"]}>
                       <NewsPage />
                     </ProtectedRoute>
                   }

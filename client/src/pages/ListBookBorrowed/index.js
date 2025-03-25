@@ -353,12 +353,12 @@ function ListBookBorrowed() {
                         ? "Mất sách"
                         : "Không xác định"}
                     </span>
-                    {order.book_id?.condition_detail &&
+                    {/* {order.book_id?.condition_detail &&
                       order.book_id.condition !== "Good" && (
                         <div className="condition-detail">
                           {order.book_id.condition_detail}
                         </div>
-                      )}
+                      )} */}
                   </td>
                   <td>{order.book_id?.identifier_code}</td>
                   <td>{order.renewalCount}</td>
