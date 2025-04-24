@@ -1,12 +1,15 @@
 .home-page {
   position: relative;
+  min-height: 100vh;
+  background-color: #fff;
 }
 
 .page-loader {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 60vh;
+  min-height: 100vh;
+  background-color: #fff;
 }
 
 /* Hero Section */
@@ -16,14 +19,15 @@
   background-size: cover;
   background-position: center;
   color: white;
-  padding: 100px 0;
-  margin-bottom: 50px;
+  padding: 80px 0;
+  margin-bottom: 40px;
   text-align: center;
 }
 
 .hero-content {
   max-width: 800px;
   margin: 0 auto;
+  padding: 0 20px;
 }
 
 .hero-title {
@@ -42,127 +46,131 @@
 .hero-search {
   max-width: 600px;
   margin: 0 auto;
-}
-
-.search-container {
-  position: relative;
-  background-color: white;
-  border-radius: 8px;
-  padding: 10px 20px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-}
-
-.search-icon {
-  position: absolute;
-  left: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #f26f21;
-  font-size: 18px;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
 }
 
 /* Features Section */
 .features-section {
-  padding: 50px 0;
+  padding: 40px 0;
   background-color: #f8f9fa;
-  margin-bottom: 50px;
+  margin-bottom: 40px;
 }
 
 .feature-card {
   background-color: white;
   border-radius: 10px;
-  padding: 30px;
+  padding: 25px;
   text-align: center;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
   height: 100%;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
 
-.feature-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-}
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
 
-.feature-icon {
-  font-size: 2.5rem;
-  color: #f26f21;
-  margin-bottom: 20px;
-}
+  .feature-icon {
+    font-size: 2rem;
+    color: #f26f21;
+    margin-bottom: 15px;
+  }
 
-.feature-card h3 {
-  font-size: 1.3rem;
-  font-weight: 600;
-  margin-bottom: 15px;
-  color: #333;
-}
+  h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #333;
+  }
 
-.feature-card p {
-  color: #6c757d;
-  font-size: 0.95rem;
+  p {
+    color: #6c757d;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0;
+  }
 }
 
 /* News Section */
 .news-section {
-  margin-bottom: 50px;
+  margin-bottom: 40px;
+  padding: 0;
+  background-color: #fff;
 }
 
 /* Content Section */
 .content-section {
-  padding: 50px 0;
+  padding: 40px 0;
   background-color: #f8f9fa;
-  margin-bottom: 50px;
+  margin-bottom: 40px;
 }
 
 .section-title {
   display: flex;
   align-items: center;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-weight: 600;
   margin-bottom: 20px;
   color: #333;
-}
 
-.section-icon {
-  color: #f26f21;
-  margin-right: 10px;
-  font-size: 1.3rem;
+  .section-icon {
+    color: #f26f21;
+    margin-right: 10px;
+    font-size: 1.2rem;
+  }
 }
 
 .video-wrapper {
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  background-color: #000;
+
+  iframe {
+    display: block;
+    width: 100%;
+    border: none;
+  }
 }
 
 .library-guide {
   padding: 20px;
   height: 100%;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
 }
 
 .guide-text {
   color: #495057;
   margin-bottom: 20px;
   line-height: 1.6;
+  font-size: 0.95rem;
 }
 
 .guide-list {
   margin-bottom: 25px;
   padding-left: 20px;
-}
+  list-style: none;
 
-.guide-list li {
-  margin-bottom: 10px;
-  color: #495057;
-  position: relative;
-  padding-left: 15px;
-}
+  li {
+    margin-bottom: 10px;
+    color: #495057;
+    position: relative;
+    padding-left: 15px;
+    font-size: 0.9rem;
 
-.guide-list li::before {
-  content: "•";
-  color: #f26f21;
-  position: absolute;
-  left: 0;
-  font-weight: bold;
+    &::before {
+      content: "•";
+      color: #f26f21;
+      position: absolute;
+      left: 0;
+      font-weight: bold;
+    }
+  }
 }
 
 .guide-button {
@@ -176,31 +184,33 @@
   background-size: cover;
   background-position: center;
   color: white;
-  padding: 80px 0;
+  padding: 60px 0;
   text-align: center;
-  margin-bottom: 50px;
+  margin-bottom: 40px;
 }
 
 .cta-content {
   max-width: 600px;
   margin: 0 auto;
-}
+  padding: 0 20px;
 
-.cta-content h2 {
-  font-size: 2rem;
-  font-weight: 600;
-  margin-bottom: 15px;
-}
+  h2 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+  }
 
-.cta-content p {
-  font-size: 1.1rem;
-  margin-bottom: 30px;
-  opacity: 0.9;
+  p {
+    font-size: 1rem;
+    margin-bottom: 25px;
+    opacity: 0.9;
+  }
 }
 
 /* Search Results Section */
 .search-results-section {
-  padding: 30px 0;
+  padding: 40px 0;
+  background-color: #fff;
 }
 
 .search-results-header {
@@ -210,13 +220,13 @@
   margin-bottom: 20px;
   padding-bottom: 15px;
   border-bottom: 1px solid #e0e0e0;
-}
 
-.search-results-header h2 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #333;
-  margin: 0;
+  h2 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+  }
 }
 
 .clear-search-btn {
@@ -228,36 +238,35 @@
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.3s ease;
-}
 
-.clear-search-btn:hover {
-  background-color: #f26f21;
-  color: white;
+  &:hover {
+    background-color: #f26f21;
+    color: white;
+  }
 }
 
 /* Responsive Styles */
 @media (max-width: 992px) {
   .hero-section {
-    padding: 80px 0;
+    padding: 60px 0;
   }
 
   .hero-title {
     font-size: 2rem;
   }
 
-  .content-section .row {
-    flex-direction: column-reverse;
+  .hero-subtitle {
+    font-size: 1.1rem;
   }
 
-  .video-container,
-  .library-guide {
-    margin-bottom: 30px;
+  .feature-card {
+    margin-bottom: 20px;
   }
 }
 
 @media (max-width: 768px) {
   .hero-section {
-    padding: 60px 0;
+    padding: 50px 0;
   }
 
   .hero-title {
@@ -268,15 +277,47 @@
     font-size: 1rem;
   }
 
-  .feature-card {
-    margin-bottom: 20px;
+  .hero-search {
+    padding: 15px;
+  }
+
+  .section-title {
+    font-size: 1.2rem;
   }
 
   .cta-section {
-    padding: 60px 0;
+    padding: 50px 0;
   }
 
-  .cta-content h2 {
-    font-size: 1.6rem;
+  .cta-content {
+    h2 {
+      font-size: 1.5rem;
+    }
+
+    p {
+      font-size: 0.9rem;
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .hero-title {
+    font-size: 1.5rem;
+  }
+
+  .feature-card {
+    padding: 20px;
+
+    .feature-icon {
+      font-size: 1.8rem;
+    }
+
+    h3 {
+      font-size: 1.1rem;
+    }
+  }
+
+  .library-guide {
+    padding: 15px;
   }
 }
