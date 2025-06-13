@@ -33,7 +33,7 @@ const CreateBookSet = () => {
     const fetchCatalogs = async () => {
       try {
         const response = await axios.get(
-          "https://readifylibrary.onrender.com/api/catalogs/list"
+          "${process.env.REACT_APP_API_URL}/catalogs/list"
         );
         setCatalogData(response.data.data);
       } catch (error) {
@@ -76,7 +76,7 @@ const CreateBookSet = () => {
 
     try {
       const response = await axios.post(
-        "https://readifylibrary.onrender.com/api/book-sets/create",
+        "${process.env.REACT_APP_API_URL}/book-sets/create",
         data,
         {
           headers: {

@@ -24,13 +24,13 @@ const UpdateAccount = () => {
       try {
         // Fetch roles
         const rolesResponse = await axios.get(
-          "https://readifylibrary.onrender.com/api/user/all-role"
+          "${process.env.REACT_APP_API_URL}/user/all-role"
         );
         setRoles(rolesResponse.data.data);
 
         // Fetch user data
         const userResponse = await axios.get(
-          `https://readifylibrary.onrender.com/api/user/get/${id}`
+          `${process.env.REACT_APP_API_URL}/user/get/${id}`
         );
         const { fullName, email, phoneNumber, role_id, image, code } =
           userResponse.data.data;
@@ -47,7 +47,7 @@ const UpdateAccount = () => {
 
         if (image) {
           setImagePreview(
-            `https://readifylibrary.onrender.com/api/user/image/${image
+            `${process.env.REACT_APP_API_URL}/user/image/${image
               .split("/")
               .pop()}`
           );
@@ -84,7 +84,7 @@ const UpdateAccount = () => {
 
     try {
       await axios.put(
-        `https://readifylibrary.onrender.com/api/user/update/${id}`,
+        `${process.env.REACT_APP_API_URL}/user/update/${id}`,
         data,
         {
           headers: { "Content-Type": "multipart/form-data" },

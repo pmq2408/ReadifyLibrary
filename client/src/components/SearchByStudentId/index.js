@@ -10,7 +10,7 @@ function SearchByStudentId({ onNextStep }) {
     if (studentId.trim()) {
       try {
         const user = await axios.get(
-          `https://readifylibrary.onrender.com/api/user/getByCode/${studentId}`
+          `${process.env.REACT_APP_API_URL}/user/getByCode/${studentId}`
         );
         const userID = user.data.data.userID;
         onNextStep(userID); // Pass userID to parent component

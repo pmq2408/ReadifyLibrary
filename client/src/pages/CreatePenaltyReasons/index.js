@@ -19,7 +19,7 @@ const CreatePenaltyReason = () => {
     e.preventDefault();
     try {
       const response = await fetch(
-        "https://readifylibrary.onrender.com/api/penalty-reasons/create",
+        "${process.env.REACT_APP_API_URL}/penalty-reasons/create",
         {
           method: "POST",
           headers: {

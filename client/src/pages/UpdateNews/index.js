@@ -16,7 +16,7 @@ function UpdateNews() {
     const fetchNewsDetail = async () => {
       try {
         const res = await axios.get(
-          `https://readifylibrary.onrender.com/api/news/get/${id}`
+          `${process.env.REACT_APP_API_URL}/news/get/${id}`
         );
         setData(res.data.data); // Assuming `data` is the nested object with news information
         setLoading(false); // Set loading to false once data is fetched
@@ -49,7 +49,7 @@ function UpdateNews() {
 
     try {
       const response = await axios.put(
-        `https://readifylibrary.onrender.com/api/news/update/${id}`,
+        `${process.env.REACT_APP_API_URL}/news/update/${id}`,
         formData,
         {
           headers: {
@@ -98,9 +98,9 @@ function UpdateNews() {
               ) : data.thumbnail ? (
                 // Show current thumbnail from data if available
                 <img
-                  src={`https://readifylibrary.onrender.com/api/news/thumbnail/${data.thumbnail
-                    .split("/")
-                    .pop()}`}
+                  src={`${
+                    process.env.REACT_APP_API_URL
+                  }/news/thumbnail/${data.thumbnail.split("/").pop()}`}
                   className="img-fluid"
                   alt={data.title}
                   style={{ width: "100%", height: "auto" }}

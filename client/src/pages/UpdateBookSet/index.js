@@ -32,7 +32,7 @@ const UpdateBookSet = () => {
     const fetchCatalogs = async () => {
       try {
         const response = await axios.get(
-          "https://readifylibrary.onrender.com/api/catalogs/list"
+          "${process.env.REACT_APP_API_URL}/catalogs/list"
         );
         setCatalogData(response.data.data);
       } catch (error) {
@@ -46,7 +46,7 @@ const UpdateBookSet = () => {
     const fetchBookSet = async () => {
       try {
         const response = await axios.get(
-          `https://readifylibrary.onrender.com/api/book-sets/${id}`
+          `${process.env.REACT_APP_API_URL}/book-sets/${id}`
         );
         const bookSetData = response.data.bookSet;
         setFormData({
@@ -67,9 +67,9 @@ const UpdateBookSet = () => {
         });
         if (bookSetData.image) {
           setImagePreview(
-            `https://readifylibrary.onrender.com/api/book-sets/image/${bookSetData.image
-              .split("/")
-              .pop()}`
+            `${
+              process.env.REACT_APP_API_URL
+            }/book-sets/image/${bookSetData.image.split("/").pop()}`
           );
         }
       } catch (error) {
@@ -102,7 +102,7 @@ const UpdateBookSet = () => {
 
     try {
       const response = await axios.put(
-        `https://readifylibrary.onrender.com/api/book-sets/update/${id}`,
+        `${process.env.REACT_APP_API_URL}/book-sets/update/${id}`,
         data,
         {
           headers: {

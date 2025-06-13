@@ -28,7 +28,7 @@ const UserProfile = () => {
 
   useEffect(() => {
     axios
-      .get(`https://readifylibrary.onrender.com/api/user/profile/${id}`)
+      .get(`${process.env.REACT_APP_API_URL}/user/profile/${id}`)
       .then((response) => {
         const userData = response.data.data;
         setProfile({

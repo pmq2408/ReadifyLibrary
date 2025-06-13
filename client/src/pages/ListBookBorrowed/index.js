@@ -37,9 +37,9 @@ function ListBookBorrowed() {
 
       try {
         const response = await axios.get(
-          `https://readifylibrary.onrender.com/api/orders/by-user/${
-            user.id
-          }?page=${currentPage + 1}&status=${statusFilter}`,
+          `${process.env.REACT_APP_API_URL}/orders/by-user/${user.id}?page=${
+            currentPage + 1
+          }&status=${statusFilter}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -79,7 +79,7 @@ function ListBookBorrowed() {
 
     try {
       await axios.put(
-        `https://readifylibrary.onrender.com/api/orders/report-lost/${selectedOrderId}`,
+        `${process.env.REACT_APP_API_URL}/orders/report-lost/${selectedOrderId}`,
         { userId: user.id, updated_by: user.id },
         {
           headers: {
@@ -90,7 +90,7 @@ function ListBookBorrowed() {
       toast.success("The book has been successfully reported as lost.");
 
       const response = await axios.get(
-        `https://readifylibrary.onrender.com/api/orders/by-user/${user.id}`,
+        `${process.env.REACT_APP_API_URL}/orders/by-user/${user.id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -107,7 +107,7 @@ function ListBookBorrowed() {
   const handleCancelOrder = async (orderId) => {
     try {
       await axios.put(
-        `https://readifylibrary.onrender.com/api/orders/change-status/${orderId}`,
+        `${process.env.REACT_APP_API_URL}/orders/change-status/${orderId}`,
         { status: "Canceled", updated_by: user.id },
         {
           headers: {

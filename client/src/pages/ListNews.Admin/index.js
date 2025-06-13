@@ -17,7 +17,7 @@ const ListNews = () => {
     const fetchNews = async () => {
       try {
         const response = await fetch(
-          "https://readifylibrary.onrender.com/api/news/list"
+          "${process.env.REACT_APP_API_URL}/news/list"
         );
         const data = await response.json();
         setNewsData(data.data);
@@ -33,7 +33,7 @@ const ListNews = () => {
   const handleDelete = async () => {
     try {
       const response = await fetch(
-        `https://readifylibrary.onrender.com/api/news/delete/${newsIdToDelete}`,
+        `${process.env.REACT_APP_API_URL}/news/delete/${newsIdToDelete}`,
         {
           method: "DELETE",
         }
@@ -136,9 +136,9 @@ const ListNews = () => {
                   <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
                   <td>
                     <img
-                      src={`https://readifylibrary.onrender.com/api/news/thumbnail/${news.thumbnail
-                        .split("/")
-                        .pop()}`}
+                      src={`${
+                        process.env.REACT_APP_API_URL
+                      }/news/thumbnail/${news.thumbnail.split("/").pop()}`}
                       className="news-thumbnail"
                       alt={news.title}
                       loading="lazy"

@@ -37,7 +37,7 @@ const AccountList = () => {
       return;
     }
     axios
-      .put(`https://readifylibrary.onrender.com/api/user/status/${id}`, {
+      .put(`${process.env.REACT_APP_API_URL}/user/status/${id}`, {
         isActive,
       })
       .then(() => {
@@ -61,7 +61,7 @@ const AccountList = () => {
   };
 
   useEffect(() => {
-    Axios.get("https://readifylibrary.onrender.com/api/user/getAll")
+    Axios.get("${process.env.REACT_APP_API_URL}/user/getAll")
       .then((response) => {
         const sortedData = response.data.data.sort((a, b) => {
           return new Date(b.createdAt) - new Date(a.createdAt);
@@ -81,7 +81,7 @@ const AccountList = () => {
     e.preventDefault();
     axios
       .get(
-        `https://readifylibrary.onrender.com/api/user/search?searchKey=${searchKey}`
+        `${process.env.REACT_APP_API_URL}/user/search?searchKey=${searchKey}`
       )
       .then((response) => {
         setAccountData(response.data.data);
@@ -97,7 +97,7 @@ const AccountList = () => {
     setSelectedRole(role);
     if (role) {
       axios
-        .get(`https://readifylibrary.onrender.com/api/user/role/${role}`)
+        .get(`${process.env.REACT_APP_API_URL}/user/role/${role}`)
         .then((response) => {
           const sortedData = response.data.data.sort((a, b) => {
             return new Date(b.createdAt) - new Date(a.createdAt);
@@ -109,7 +109,7 @@ const AccountList = () => {
           toast.error("Failed to filter by role");
         });
     } else {
-      Axios.get("https://readifylibrary.onrender.com/api/user/getAll").then(
+      Axios.get("${process.env.REACT_APP_API_URL}/user/getAll").then(
         (response) => {
           const sortedData = response.data.data.sort((a, b) => {
             return new Date(b.createdAt) - new Date(a.createdAt);
@@ -125,7 +125,7 @@ const AccountList = () => {
     setSelectedStatus(status);
     if (status) {
       axios
-        .get(`https://readifylibrary.onrender.com/api/user/active/${status}`)
+        .get(`${process.env.REACT_APP_API_URL}/user/active/${status}`)
         .then((response) => {
           const sortedData = response.data.data.sort((a, b) => {
             return new Date(b.createdAt) - new Date(a.createdAt);
@@ -137,7 +137,7 @@ const AccountList = () => {
           toast.error("Failed to filter by status");
         });
     } else {
-      Axios.get("https://readifylibrary.onrender.com/api/user/getAll").then(
+      Axios.get("${process.env.REACT_APP_API_URL}/user/getAll").then(
         (response) => {
           const sortedData = response.data.data.sort((a, b) => {
             return new Date(b.createdAt) - new Date(a.createdAt);

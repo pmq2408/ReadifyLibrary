@@ -8,7 +8,7 @@ function IdentifiBookCode({ bookID, onNextStep, onPreviousStep }) {
   // Fetch book details when `bookID` changes
   useEffect(() => {
     axios
-      .get(`https://readifylibrary.onrender.com/api/orders/by-order/${bookID}`)
+      .get(`${process.env.REACT_APP_API_URL}/orders/by-order/${bookID}`)
       .then((response) => {
         setBookDetails(response.data.data); // Lưu dữ liệu sách từ API
         console.log("Fetched book details:", response.data.data);

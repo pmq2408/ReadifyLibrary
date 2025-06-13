@@ -27,15 +27,15 @@ const BorrowBookList = () => {
       let response;
       if (identifierCode) {
         response = await axios.get(
-          `https://readifylibrary.onrender.com/api/orders/manage-by-identifier-code/${identifierCode}`
+          `${process.env.REACT_APP_API_URL}/orders/manage-by-identifier-code/${identifierCode}`
         );
       } else if (status === "") {
         response = await axios.get(
-          `https://readifylibrary.onrender.com/api/orders/getAll`
+          `${process.env.REACT_APP_API_URL}/orders/getAll`
         );
       } else {
         response = await axios.get(
-          `https://readifylibrary.onrender.com/api/orders/filter?status=${status}`
+          `${process.env.REACT_APP_API_URL}/orders/filter?status=${status}`
         );
       }
       const data = response.data.data || [];
@@ -131,13 +131,13 @@ const BorrowBookList = () => {
       }
 
       await axios.put(
-        `https://readifylibrary.onrender.com/api/orders/change-status/${selectedBook._id}`,
+        `${process.env.REACT_APP_API_URL}/orders/change-status/${selectedBook._id}`,
         updateData
       );
 
       if (modalType === "receive") {
         await axios.put(
-          `https://readifylibrary.onrender.com/api/books/update/${selectedBook.book_id._id}`,
+          `${process.env.REACT_APP_API_URL}/books/update/${selectedBook.book_id._id}`,
           {
             condition,
             condition_detail: conditionDetail,
@@ -192,7 +192,7 @@ const BorrowBookList = () => {
         updated_by: user.id,
       };
       await axios.put(
-        `https://readifylibrary.onrender.com/api/orders/approve-all`,
+        `${process.env.REACT_APP_API_URL}/orders/approve-all`,
         updateData
       );
       toast.success("Đơn đã chọn đã duyệt thành công!");

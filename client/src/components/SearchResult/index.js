@@ -46,7 +46,7 @@ function SearchResults({ books = [], setBooks }) {
     setLoading(true);
     try {
       const response = await axios.get(
-        `https://readifylibrary.onrender.com/api/book-sets/available/${bookId}`
+        `${process.env.REACT_APP_API_URL}/book-sets/available/${bookId}`
       );
       setBookSet(response.data.bookSet);
       setBook(response.data.availableBooks);
@@ -73,7 +73,7 @@ function SearchResults({ books = [], setBooks }) {
     try {
       const firstBook = book[0];
       const response = await axios.post(
-        `https://readifylibrary.onrender.com/api/orders/create-borrow/${firstBook._id}`,
+        `${process.env.REACT_APP_API_URL}/orders/create-borrow/${firstBook._id}`,
         {
           book_id: firstBook._id,
           userId: user.id,

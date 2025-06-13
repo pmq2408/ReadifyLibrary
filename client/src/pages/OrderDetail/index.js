@@ -15,7 +15,7 @@ const OrderDetail = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          `https://readifylibrary.onrender.com/api/orders/by-order/${orderId}`
+          `${process.env.REACT_APP_API_URL}/orders/by-order/${orderId}`
         );
         setOrder(response.data.data);
         setLoading(false);

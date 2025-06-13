@@ -21,7 +21,7 @@ function Notification() {
       setIsLoading(true);
       try {
         const response = await axios.get(
-          `https://readifylibrary.onrender.com/api/notifications/get/${user.id}`
+          `${process.env.REACT_APP_API_URL}/notifications/get/${user.id}`
         );
         const sortedNotifications = response.data.data.sort(
           (a, b) => new Date(b.date) - new Date(a.date)
@@ -30,7 +30,7 @@ function Notification() {
 
         // Mark all notifications as read
         await axios.put(
-          `https://readifylibrary.onrender.com/api/notifications/markAsRead/${user.id}`
+          `${process.env.REACT_APP_API_URL}/notifications/markAsRead/${user.id}`
         );
       } catch (error) {
         console.error("Error fetching notifications:", error);

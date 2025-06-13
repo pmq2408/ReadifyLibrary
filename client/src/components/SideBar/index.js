@@ -14,7 +14,7 @@ const Sidebar = ({ menuItems }) => {
     if (user) {
       axios
         .get(
-          `https://readifylibrary.onrender.com/api/notifications/unreadCount/${user.id}`
+          `${process.env.REACT_APP_API_URL}/notifications/unreadCount/${user.id}`
         )
         .then((response) => {
           setUnreadCount(response.data.data);

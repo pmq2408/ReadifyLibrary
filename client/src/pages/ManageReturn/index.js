@@ -66,19 +66,19 @@ function ManageReturn() {
       let response;
       if (studentCode) {
         const userData = await axios.get(
-          `https://readifylibrary.onrender.com/api/user/getByCode/${studentCode}`
+          `${process.env.REACT_APP_API_URL}/user/getByCode/${studentCode}`
         );
         const userID = userData.data.data.userID;
         response = await axios.get(
-          `https://readifylibrary.onrender.com/api/orders/by-user/${userID}`
+          `${process.env.REACT_APP_API_URL}/orders/by-user/${userID}`
         );
       } else if (identityCode) {
         response = await axios.get(
-          `https://readifylibrary.onrender.com/api/orders/by-identifier-code/${identityCode}`
+          `${process.env.REACT_APP_API_URL}/orders/by-identifier-code/${identityCode}`
         );
       } else {
         response = await axios.get(
-          `https://readifylibrary.onrender.com/api/orders/getAll`
+          `${process.env.REACT_APP_API_URL}/orders/getAll`
         );
       }
       const data = response.data.data || [];
@@ -88,7 +88,7 @@ function ManageReturn() {
       const ordersWithDetails = await Promise.all(
         formattedData.map(async (order) => {
           const detailResponse = await axios.get(
-            `https://readifylibrary.onrender.com/api/orders/by-order/${order._id}`
+            `${process.env.REACT_APP_API_URL}/orders/by-order/${order._id}`
           );
           return detailResponse.data.data;
         })
@@ -164,7 +164,7 @@ function ManageReturn() {
         try {
           // Lấy tất cả lý do phạt và tìm lý do phù hợp
           const penaltyResponse = await axios.get(
-            `https://readifylibrary.onrender.com/api/penalty-reasons/getAll`
+            `${process.env.REACT_APP_API_URL}/penalty-reasons/getAll`
           );
 
           if (penaltyResponse.data && penaltyResponse.data.data) {
@@ -233,7 +233,7 @@ function ManageReturn() {
 
         // Gọi API trả sách
         const returnResponse = await axios.post(
-          `https://readifylibrary.onrender.com/api/orders/return/${selectedBook._id}`,
+          `${process.env.REACT_APP_API_URL}/orders/return/${selectedBook._id}`,
           returnPayload
         );
 
@@ -279,7 +279,7 @@ function ManageReturn() {
                 }`;
 
           await axios.post(
-            `https://readifylibrary.onrender.com/api/notifications/create`,
+            `${process.env.REACT_APP_API_URL}/notifications/create`,
             {
               userId: selectedBook.created_by._id,
               orderId: selectedBook._id,
@@ -313,7 +313,7 @@ function ManageReturn() {
         // Nếu API trả sách tích hợp thất bại, thực hiện các bước riêng lẻ
         // 2. Cập nhật tình trạng sách
         await axios.put(
-          `https://readifylibrary.onrender.com/api/books/update/${selectedBook.book_id._id}`,
+          `${process.env.REACT_APP_API_URL}/books/update/${selectedBook.book_id._id}`,
           {
             condition: returnDetails.condition,
             condition_detail: returnDetails.condition_detail,
@@ -339,7 +339,7 @@ function ManageReturn() {
             };
 
             const fineResponse = await axios.post(
-              `https://readifylibrary.onrender.com/api/fines/create`,
+              `${process.env.REACT_APP_API_URL}/fines/create`,
               finePayload
             );
 
@@ -354,7 +354,7 @@ function ManageReturn() {
         const orderStatus =
           returnDetails.condition === "Lost" ? "Lost" : "Returned";
         await axios.put(
-          `https://readifylibrary.onrender.com/api/orders/change-status/${selectedBook._id}`,
+          `${process.env.REACT_APP_API_URL}/orders/change-status/${selectedBook._id}`,
           {
             status: orderStatus,
             updated_by: user.id,
@@ -387,7 +387,7 @@ function ManageReturn() {
               }`;
 
         await axios.post(
-          `https://readifylibrary.onrender.com/api/notifications/create`,
+          `${process.env.REACT_APP_API_URL}/notifications/create`,
           {
             userId: selectedBook.created_by._id,
             orderId: selectedBook._id,

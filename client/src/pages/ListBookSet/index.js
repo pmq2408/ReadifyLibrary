@@ -19,7 +19,7 @@ function ListBookSet() {
   // Fetch catalog data
   useEffect(() => {
     axios
-      .get("https://readifylibrary.onrender.com/api/catalogs/list")
+      .get("${process.env.REACT_APP_API_URL}/catalogs/list")
       .then((response) => {
         setCatalogData(response.data.data);
       })
@@ -30,7 +30,7 @@ function ListBookSet() {
   useEffect(() => {
     setLoading(true);
     axios
-      .get("https://readifylibrary.onrender.com/api/book-sets/list")
+      .get("${process.env.REACT_APP_API_URL}/book-sets/list")
       .then((response) => {
         const sortedData = response.data.data.sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
@@ -76,7 +76,7 @@ function ListBookSet() {
 
     try {
       await axios.delete(
-        `https://readifylibrary.onrender.com/api/book-sets/delete/${id}`
+        `${process.env.REACT_APP_API_URL}/book-sets/delete/${id}`
       );
 
       // Update both filtered and full data arrays
@@ -191,7 +191,9 @@ function ListBookSet() {
                             />
                           ) : (
                             <img
-                              src={`https://readifylibrary.onrender.com/api/book-sets/image/${bookSet.image
+                              src={`${
+                                process.env.REACT_APP_API_URL
+                              }/book-sets/image/${bookSet.image
                                 .split("/")
                                 .pop()}`}
                               alt={bookSet.title}

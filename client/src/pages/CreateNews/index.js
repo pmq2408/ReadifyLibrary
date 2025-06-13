@@ -35,7 +35,7 @@ function CreateNews() {
 
     try {
       const response = await axios.post(
-        "https://readifylibrary.onrender.com/api/news/create",
+        "${process.env.REACT_APP_API_URL}/news/create",
         formData,
         {
           headers: {

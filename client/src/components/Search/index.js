@@ -9,7 +9,7 @@ function BookSearch({ setSearchResults }) {
   const handleSubmit = async () => {
     try {
       const response = await axios.get(
-        "https://readifylibrary.onrender.com/api/book-sets/list",
+        "${process.env.REACT_APP_API_URL}/book-sets/list",
         {
           params: {
             title: bookName,

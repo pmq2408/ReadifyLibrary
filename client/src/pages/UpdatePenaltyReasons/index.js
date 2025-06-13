@@ -15,7 +15,7 @@ const UpdatePenaltyReason = () => {
     const fetchPenaltyReason = async () => {
       try {
         const response = await fetch(
-          `https://readifylibrary.onrender.com/api/penalty-reasons/get/${id}`
+          `${process.env.REACT_APP_API_URL}/penalty-reasons/get/${id}`
         );
         const data = await response.json();
         if (response.ok) {
@@ -41,7 +41,7 @@ const UpdatePenaltyReason = () => {
     e.preventDefault();
     try {
       const response = await fetch(
-        `https://readifylibrary.onrender.com/api/penalty-reasons/update/${id}`,
+        `${process.env.REACT_APP_API_URL}/penalty-reasons/update/${id}`,
         {
           method: "PUT",
           headers: {

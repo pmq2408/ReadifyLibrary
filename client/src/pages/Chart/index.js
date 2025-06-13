@@ -20,14 +20,14 @@ function Chart() {
         const [ordersRes, totalOrdersRes, finesRes, totalFinesRes, booksRes] =
           await Promise.all([
             axios.get(
-              `https://readifylibrary.onrender.com/api/orders/chart-order-by-month`
+              `${process.env.REACT_APP_API_URL}/orders/chart-order-by-month`
             ),
-            axios.get(`https://readifylibrary.onrender.com/api/orders/getAll`),
+            axios.get(`${process.env.REACT_APP_API_URL}/orders/getAll`),
             axios.get(
-              "https://readifylibrary.onrender.com/api/fines/chart-fines-by-month"
+              "${process.env.REACT_APP_API_URL}/fines/chart-fines-by-month"
             ),
-            axios.get("https://readifylibrary.onrender.com/api/fines/getAll"),
-            axios.get("https://readifylibrary.onrender.com/api/books/books"),
+            axios.get("${process.env.REACT_APP_API_URL}/fines/getAll"),
+            axios.get("${process.env.REACT_APP_API_URL}/books/books"),
           ]);
 
         setOrderData({

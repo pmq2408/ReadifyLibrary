@@ -20,7 +20,7 @@ function RenewBook() {
     const fetchOrderDetails = async () => {
       try {
         const response = await axios.get(
-          `https://readifylibrary.onrender.com/api/orders/by-order/${orderId}`
+          `${process.env.REACT_APP_API_URL}/orders/by-order/${orderId}`
         );
         setBook(response.data.data); // Assuming the order details are in data.data
         setLoading(false);
@@ -37,7 +37,7 @@ function RenewBook() {
     e.preventDefault();
     try {
       await axios.post(
-        `https://readifylibrary.onrender.com/api/orders/renew/${orderId}`,
+        `${process.env.REACT_APP_API_URL}/orders/renew/${orderId}`,
         {
           dueDate: newDueDate,
           renew_reason: renewReason,
@@ -63,7 +63,9 @@ function RenewBook() {
       <div className="row">
         <div className="col-md-4">
           <img
-            src={`https://readifylibrary.onrender.com/api/news/thumbnail/${book?.book_id?.bookSet_id?.image
+            src={`${
+              process.env.REACT_APP_API_URL
+            }/news/thumbnail/${book?.book_id?.bookSet_id?.image
               .split("/")
               .pop()}`}
             className="img-fluid"

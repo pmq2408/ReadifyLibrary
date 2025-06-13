@@ -46,7 +46,7 @@ function Fines() {
     const fetchFines = () => {
       setIsLoading(true);
       axios
-        .get(`https://readifylibrary.onrender.com/api/fines/by-user/${user.id}`)
+        .get(`${process.env.REACT_APP_API_URL}/fines/by-user/${user.id}`)
         .then((response) => {
           setFines(response.data.data);
           setIsLoading(false);
@@ -110,7 +110,7 @@ function Fines() {
 
     axios
       .post(
-        `https://readifylibrary.onrender.com/api/fines/check-payment/${transactionCode}`,
+        `${process.env.REACT_APP_API_URL}/fines/check-payment/${transactionCode}`,
         {
           fineId: selectedFines,
         }

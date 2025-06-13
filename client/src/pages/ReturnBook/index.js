@@ -45,11 +45,11 @@ function ReturnBook() {
   const handleSearchByStudentID = async () => {
     try {
       const user = await axios.get(
-        `https://readifylibrary.onrender.com/api/user/getByCode/${studentCode}`
+        `${process.env.REACT_APP_API_URL}/user/getByCode/${studentCode}`
       );
       const userID = user.data.data.userID;
       const response = await axios.get(
-        `https://readifylibrary.onrender.com/api/orders/by-user/${userID}`
+        `${process.env.REACT_APP_API_URL}/orders/by-user/${userID}`
       );
       const data = response.data.data;
       setBookList(Array.isArray(data) ? data : [data]);
@@ -63,7 +63,7 @@ function ReturnBook() {
   const handleSearchByIdentityCode = async () => {
     try {
       const response = await axios.get(
-        `https://readifylibrary.onrender.com/api/orders/by-identifier-code/${identityCode}`
+        `${process.env.REACT_APP_API_URL}/orders/by-identifier-code/${identityCode}`
       );
       setBookList(
         Array.isArray(response.data.data)
@@ -83,7 +83,7 @@ function ReturnBook() {
 
   const handleReturnBook = (bookID) => {
     axios
-      .get(`https://readifylibrary.onrender.com/api/orders/by-order/${bookID}`)
+      .get(`${process.env.REACT_APP_API_URL}/orders/by-order/${bookID}`)
       .then((response) => {
         const {
           _id,
@@ -130,7 +130,7 @@ function ReturnBook() {
     if (checkIdentityCode === bookData.book.identifier_code) {
       axios
         .post(
-          `https://readifylibrary.onrender.com/api/orders/return/${bookData._id}`,
+          `${process.env.REACT_APP_API_URL}/orders/return/${bookData._id}`,
           payload
         )
         .then((response) => {

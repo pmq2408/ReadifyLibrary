@@ -30,14 +30,14 @@ function BookDetail() {
   const fetchBookDetail = async () => {
     try {
       const response = await axios.get(
-        `https://readifylibrary.onrender.com/api/book-sets/${id}`
+        `${process.env.REACT_APP_API_URL}/book-sets/${id}`
       );
       setBookSet(response.data.bookSet);
       setBooks(response.data.books);
       const image = response.data.bookSet.image;
       if (image) {
         setImage(
-          `https://readifylibrary.onrender.com/api/book-sets/image/${image
+          `${process.env.REACT_APP_API_URL}/book-sets/image/${image
             .split("/")
             .pop()}`
         );
@@ -81,14 +81,11 @@ function BookDetail() {
 
   const handleAddNewCopy = async () => {
     try {
-      await axios.post(
-        `https://readifylibrary.onrender.com/api/book-sets/add-books`,
-        {
-          bookSet_id: id,
-          numberOfCopies: parseInt(numberOfCopies),
-          createdBy: user.id,
-        }
-      );
+      await axios.post(`${process.env.REACT_APP_API_URL}/book-sets/add-books`, {
+        bookSet_id: id,
+        numberOfCopies: parseInt(numberOfCopies),
+        createdBy: user.id,
+      });
       toast.success("Thêm sách thành công");
       await fetchBookDetail();
     } catch (error) {
@@ -99,7 +96,7 @@ function BookDetail() {
   const handleEditCopy = async (id) => {
     try {
       const response = await axios.put(
-        `https://readifylibrary.onrender.com/api/books/update/${id}`,
+        `${process.env.REACT_APP_API_URL}/books/update/${id}`,
         {
           condition: condition,
           condition_detail: conditionDetail,
@@ -128,7 +125,7 @@ function BookDetail() {
   const handleDeleteCopy = async () => {
     try {
       await axios.delete(
-        `https://readifylibrary.onrender.com/api/books/delete/${bookIdToDelete}`
+        `${process.env.REACT_APP_API_URL}/books/delete/${bookIdToDelete}`
       );
       toast.success("Xóa sách thành công");
       await fetchBookDetail();

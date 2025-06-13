@@ -8,7 +8,7 @@ function Bill({ bookID }) {
     if (bookID) {
       axios
         .get(
-          `https://readifylibrary.onrender.com/api/fines/by-order/671d21a5ae1bf265548bf8ba`
+          `${process.env.REACT_APP_API_URL}/fines/by-order/671d21a5ae1bf265548bf8ba`
         )
         .then((res) => {
           setBills(res.data);

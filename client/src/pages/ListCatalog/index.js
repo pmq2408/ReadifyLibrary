@@ -38,7 +38,7 @@ const CatalogList = () => {
     const fetchCatalogs = async () => {
       try {
         const response = await fetch(
-          "https://readifylibrary.onrender.com/api/catalogs/list"
+          "${process.env.REACT_APP_API_URL}/catalogs/list"
         );
         if (!response.ok) throw new Error("Failed to fetch catalog data");
         const data = await response.json();
@@ -101,7 +101,7 @@ const CatalogList = () => {
       formData.append("file", fileSelected);
 
       await axios.post(
-        `https://readifylibrary.onrender.com/api/book-sets/import`,
+        `${process.env.REACT_APP_API_URL}/book-sets/import`,
         formData,
         {
           headers: {
@@ -140,7 +140,7 @@ const CatalogList = () => {
   const confirmDelete = async () => {
     try {
       const response = await fetch(
-        `https://readifylibrary.onrender.com/api/catalogs/delete/${catalogToDelete}`,
+        `${process.env.REACT_APP_API_URL}/catalogs/delete/${catalogToDelete}`,
         {
           method: "DELETE",
         }
@@ -174,8 +174,8 @@ const CatalogList = () => {
   const handleSubmitCatalog = async (e) => {
     e.preventDefault();
     const endpoint = isEditMode
-      ? `https://readifylibrary.onrender.com/api/catalogs/update/${currentCatalogId}`
-      : "https://readifylibrary.onrender.com/api/catalogs/create";
+      ? `${process.env.REACT_APP_API_URL}/catalogs/update/${currentCatalogId}`
+      : "${process.env.REACT_APP_API_URL}/catalogs/create";
     const method = isEditMode ? "PUT" : "POST";
 
     try {

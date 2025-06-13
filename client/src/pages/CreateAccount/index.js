@@ -20,7 +20,7 @@ const CreateAccount = () => {
     const fetchRoles = async () => {
       try {
         const response = await axios.get(
-          "https://readifylibrary.onrender.com/api/user/all-role"
+          "${process.env.REACT_APP_API_URL}/user/all-role"
         );
         const rolesData = response.data.data;
 
@@ -59,15 +59,11 @@ const CreateAccount = () => {
     formData.append("password", password);
 
     try {
-      await axios.post(
-        "https://readifylibrary.onrender.com/api/user/add",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      await axios.post("${process.env.REACT_APP_API_URL}/user/add", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       toast.success("Account created successfully");
       setTimeout(() => {
         navigate("/account-list");

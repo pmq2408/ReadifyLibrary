@@ -14,7 +14,7 @@ const ListPenaltyReasons = () => {
     const fetchPenaltyReasons = async () => {
       try {
         const response = await fetch(
-          "https://readifylibrary.onrender.com/api/penalty-reasons/list"
+          "${process.env.REACT_APP_API_URL}/penalty-reasons/list"
         );
         const data = await response.json();
         setPenaltyReasons(data.data);
@@ -33,7 +33,7 @@ const ListPenaltyReasons = () => {
     ) {
       try {
         const response = await fetch(
-          `https://readifylibrary.onrender.com/api/penalty-reasons/delete/${id}`,
+          `${process.env.REACT_APP_API_URL}/penalty-reasons/delete/${id}`,
           {
             method: "DELETE",
           }
