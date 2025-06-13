@@ -66,18 +66,20 @@ function ManageReturn() {
       let response;
       if (studentCode) {
         const userData = await axios.get(
-          `http://localhost:9999/api/user/getByCode/${studentCode}`
+          `https://readifylibrary.onrender.com/api/user/getByCode/${studentCode}`
         );
         const userID = userData.data.data.userID;
         response = await axios.get(
-          `http://localhost:9999/api/orders/by-user/${userID}`
+          `https://readifylibrary.onrender.com/api/orders/by-user/${userID}`
         );
       } else if (identityCode) {
         response = await axios.get(
-          `http://localhost:9999/api/orders/by-identifier-code/${identityCode}`
+          `https://readifylibrary.onrender.com/api/orders/by-identifier-code/${identityCode}`
         );
       } else {
-        response = await axios.get(`http://localhost:9999/api/orders/getAll`);
+        response = await axios.get(
+          `https://readifylibrary.onrender.com/api/orders/getAll`
+        );
       }
       const data = response.data.data || [];
       const formattedData = Array.isArray(data) ? data : [data];
@@ -86,7 +88,7 @@ function ManageReturn() {
       const ordersWithDetails = await Promise.all(
         formattedData.map(async (order) => {
           const detailResponse = await axios.get(
-            `http://localhost:9999/api/orders/by-order/${order._id}`
+            `https://readifylibrary.onrender.com/api/orders/by-order/${order._id}`
           );
           return detailResponse.data.data;
         })
@@ -162,7 +164,7 @@ function ManageReturn() {
         try {
           // Lấy tất cả lý do phạt và tìm lý do phù hợp
           const penaltyResponse = await axios.get(
-            `http://localhost:9999/api/penalty-reasons/getAll`
+            `https://readifylibrary.onrender.com/api/penalty-reasons/getAll`
           );
 
           if (penaltyResponse.data && penaltyResponse.data.data) {
@@ -231,7 +233,7 @@ function ManageReturn() {
 
         // Gọi API trả sách
         const returnResponse = await axios.post(
-          `http://localhost:9999/api/orders/return/${selectedBook._id}`,
+          `https://readifylibrary.onrender.com/api/orders/return/${selectedBook._id}`,
           returnPayload
         );
 
@@ -276,17 +278,20 @@ function ManageReturn() {
                     : ""
                 }`;
 
-          await axios.post(`http://localhost:9999/api/notifications/create`, {
-            userId: selectedBook.created_by._id,
-            orderId: selectedBook._id,
-            type:
-              returnDetails.condition === "Good"
-                ? "Returned"
-                : returnDetails.condition === "Lost"
-                ? "Lost"
-                : "Fines",
-            message: notificationMessage,
-          });
+          await axios.post(
+            `https://readifylibrary.onrender.com/api/notifications/create`,
+            {
+              userId: selectedBook.created_by._id,
+              orderId: selectedBook._id,
+              type:
+                returnDetails.condition === "Good"
+                  ? "Returned"
+                  : returnDetails.condition === "Lost"
+                  ? "Lost"
+                  : "Fines",
+              message: notificationMessage,
+            }
+          );
 
           toast.success(
             returnDetails.condition === "Lost"
@@ -308,7 +313,7 @@ function ManageReturn() {
         // Nếu API trả sách tích hợp thất bại, thực hiện các bước riêng lẻ
         // 2. Cập nhật tình trạng sách
         await axios.put(
-          `http://localhost:9999/api/books/update/${selectedBook.book_id._id}`,
+          `https://readifylibrary.onrender.com/api/books/update/${selectedBook.book_id._id}`,
           {
             condition: returnDetails.condition,
             condition_detail: returnDetails.condition_detail,
@@ -334,7 +339,7 @@ function ManageReturn() {
             };
 
             const fineResponse = await axios.post(
-              `http://localhost:9999/api/fines/create`,
+              `https://readifylibrary.onrender.com/api/fines/create`,
               finePayload
             );
 
@@ -349,7 +354,7 @@ function ManageReturn() {
         const orderStatus =
           returnDetails.condition === "Lost" ? "Lost" : "Returned";
         await axios.put(
-          `http://localhost:9999/api/orders/change-status/${selectedBook._id}`,
+          `https://readifylibrary.onrender.com/api/orders/change-status/${selectedBook._id}`,
           {
             status: orderStatus,
             updated_by: user.id,
@@ -381,17 +386,20 @@ function ManageReturn() {
                   : ""
               }`;
 
-        await axios.post(`http://localhost:9999/api/notifications/create`, {
-          userId: selectedBook.created_by._id,
-          orderId: selectedBook._id,
-          type:
-            returnDetails.condition === "Good"
-              ? "Returned"
-              : returnDetails.condition === "Lost"
-              ? "Lost"
-              : "Fines",
-          message: notificationMessage,
-        });
+        await axios.post(
+          `https://readifylibrary.onrender.com/api/notifications/create`,
+          {
+            userId: selectedBook.created_by._id,
+            orderId: selectedBook._id,
+            type:
+              returnDetails.condition === "Good"
+                ? "Returned"
+                : returnDetails.condition === "Lost"
+                ? "Lost"
+                : "Fines",
+            message: notificationMessage,
+          }
+        );
 
         toast.success(
           returnDetails.condition === "Lost"

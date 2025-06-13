@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom"; // To get the orderId from the URL
 import "./RenewBook.scss"; // Import the CSS file if available
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast } from "react-toastify";
 import AuthContext from "../../contexts/UserContext";
 
 function RenewBook() {
@@ -15,12 +15,13 @@ function RenewBook() {
   const [error, setError] = useState(null);
   const navigate = useNavigate(); // Dùng để điều hướng đến trang mượn sách
 
-
   useEffect(() => {
     // Fetch order details when the component mounts
     const fetchOrderDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:9999/api/orders/by-order/${orderId}`);
+        const response = await axios.get(
+          `https://readifylibrary.onrender.com/api/orders/by-order/${orderId}`
+        );
         setBook(response.data.data); // Assuming the order details are in data.data
         setLoading(false);
       } catch (err) {
@@ -36,7 +37,7 @@ function RenewBook() {
     e.preventDefault();
     try {
       await axios.post(
-        `http://localhost:9999/api/orders/renew/${orderId}`,
+        `https://readifylibrary.onrender.com/api/orders/renew/${orderId}`,
         {
           dueDate: newDueDate,
           renew_reason: renewReason,
@@ -62,7 +63,9 @@ function RenewBook() {
       <div className="row">
         <div className="col-md-4">
           <img
-            src={`http://localhost:9999/api/news/thumbnail/${book?.book_id?.bookSet_id?.image.split("/").pop()}`}
+            src={`https://readifylibrary.onrender.com/api/news/thumbnail/${book?.book_id?.bookSet_id?.image
+              .split("/")
+              .pop()}`}
             className="img-fluid"
             style={{ width: "100%", height: "100" }}
             alt={book?.book_id?.bookSet_id?.title}
@@ -70,9 +73,18 @@ function RenewBook() {
         </div>
         <div className="col-md-8">
           <h3>{book?.book_id?.bookSet_id?.title || "Unknown Title"}</h3>
-          <p><strong>Tác giả:</strong> {book?.book_id?.bookSet_id?.author || "Unknown Author"}</p>
-          <p><strong>Ngày mượn:</strong> {new Date(book?.borrowDate).toLocaleDateString()}</p>
-          <p><strong>Ngày hết hạn:</strong> {new Date(book?.dueDate).toLocaleDateString()}</p>
+          <p>
+            <strong>Tác giả:</strong>{" "}
+            {book?.book_id?.bookSet_id?.author || "Unknown Author"}
+          </p>
+          <p>
+            <strong>Ngày mượn:</strong>{" "}
+            {new Date(book?.borrowDate).toLocaleDateString()}
+          </p>
+          <p>
+            <strong>Ngày hết hạn:</strong>{" "}
+            {new Date(book?.dueDate).toLocaleDateString()}
+          </p>
 
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
@@ -84,8 +96,7 @@ function RenewBook() {
                 className="form-control"
                 id="newDueDate"
                 value={newDueDate}
-                min={new Date(book?.dueDate).toISOString().split('T')[0]}
-                
+                min={new Date(book?.dueDate).toISOString().split("T")[0]}
                 onChange={(e) => setNewDueDate(e.target.value)}
                 required
               />

@@ -49,7 +49,7 @@ const BorrowOnBehalf = () => {
       setSearchingStudent(true);
       // Bước 1: Lấy userID từ mã sinh viên
       const userResponse = await axios.get(
-        `http://localhost:9999/api/user/getByCode/${studentCode}`,
+        `https://readifylibrary.onrender.com/api/user/getByCode/${studentCode}`,
         getAuthHeader()
       );
 
@@ -58,7 +58,7 @@ const BorrowOnBehalf = () => {
 
         // Bước 2: Lấy thông tin chi tiết của sinh viên từ userID
         const userDetailResponse = await axios.get(
-          `http://localhost:9999/api/user/get/${userID}`,
+          `https://readifylibrary.onrender.com/api/user/get/${userID}`,
           getAuthHeader()
         );
 
@@ -93,7 +93,7 @@ const BorrowOnBehalf = () => {
     try {
       setSearchingBook(true);
       const response = await axios.get(
-        `http://localhost:9999/api/books/search?searchTerm=${encodeURIComponent(
+        `https://readifylibrary.onrender.com/api/books/search?searchTerm=${encodeURIComponent(
           searchText
         )}`,
         getAuthHeader()
@@ -131,7 +131,7 @@ const BorrowOnBehalf = () => {
 
       // Gọi API mượn sách với token xác thực
       const response = await axios.post(
-        `http://localhost:9999/api/orders/librarian-borrow/${bookId}`,
+        `https://readifylibrary.onrender.com/api/orders/librarian-borrow/${bookId}`,
         {
           userId: studentInfo._id,
           borrowDate: borrowDate.format("YYYY-MM-DD"),

@@ -8,12 +8,14 @@ function BookSearch({ setSearchResults }) {
   const [bookName, setBookName] = useState("");
   const handleSubmit = async () => {
     try {
-
-      const response = await axios.get("http://localhost:9999/api/book-sets/list", {
-        params: {
-          title: bookName,
-        },
-      });
+      const response = await axios.get(
+        "https://readifylibrary.onrender.com/api/book-sets/list",
+        {
+          params: {
+            title: bookName,
+          },
+        }
+      );
       // navigate(`/search-results?title=${bookName}`);
 
       setSearchResults(response.data.data);
@@ -43,7 +45,11 @@ function BookSearch({ setSearchResults }) {
             </a>
           </div>
           <div className="row search__button">
-            <Button text="Tìm kiếm" clName="btn btn-primary" onClick={handleSubmit} />
+            <Button
+              text="Tìm kiếm"
+              clName="btn btn-primary"
+              onClick={handleSubmit}
+            />
           </div>
         </div>
       </div>

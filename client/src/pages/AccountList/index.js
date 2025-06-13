@@ -3,8 +3,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
-import 'font-awesome/css/font-awesome.min.css';
-import ReactPaginate from 'react-paginate';
+import "font-awesome/css/font-awesome.min.css";
+import ReactPaginate from "react-paginate";
 
 const AccountList = () => {
   const [accountData, setAccountData] = useState([]);
@@ -20,7 +20,10 @@ const AccountList = () => {
   // Calculate the indices for slicing the account data
   const indexOfLastAccount = currentPage * accountsPerPage;
   const indexOfFirstAccount = indexOfLastAccount - accountsPerPage;
-  const currentAccounts = accountData.slice(indexOfFirstAccount, indexOfLastAccount);
+  const currentAccounts = accountData.slice(
+    indexOfFirstAccount,
+    indexOfLastAccount
+  );
 
   const handleEdit = (id) => {
     navigate(`/account-list/update-account/${id}`);
@@ -28,13 +31,15 @@ const AccountList = () => {
   };
 
   const handleAccountStatusChange = (id, isActive) => {
-    const account = accountData.find(account => account._id === id);
+    const account = accountData.find((account) => account._id === id);
     if (account.role_id.name === "admin" && !isActive) {
       toast.error("Admin accounts cannot be deactivated");
       return;
     }
     axios
-      .put(`http://localhost:9999/api/user/status/${id}`, { isActive })
+      .put(`https://readifylibrary.onrender.com/api/user/status/${id}`, {
+        isActive,
+      })
       .then(() => {
         toast.success("Account status changed successfully");
 
@@ -56,7 +61,7 @@ const AccountList = () => {
   };
 
   useEffect(() => {
-    Axios.get("http://localhost:9999/api/user/getAll")
+    Axios.get("https://readifylibrary.onrender.com/api/user/getAll")
       .then((response) => {
         const sortedData = response.data.data.sort((a, b) => {
           return new Date(b.createdAt) - new Date(a.createdAt);
@@ -74,7 +79,10 @@ const AccountList = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    axios.get(`http://localhost:9999/api/user/search?searchKey=${searchKey}`)
+    axios
+      .get(
+        `https://readifylibrary.onrender.com/api/user/search?searchKey=${searchKey}`
+      )
       .then((response) => {
         setAccountData(response.data.data);
       })
@@ -88,7 +96,8 @@ const AccountList = () => {
     const role = e.target.value;
     setSelectedRole(role);
     if (role) {
-      axios.get(`http://localhost:9999/api/user/role/${role}`)
+      axios
+        .get(`https://readifylibrary.onrender.com/api/user/role/${role}`)
         .then((response) => {
           const sortedData = response.data.data.sort((a, b) => {
             return new Date(b.createdAt) - new Date(a.createdAt);
@@ -100,13 +109,14 @@ const AccountList = () => {
           toast.error("Failed to filter by role");
         });
     } else {
-      Axios.get("http://localhost:9999/api/user/getAll")
-        .then((response) => {
+      Axios.get("https://readifylibrary.onrender.com/api/user/getAll").then(
+        (response) => {
           const sortedData = response.data.data.sort((a, b) => {
             return new Date(b.createdAt) - new Date(a.createdAt);
           });
           setAccountData(sortedData);
-        });
+        }
+      );
     }
   };
 
@@ -114,7 +124,8 @@ const AccountList = () => {
     const status = e.target.value;
     setSelectedStatus(status);
     if (status) {
-      axios.get(`http://localhost:9999/api/user/active/${status}`)
+      axios
+        .get(`https://readifylibrary.onrender.com/api/user/active/${status}`)
         .then((response) => {
           const sortedData = response.data.data.sort((a, b) => {
             return new Date(b.createdAt) - new Date(a.createdAt);
@@ -126,13 +137,14 @@ const AccountList = () => {
           toast.error("Failed to filter by status");
         });
     } else {
-      Axios.get("http://localhost:9999/api/user/getAll")
-        .then((response) => {
+      Axios.get("https://readifylibrary.onrender.com/api/user/getAll").then(
+        (response) => {
           const sortedData = response.data.data.sort((a, b) => {
             return new Date(b.createdAt) - new Date(a.createdAt);
           });
           setAccountData(sortedData);
-        });
+        }
+      );
     }
   };
 
@@ -140,11 +152,9 @@ const AccountList = () => {
     setSearchKey(e.target.value);
   };
 
-  console.log(currentAccounts)
+  console.log(currentAccounts);
   return (
-
     <div className="container mt-4 mb-4">
-       
       <div className="row mt-4">
         <div className="col-md-4">
           <form className="d-flex" onSubmit={handleSearch}>
@@ -155,12 +165,19 @@ const AccountList = () => {
               value={searchKey}
               onChange={handleSearchInputChange}
             />
-            <button type="submit" className="btn btn-outline-primary"><i className="fa fa-search" aria-hidden="true"></i></button>
+            <button type="submit" className="btn btn-outline-primary">
+              <i className="fa fa-search" aria-hidden="true"></i>
+            </button>
           </form>
         </div>
         <div className="d-flex gap-2 col-md-8 justify-content-end">
           {/* Role Filter */}
-          <select className="form-select" style={{ width: "auto" }} value={selectedRole} onChange={handleRoleChange}>
+          <select
+            className="form-select"
+            style={{ width: "auto" }}
+            value={selectedRole}
+            onChange={handleRoleChange}
+          >
             <option value="">Lọc theo vai trò</option>
             <option value="admin">Quản trị viên</option>
             <option value="librarian">Thủ thư</option>
@@ -168,12 +185,21 @@ const AccountList = () => {
           </select>
 
           {/* Status Filter */}
-          <select className="form-select" style={{ width: "auto" }} value={selectedStatus} onChange={handleStatusChange}>
+          <select
+            className="form-select"
+            style={{ width: "auto" }}
+            value={selectedStatus}
+            onChange={handleStatusChange}
+          >
             <option value="">Lọc theo trạng thái</option>
             <option value="true">Hoạt động</option>
             <option value="false">Không hoạt động</option>
           </select>
-          <button className="btn btn-primary" title="Tạo mới" onClick={handleCreateNewAccount}>
+          <button
+            className="btn btn-primary"
+            title="Tạo mới"
+            onClick={handleCreateNewAccount}
+          >
             <i className="fa fa-plus" aria-hidden="true"></i>
             <span className="tooltip-text"> Tạo mới</span>
           </button>
@@ -192,63 +218,78 @@ const AccountList = () => {
           </tr>
         </thead>
         <tbody>
-          {currentAccounts && currentAccounts.map((account, index) => (
-            <tr key={account._id}>
-              <td>{indexOfFirstAccount + index + 1}</td>
-              <td>{account.fullName}</td>
-              <td>{account.code}</td>
-              <td>{account.email}</td>
-              <td>+84{account.phoneNumber}</td>
-              <td>{account.role_id.name === "admin" ? "Quản trị viên" : account.role_id.name === "librarian" ? "Thủ thư" : account.role_id.name === "borrower" ? "Người mượn" : ""}</td>
-              <td className="d-flex justify-content-between">
-                <button className="btn btn-warning" title="Sửa" onClick={() => handleEdit(account._id)}>
-                  <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
-                </button>
+          {currentAccounts &&
+            currentAccounts.map((account, index) => (
+              <tr key={account._id}>
+                <td>{indexOfFirstAccount + index + 1}</td>
+                <td>{account.fullName}</td>
+                <td>{account.code}</td>
+                <td>{account.email}</td>
+                <td>+84{account.phoneNumber}</td>
+                <td>
+                  {account.role_id.name === "admin"
+                    ? "Quản trị viên"
+                    : account.role_id.name === "librarian"
+                    ? "Thủ thư"
+                    : account.role_id.name === "borrower"
+                    ? "Người mượn"
+                    : ""}
+                </td>
+                <td className="d-flex justify-content-between">
+                  <button
+                    className="btn btn-warning"
+                    title="Sửa"
+                    onClick={() => handleEdit(account._id)}
+                  >
+                    <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
+                  </button>
 
-                {account.role_id.name !== "admin" && (
-                  account.isActive ? (
-                    <button
-                      className="btn btn-danger"
-                      title="Khóa"
-                      onClick={() => handleAccountStatusChange(account._id, false)}
-                    >
-                      <i className="fa fa-times" aria-hidden="true"></i>
-                    </button>
-                  ) : (
-                    <button
-                      className="btn btn-success"
-                      title="Mở khóa"
-                      onClick={() => handleAccountStatusChange(account._id, true)}
-                    >
-                      <i className="fa fa-check" aria-hidden="true"></i>
-                    </button>
-                  )
-                )}
-                
-              </td>
-            </tr>
-          ))}
+                  {account.role_id.name !== "admin" &&
+                    (account.isActive ? (
+                      <button
+                        className="btn btn-danger"
+                        title="Khóa"
+                        onClick={() =>
+                          handleAccountStatusChange(account._id, false)
+                        }
+                      >
+                        <i className="fa fa-times" aria-hidden="true"></i>
+                      </button>
+                    ) : (
+                      <button
+                        className="btn btn-success"
+                        title="Mở khóa"
+                        onClick={() =>
+                          handleAccountStatusChange(account._id, true)
+                        }
+                      >
+                        <i className="fa fa-check" aria-hidden="true"></i>
+                      </button>
+                    ))}
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
       <div className="pagination float-end mb-4">
         <ReactPaginate
-          previousLabel={'<'}
-          nextLabel={'>'}
-          breakLabel={'...'}
-          breakClassName={'break-me'}
+          previousLabel={"<"}
+          nextLabel={">"}
+          breakLabel={"..."}
+          breakClassName={"break-me"}
           pageCount={Math.ceil(accountData.length / accountsPerPage)}
           marginPagesDisplayed={2}
           pageRangeDisplayed={5}
           onPageChange={handlePageChange}
-          containerClassName={'pagination'}
-          activeClassName={'active'}
-          pageClassName={'page-item'}
-          pageLinkClassName={'page-link'}
-          previousClassName={'page-item'}
-          previousLinkClassName={'page-link'}
-          nextClassName={'page-item'}
-          nextLinkClassName={'page-link'}
-          breakLinkClassName={'page-link'}
+          containerClassName={"pagination"}
+          activeClassName={"active"}
+          pageClassName={"page-item"}
+          pageLinkClassName={"page-link"}
+          previousClassName={"page-item"}
+          previousLinkClassName={"page-link"}
+          nextClassName={"page-item"}
+          nextLinkClassName={"page-link"}
+          breakLinkClassName={"page-link"}
         />
       </div>
     </div>

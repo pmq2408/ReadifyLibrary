@@ -3,8 +3,8 @@ import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
-import AuthContext from '../../contexts/UserContext';
-import { Modal, Button, Form } from 'react-bootstrap';
+import AuthContext from "../../contexts/UserContext";
+import { Modal, Button, Form } from "react-bootstrap";
 
 function BookDetail() {
   const { user } = useContext(AuthContext);
@@ -29,12 +29,18 @@ function BookDetail() {
 
   const fetchBookDetail = async () => {
     try {
-      const response = await axios.get(`http://localhost:9999/api/book-sets/${id}`);
+      const response = await axios.get(
+        `https://readifylibrary.onrender.com/api/book-sets/${id}`
+      );
       setBookSet(response.data.bookSet);
       setBooks(response.data.books);
       const image = response.data.bookSet.image;
       if (image) {
-        setImage(`http://localhost:9999/api/book-sets/image/${image.split("/").pop()}`);
+        setImage(
+          `https://readifylibrary.onrender.com/api/book-sets/image/${image
+            .split("/")
+            .pop()}`
+        );
       }
     } catch (error) {
       console.error("Error fetching book details:", error);
@@ -49,10 +55,12 @@ function BookDetail() {
     const filterBooks = () => {
       let filtered = books;
       if (statusFilter) {
-        filtered = filtered.filter(book => book.status === statusFilter);
+        filtered = filtered.filter((book) => book.status === statusFilter);
       }
       if (conditionFilter) {
-        filtered = filtered.filter(book => book.condition === conditionFilter);
+        filtered = filtered.filter(
+          (book) => book.condition === conditionFilter
+        );
       }
       setFilteredBooks(filtered);
     };
@@ -64,7 +72,7 @@ function BookDetail() {
     if (identifierCode.trim() === "") {
       setFilteredBooks(books);
     } else {
-      const filtered = books.filter(book =>
+      const filtered = books.filter((book) =>
         book.identifier_code.includes(identifierCode)
       );
       setFilteredBooks(filtered);
@@ -73,11 +81,14 @@ function BookDetail() {
 
   const handleAddNewCopy = async () => {
     try {
-      await axios.post(`http://localhost:9999/api/book-sets/add-books`, {
-        bookSet_id: id,
-        numberOfCopies: parseInt(numberOfCopies),
-        createdBy: user.id
-      });
+      await axios.post(
+        `https://readifylibrary.onrender.com/api/book-sets/add-books`,
+        {
+          bookSet_id: id,
+          numberOfCopies: parseInt(numberOfCopies),
+          createdBy: user.id,
+        }
+      );
       toast.success("Thêm sách thành công");
       await fetchBookDetail();
     } catch (error) {
@@ -87,11 +98,14 @@ function BookDetail() {
 
   const handleEditCopy = async (id) => {
     try {
-      const response = await axios.put(`http://localhost:9999/api/books/update/${id}`, {
-        condition: condition,
-        condition_detail: conditionDetail,
-        updatedBy: user.id
-      });
+      const response = await axios.put(
+        `https://readifylibrary.onrender.com/api/books/update/${id}`,
+        {
+          condition: condition,
+          condition_detail: conditionDetail,
+          updatedBy: user.id,
+        }
+      );
       if (response.status === 200) {
         toast.success("Sửa sách thành công");
         await fetchBookDetail();
@@ -113,7 +127,9 @@ function BookDetail() {
 
   const handleDeleteCopy = async () => {
     try {
-      await axios.delete(`http://localhost:9999/api/books/delete/${bookIdToDelete}`);
+      await axios.delete(
+        `https://readifylibrary.onrender.com/api/books/delete/${bookIdToDelete}`
+      );
       toast.success("Xóa sách thành công");
       await fetchBookDetail();
     } catch (error) {
@@ -158,58 +174,101 @@ function BookDetail() {
       <ToastContainer />
       {bookSet && (
         <div className="book-detail">
-          <div className="row mt-3 book-detail-info shadow-sm p-3 mb-5 bg-body rounded" >
+          <div className="row mt-3 book-detail-info shadow-sm p-3 mb-5 bg-body rounded">
             <div className="col-md-4">
-              <img src={image} alt={bookSet.title} style={{ width: '250px', marginBottom: '10px' }} />
+              <img
+                src={image}
+                alt={bookSet.title}
+                style={{ width: "250px", marginBottom: "10px" }}
+              />
             </div>
             <div className="col-md-8 row">
               <div className="row mb-2">
-                <div className="col-md-6"><strong>Tên sách:</strong></div>
+                <div className="col-md-6">
+                  <strong>Tên sách:</strong>
+                </div>
                 <div className="col-md-6">{bookSet.title}</div>
               </div>
               <div className="row mb-2">
-                <div className="col-md-6"><strong>Tác giả:</strong></div>
+                <div className="col-md-6">
+                  <strong>Tác giả:</strong>
+                </div>
                 <div className="col-md-6">{bookSet.author}</div>
               </div>
               <div className="row mb-2">
-                <div className="col-md-6"><strong>Năm xuất bản:</strong></div>
-                <div className="col-md-6">{new Date(bookSet.publishedYear).getFullYear()}</div>
+                <div className="col-md-6">
+                  <strong>Năm xuất bản:</strong>
+                </div>
+                <div className="col-md-6">
+                  {new Date(bookSet.publishedYear).getFullYear()}
+                </div>
               </div>
               <div className="row mb-2">
-                <div className="col-md-6"><strong>Nhà xuất bản:</strong></div>
+                <div className="col-md-6">
+                  <strong>Nhà xuất bản:</strong>
+                </div>
                 <div className="col-md-6">{bookSet.publisher}</div>
               </div>
               <div className="row mb-2">
-                <div className="col-md-6"><strong>Mã ISBN:</strong></div>
+                <div className="col-md-6">
+                  <strong>Mã ISBN:</strong>
+                </div>
                 <div className="col-md-6">{bookSet.isbn}</div>
               </div>
               <div className="row mb-2">
-                <div className="col-md-6"><strong>Giá:</strong></div>
-                <div className="col-md-6">{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(bookSet.price)}</div>
+                <div className="col-md-6">
+                  <strong>Giá:</strong>
+                </div>
+                <div className="col-md-6">
+                  {new Intl.NumberFormat("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  }).format(bookSet.price)}
+                </div>
               </div>
               <div className="row mb-2">
-                <div className="col-md-6"><strong>Tổng số bản sao:</strong></div>
+                <div className="col-md-6">
+                  <strong>Tổng số bản sao:</strong>
+                </div>
                 <div className="col-md-6">{bookSet.totalCopies}</div>
               </div>
               <div className="row mb-2">
-                <div className="col-md-6"><strong>Số bản sao còn lại:</strong></div>
+                <div className="col-md-6">
+                  <strong>Số bản sao còn lại:</strong>
+                </div>
                 <div className="col-md-6">{bookSet.availableCopies}</div>
               </div>
               <div className="row mb-2">
-                <div className="col-md-6"><strong>Số bản sao đã mượn:</strong></div>
-                <div className="col-md-6">{bookSet.totalCopies - bookSet.availableCopies}</div>
+                <div className="col-md-6">
+                  <strong>Số bản sao đã mượn:</strong>
+                </div>
+                <div className="col-md-6">
+                  {bookSet.totalCopies - bookSet.availableCopies}
+                </div>
               </div>
               <div className="row mb-2">
-                <div className="col-md-6"><strong>Số bản sao tốt:</strong></div>
-                <div className="col-md-6">{books.filter(book => book.condition === 'Good').length}</div>
+                <div className="col-md-6">
+                  <strong>Số bản sao tốt:</strong>
+                </div>
+                <div className="col-md-6">
+                  {books.filter((book) => book.condition === "Good").length}
+                </div>
               </div>
               <div className="row mb-2">
-                <div className="col-md-6"><strong>Số bản sao cứng:</strong></div>
-                <div className="col-md-6">{books.filter(book => book.condition === 'Hard').length}</div>
+                <div className="col-md-6">
+                  <strong>Số bản sao cứng:</strong>
+                </div>
+                <div className="col-md-6">
+                  {books.filter((book) => book.condition === "Hard").length}
+                </div>
               </div>
               <div className="row mb-2">
-                <div className="col-md-6"><strong>Số bản sao trung bình:</strong></div>
-                <div className="col-md-6">{books.filter((book) => book.condition === "Medium").length}</div>
+                <div className="col-md-6">
+                  <strong>Số bản sao trung bình:</strong>
+                </div>
+                <div className="col-md-6">
+                  {books.filter((book) => book.condition === "Medium").length}
+                </div>
               </div>
             </div>
           </div>
@@ -219,16 +278,23 @@ function BookDetail() {
                 <h3 className="text-start">Danh sách các bản sao</h3>
               </div>
               <div className="col-md-3">
-                <select className="form-select" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+                <select
+                  className="form-select"
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                >
                   <option value="">Tất cả</option>
                   <option value="Available">Còn lại</option>
                   <option value="Borrowed">Đã mượn</option>
                   <option value="Destroyed">Đã hủy</option>
                 </select>
-
               </div>
               <div className="col-md-3">
-                <select className="form-select" value={conditionFilter} onChange={(e) => setConditionFilter(e.target.value)}>
+                <select
+                  className="form-select"
+                  value={conditionFilter}
+                  onChange={(e) => setConditionFilter(e.target.value)}
+                >
                   <option value="">Tất cả</option>
                   <option value="Good">Tốt</option>
                   <option value="Light">Hơi bị hư</option>
@@ -239,19 +305,31 @@ function BookDetail() {
               </div>
             </div>
             <div className="row mt-3 mb-3">
-              <div className="search-copy col-md-6" >
+              <div className="search-copy col-md-6">
                 <input
                   type="text"
                   placeholder="Nhập mã định danh"
                   value={identifierCode}
-                  style={{ width: '200px', padding: '5px', borderRadius: '5px', marginRight: '10px' }}
+                  style={{
+                    width: "200px",
+                    padding: "5px",
+                    borderRadius: "5px",
+                    marginRight: "10px",
+                  }}
                   onChange={(e) => setIdentifierCode(e.target.value)}
                 />
-                <button className="btn btn-primary" onClick={handleSearchCopy}>Tìm kiếm</button>
+                <button className="btn btn-primary" onClick={handleSearchCopy}>
+                  Tìm kiếm
+                </button>
               </div>
-              
+
               <div className="col-md-6">
-                <button className="btn btn-primary float-end" onClick={handleShowAddModal}>Thêm bản sao</button>
+                <button
+                  className="btn btn-primary float-end"
+                  onClick={handleShowAddModal}
+                >
+                  Thêm bản sao
+                </button>
               </div>
             </div>
             <div className="col-md-12">
@@ -272,12 +350,42 @@ function BookDetail() {
                       <tr key={book._id}>
                         <td>{indexOfFirstItem + index + 1}</td>
                         <td>{book.identifier_code}</td>
-                        <td>{book.status === "Available" ? "Còn lại" : book.status === "Borrowed" ? "Đã mượn" : book.status === "Destroyed" ? "Đã hủy" : ""}</td>
-                        <td>{book.condition === "Good" ? "Tốt" : book.condition === "Light" ? "Hơi bị hư" : book.condition === "Medium" ? "Hư hại nhẹ" : book.condition === "Hard" ? "Hư hại nặng" : book.condition === "Lost" ? "Mất" : ""}</td>
-                        <td>{book.condition_detail || 'N/A'}</td>
+                        <td>
+                          {book.status === "Available"
+                            ? "Còn lại"
+                            : book.status === "Borrowed"
+                            ? "Đã mượn"
+                            : book.status === "Destroyed"
+                            ? "Đã hủy"
+                            : ""}
+                        </td>
+                        <td>
+                          {book.condition === "Good"
+                            ? "Tốt"
+                            : book.condition === "Light"
+                            ? "Hơi bị hư"
+                            : book.condition === "Medium"
+                            ? "Hư hại nhẹ"
+                            : book.condition === "Hard"
+                            ? "Hư hại nặng"
+                            : book.condition === "Lost"
+                            ? "Mất"
+                            : ""}
+                        </td>
+                        <td>{book.condition_detail || "N/A"}</td>
                         <td className="d-flex justify-content-between">
-                          <button className="btn btn-primary" onClick={() => handleShowEditModal(book._id)}>Sửa</button>
-                          <button className="btn btn-danger" onClick={() => handleShowDeleteModal(book._id)}>Xóa</button>
+                          <button
+                            className="btn btn-primary"
+                            onClick={() => handleShowEditModal(book._id)}
+                          >
+                            Sửa
+                          </button>
+                          <button
+                            className="btn btn-danger"
+                            onClick={() => handleShowDeleteModal(book._id)}
+                          >
+                            Xóa
+                          </button>
                         </td>
                       </tr>
                     ))
@@ -292,7 +400,11 @@ function BookDetail() {
                 {[...Array(totalPages)].map((_, index) => (
                   <button
                     key={index}
-                    className={`btn ${currentPage === index + 1 ? 'btn-primary' : 'btn-secondary'}`}
+                    className={`btn ${
+                      currentPage === index + 1
+                        ? "btn-primary"
+                        : "btn-secondary"
+                    }`}
                     onClick={() => handlePageChange(index + 1)}
                   >
                     {index + 1}

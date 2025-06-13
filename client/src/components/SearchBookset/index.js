@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 
 const BookSearch = ({ onSearch }) => {
@@ -8,9 +8,12 @@ const BookSearch = ({ onSearch }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.get("http://localhost:9999/api/book-sets/list", {
-        params: { title: searchTerm },
-      });
+      const response = await axios.get(
+        "https://readifylibrary.onrender.com/api/book-sets/list",
+        {
+          params: { title: searchTerm },
+        }
+      );
       onSearch(response.data.data); // Pass results to parent component
     } catch (error) {
       console.error("Error fetching book sets:", error);
@@ -27,9 +30,11 @@ const BookSearch = ({ onSearch }) => {
             placeholder="Nhập tên sách"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            style={{marginRight: '10px'}}
+            style={{ marginRight: "10px" }}
           />
-          <button type="submit" className="btn btn-primary"><i className="fa fa-search" aria-hidden="true"></i></button>
+          <button type="submit" className="btn btn-primary">
+            <i className="fa fa-search" aria-hidden="true"></i>
+          </button>
         </div>
       </form>
     </div>

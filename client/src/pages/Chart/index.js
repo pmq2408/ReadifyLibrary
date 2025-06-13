@@ -19,11 +19,15 @@ function Chart() {
         setLoading(true);
         const [ordersRes, totalOrdersRes, finesRes, totalFinesRes, booksRes] =
           await Promise.all([
-            axios.get(`http://localhost:9999/api/orders/chart-order-by-month`),
-            axios.get(`http://localhost:9999/api/orders/getAll`),
-            axios.get("http://localhost:9999/api/fines/chart-fines-by-month"),
-            axios.get("http://localhost:9999/api/fines/getAll"),
-            axios.get("http://localhost:9999/api/books/books"),
+            axios.get(
+              `https://readifylibrary.onrender.com/api/orders/chart-order-by-month`
+            ),
+            axios.get(`https://readifylibrary.onrender.com/api/orders/getAll`),
+            axios.get(
+              "https://readifylibrary.onrender.com/api/fines/chart-fines-by-month"
+            ),
+            axios.get("https://readifylibrary.onrender.com/api/fines/getAll"),
+            axios.get("https://readifylibrary.onrender.com/api/books/books"),
           ]);
 
         setOrderData({

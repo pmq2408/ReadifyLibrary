@@ -14,7 +14,9 @@ function NewsPage() {
     // Fetch news items from the API
     const fetchNews = async () => {
       try {
-        const response = await fetch("http://localhost:9999/api/news/list");
+        const response = await fetch(
+          "https://readifylibrary.onrender.com/api/news/list"
+        );
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -43,16 +45,32 @@ function NewsPage() {
     <div className="news container my-5">
       {Array.isArray(currentItems) && currentItems.length > 0 ? (
         currentItems.map((item) => (
-          <div className="row mb-4" style={{ boxShadow: '0 0 10px 0 rgba(0, 0, 0, 0.1)' , borderRadius: '10px'}} key={item._id}>
-            <div className="col-md-3" >
+          <div
+            className="row mb-4"
+            style={{
+              boxShadow: "0 0 10px 0 rgba(0, 0, 0, 0.1)",
+              borderRadius: "10px",
+            }}
+            key={item._id}
+          >
+            <div className="col-md-3">
               <img
-                src={`http://localhost:9999/api/news/thumbnail/${item.thumbnail.split("/").pop()}`}
+                src={`https://readifylibrary.onrender.com/api/news/thumbnail/${item.thumbnail
+                  .split("/")
+                  .pop()}`}
                 className="img-fluid"
-                style={{width: '200px', height: '150px', objectFit: 'cover', borderRadius: '10px', margin: '10px', border: '1px solid #ccc'}}
+                style={{
+                  width: "200px",
+                  height: "150px",
+                  objectFit: "cover",
+                  borderRadius: "10px",
+                  margin: "10px",
+                  border: "1px solid #ccc",
+                }}
                 alt={item.title}
               />
             </div>
-            <div className="col-md-9" style={{padding: '10px'}}>
+            <div className="col-md-9" style={{ padding: "10px" }}>
               <div className="card-body">
                 <h5 className="card-title">{item.title}</h5>
                 <div
@@ -79,23 +97,23 @@ function NewsPage() {
         </div>
       )}
       <ReactPaginate
-        previousLabel={'<'}
-        nextLabel={'>'}
-        breakLabel={'...'}
+        previousLabel={"<"}
+        nextLabel={">"}
+        breakLabel={"..."}
         pageCount={pageCount}
         marginPagesDisplayed={2}
         pageRangeDisplayed={5}
         onPageChange={handlePageClick}
-        containerClassName={'pagination justify-content-end'}
-        pageClassName={'page-item'}
-        pageLinkClassName={'page-link'}
-        previousClassName={'page-item'}
-        previousLinkClassName={'page-link'}
-        nextClassName={'page-item'}
-        nextLinkClassName={'page-link'}
-        breakClassName={'page-item'}
-        breakLinkClassName={'page-link'}
-        activeClassName={'active'}
+        containerClassName={"pagination justify-content-end"}
+        pageClassName={"page-item"}
+        pageLinkClassName={"page-link"}
+        previousClassName={"page-item"}
+        previousLinkClassName={"page-link"}
+        nextClassName={"page-item"}
+        nextLinkClassName={"page-link"}
+        breakClassName={"page-item"}
+        breakLinkClassName={"page-link"}
+        activeClassName={"active"}
       />
     </div>
   );

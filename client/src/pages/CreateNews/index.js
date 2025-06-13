@@ -34,11 +34,15 @@ function CreateNews() {
     formData.append("updatedBy", "60c72b2f9b1e8a5b5c8f1a2e");
 
     try {
-      const response = await axios.post("http://localhost:9999/api/news/create", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        "https://readifylibrary.onrender.com/api/news/create",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       toast.success("Tạo tin tức thành công");
       setTimeout(() => {
@@ -59,7 +63,11 @@ function CreateNews() {
           <label htmlFor="thumbnail">Ảnh đại diện</label>
           {imagePreview && (
             <div className="mt-3">
-              <img src={imagePreview} alt="Preview" style={{ maxWidth: "200px", maxHeight: "200px" }} />
+              <img
+                src={imagePreview}
+                alt="Preview"
+                style={{ maxWidth: "200px", maxHeight: "200px" }}
+              />
             </div>
           )}
           <input

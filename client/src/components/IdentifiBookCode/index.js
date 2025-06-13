@@ -7,12 +7,13 @@ function IdentifiBookCode({ bookID, onNextStep, onPreviousStep }) {
 
   // Fetch book details when `bookID` changes
   useEffect(() => {
-    axios.get(`http://localhost:9999/api/orders/by-order/${bookID}`)
-      .then(response => {
+    axios
+      .get(`https://readifylibrary.onrender.com/api/orders/by-order/${bookID}`)
+      .then((response) => {
         setBookDetails(response.data.data); // Lưu dữ liệu sách từ API
         console.log("Fetched book details:", response.data.data);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error fetching book details:", error);
       });
   }, [bookID]);
@@ -25,8 +26,13 @@ function IdentifiBookCode({ bookID, onNextStep, onPreviousStep }) {
   // Xử lý form submit
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (bookCodeInput.trim() === "" || bookCodeInput !== bookDetails?.book_id?.identifier_code) {
-      alert("The book identification code does not match. Please enter the correct code.");
+    if (
+      bookCodeInput.trim() === "" ||
+      bookCodeInput !== bookDetails?.book_id?.identifier_code
+    ) {
+      alert(
+        "The book identification code does not match. Please enter the correct code."
+      );
       return;
     }
 
@@ -66,7 +72,7 @@ function IdentifiBookCode({ bookID, onNextStep, onPreviousStep }) {
       ) : (
         <p>Loading book details...</p>
       )}
-      
+
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="bookIdCode">Book Identification Code:</label>

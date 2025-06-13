@@ -14,7 +14,7 @@ function BookSetDetail() {
     const fetchBookSetDetails = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9999/api/book-sets/available/${bookId}`
+          `https://readifylibrary.onrender.com/api/book-sets/available/${bookId}`
         );
         setBookSet(response.data.bookSet); // Lưu thông tin bộ sách
         setBooks(response.data.books); // Lưu danh sách các quyển sách
@@ -54,7 +54,7 @@ function BookSetDetail() {
 
       try {
         await axios.post(
-          `http://localhost:9999/api/orders/create-borrow/${firstBook._id}`,
+          `https://readifylibrary.onrender.com/api/orders/create-borrow/${firstBook._id}`,
           {
             book_id: firstBook._id,
             userId: user.id,

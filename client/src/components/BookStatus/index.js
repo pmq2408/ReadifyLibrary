@@ -22,7 +22,7 @@ function BookStatus({ bookID, onPreviousStep }) {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:9999/api/orders/by-order/${bookID}`)
+      .get(`https://readifylibrary.onrender.com/api/orders/by-order/${bookID}`)
       .then((response) => {
         const {
           book_id: book,
@@ -56,7 +56,7 @@ function BookStatus({ bookID, onPreviousStep }) {
 
     try {
       const response = await axios.post(
-        `http://localhost:9999/api/orders/return/${bookID}`,
+        `https://readifylibrary.onrender.com/api/orders/return/${bookID}`,
         payload
       );
 

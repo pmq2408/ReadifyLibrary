@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
-import ReactPaginate from 'react-paginate';
+import ReactPaginate from "react-paginate";
 
 const ListPenaltyReasons = () => {
   const navigate = useNavigate();
@@ -13,7 +13,9 @@ const ListPenaltyReasons = () => {
   useEffect(() => {
     const fetchPenaltyReasons = async () => {
       try {
-        const response = await fetch("http://localhost:9999/api/penalty-reasons/list");
+        const response = await fetch(
+          "https://readifylibrary.onrender.com/api/penalty-reasons/list"
+        );
         const data = await response.json();
         setPenaltyReasons(data.data);
       } catch (error) {
@@ -26,10 +28,12 @@ const ListPenaltyReasons = () => {
   }, []);
 
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this penalty reason?")) {
+    if (
+      window.confirm("Are you sure you want to delete this penalty reason?")
+    ) {
       try {
         const response = await fetch(
-          `http://localhost:9999/api/penalty-reasons/delete/${id}`,
+          `https://readifylibrary.onrender.com/api/penalty-reasons/delete/${id}`,
           {
             method: "DELETE",
           }
@@ -68,7 +72,6 @@ const ListPenaltyReasons = () => {
 
   return (
     <div className="container mt-4">
-       
       {/* <div className="d-flex justify-content-end mb-3">
         <button
           className="btn btn-primary"
@@ -82,8 +85,9 @@ const ListPenaltyReasons = () => {
 
       {message && (
         <div
-          className={`alert ${message.includes("successfully") ? "alert-success" : "alert-danger"
-            }`}
+          className={`alert ${
+            message.includes("successfully") ? "alert-success" : "alert-danger"
+          }`}
         >
           {message}
         </div>
@@ -112,7 +116,7 @@ const ListPenaltyReasons = () => {
                 <td>
                   <button
                     className="btn btn-success"
-                    style={{marginRight: '10px'}}
+                    style={{ marginRight: "10px" }}
                     title="Sửa"
                     onClick={() => handleUpdate(reason._id)}
                   >
@@ -140,9 +144,9 @@ const ListPenaltyReasons = () => {
 
       <div className="d-flex justify-content-end">
         <ReactPaginate
-          previousLabel={'<'}
-          nextLabel={'>'}
-          breakLabel={'...'}
+          previousLabel={"<"}
+          nextLabel={">"}
+          breakLabel={"..."}
           pageCount={Math.ceil(penaltyReasons.length / itemsPerPage)}
           marginPagesDisplayed={2}
           pageRangeDisplayed={5}

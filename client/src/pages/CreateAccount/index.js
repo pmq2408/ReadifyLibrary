@@ -19,7 +19,9 @@ const CreateAccount = () => {
     // Fetch roles from the backend
     const fetchRoles = async () => {
       try {
-        const response = await axios.get("http://localhost:9999/api/user/all-role");
+        const response = await axios.get(
+          "https://readifylibrary.onrender.com/api/user/all-role"
+        );
         const rolesData = response.data.data;
 
         // Set the default role to librarian if found
@@ -57,32 +59,45 @@ const CreateAccount = () => {
     formData.append("password", password);
 
     try {
-      await axios.post("http://localhost:9999/api/user/add", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await axios.post(
+        "https://readifylibrary.onrender.com/api/user/add",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       toast.success("Account created successfully");
       setTimeout(() => {
         navigate("/account-list");
       }, 1000);
     } catch (error) {
-      const errorMessage = error.response?.data?.message || "An error occurred while creating the account.";
+      const errorMessage =
+        error.response?.data?.message ||
+        "An error occurred while creating the account.";
       toast.error(errorMessage);
       console.error("Error creating account:", error);
     }
   };
 
   return (
-    <div className="create-account-container mt-4" style={{ margin: "100px 100px" }}>
-      <ToastContainer/>
+    <div
+      className="create-account-container mt-4"
+      style={{ margin: "100px 100px" }}
+    >
+      <ToastContainer />
       <form onSubmit={handleSubmit}>
         <div className="row">
           {/* Image Upload Section */}
           <div className="col-md-3">
             <div className="create-account-image-upload form-group">
               {image ? (
-                <img src={URL.createObjectURL(image)} alt="Selected" className="img-thumbnail" />
+                <img
+                  src={URL.createObjectURL(image)}
+                  alt="Selected"
+                  className="img-thumbnail"
+                />
               ) : (
                 <div
                   className="img-thumbnail d-flex justify-content-center align-items-center"
@@ -152,7 +167,11 @@ const CreateAccount = () => {
                 <option value="">Chọn vai trò</option>
                 {roles.map((r) => (
                   <option key={r._id} value={r._id}>
-                    {r.name === "librarian" ? "Thủ thư" : r.name === "admin" ? "Quản trị viên" : ""}
+                    {r.name === "librarian"
+                      ? "Thủ thư"
+                      : r.name === "admin"
+                      ? "Quản trị viên"
+                      : ""}
                   </option>
                 ))}
               </select>

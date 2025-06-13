@@ -39,8 +39,6 @@ function Fines() {
   const [searchTerm, setSearchTerm] = useState("");
   const finesPerPage = 10;
 
-  
-
   useEffect(() => {
     const code = `TX${Date.now()}${Math.random().toString(36).substring(2)}`;
     setTransactionCode(code);
@@ -48,7 +46,7 @@ function Fines() {
     const fetchFines = () => {
       setIsLoading(true);
       axios
-        .get(`http://localhost:9999/api/fines/by-user/${user.id}`)
+        .get(`https://readifylibrary.onrender.com/api/fines/by-user/${user.id}`)
         .then((response) => {
           setFines(response.data.data);
           setIsLoading(false);
@@ -112,7 +110,7 @@ function Fines() {
 
     axios
       .post(
-        `http://localhost:9999/api/fines/check-payment/${transactionCode}`,
+        `https://readifylibrary.onrender.com/api/fines/check-payment/${transactionCode}`,
         {
           fineId: selectedFines,
         }

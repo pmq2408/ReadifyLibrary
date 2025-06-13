@@ -18,13 +18,16 @@ const CreatePenaltyReason = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:9999/api/penalty-reasons/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        "https://readifylibrary.onrender.com/api/penalty-reasons/create",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
       if (response.ok) {
         toast.success("Penalty reason created successfully");
@@ -40,7 +43,6 @@ const CreatePenaltyReason = () => {
 
   return (
     <div className="container mt-4">
-       
       <h2>Create Penalty Reason</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">

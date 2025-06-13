@@ -23,12 +23,17 @@ const UpdateAccount = () => {
     const fetchData = async () => {
       try {
         // Fetch roles
-        const rolesResponse = await axios.get("http://localhost:9999/api/user/all-role");
+        const rolesResponse = await axios.get(
+          "https://readifylibrary.onrender.com/api/user/all-role"
+        );
         setRoles(rolesResponse.data.data);
 
         // Fetch user data
-        const userResponse = await axios.get(`http://localhost:9999/api/user/get/${id}`);
-        const { fullName, email, phoneNumber, role_id, image, code } = userResponse.data.data;
+        const userResponse = await axios.get(
+          `https://readifylibrary.onrender.com/api/user/get/${id}`
+        );
+        const { fullName, email, phoneNumber, role_id, image, code } =
+          userResponse.data.data;
 
         setFormData({
           fullName: fullName || "",
@@ -41,7 +46,11 @@ const UpdateAccount = () => {
         });
 
         if (image) {
-          setImagePreview(`http://localhost:9999/api/user/image/${image.split("/").pop()}`);
+          setImagePreview(
+            `https://readifylibrary.onrender.com/api/user/image/${image
+              .split("/")
+              .pop()}`
+          );
         }
       } catch (error) {
         toast.error("Failed to load data.");
@@ -74,9 +83,13 @@ const UpdateAccount = () => {
     });
 
     try {
-      await axios.put(`http://localhost:9999/api/user/update/${id}`, data, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      await axios.put(
+        `https://readifylibrary.onrender.com/api/user/update/${id}`,
+        data,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
 
       toast.success("Account updated successfully");
       setTimeout(() => navigate("/account-list"), 1000);
@@ -88,16 +101,30 @@ const UpdateAccount = () => {
   };
 
   return (
-    <div className="update-account-container mt-4" style={{ margin: "100px 100px" }}>
+    <div
+      className="update-account-container mt-4"
+      style={{ margin: "100px 100px" }}
+    >
       <ToastContainer />
       <form onSubmit={handleSubmit}>
         <div className="row">
           <div className="col-md-3">
             <div className="update-account-image-upload form-group">
               {imagePreview ? (
-                <img src={imagePreview} alt="Selected" className="img-thumbnail" />
+                <img
+                  src={imagePreview}
+                  alt="Selected"
+                  className="img-thumbnail"
+                />
               ) : (
-                <div className="img-thumbnail d-flex justify-content-center align-items-center" style={{ height: "200px", width: "100%", backgroundColor: "#f0f0f0" }}>
+                <div
+                  className="img-thumbnail d-flex justify-content-center align-items-center"
+                  style={{
+                    height: "200px",
+                    width: "100%",
+                    backgroundColor: "#f0f0f0",
+                  }}
+                >
                   Chọn Ảnh
                 </div>
               )}
@@ -111,20 +138,22 @@ const UpdateAccount = () => {
 
           <div className="col-md-9">
             <div className="form-group mt-3">
-            {!roles.some(role => role._id === formData.role_id && role.name === "admin") && (
-              <>
-              <label htmlFor="Họ và tên">Họ và tên</label>
-              <input
-                type="text"
-                className="form-control"
-                id="fullName"
-                name="fullName"
-                value={formData["fullName"]}
-                onChange={handleInputChange}
-                placeholder="Nhập Họ và tên"
-              />
-              </>
-            )}
+              {!roles.some(
+                (role) => role._id === formData.role_id && role.name === "admin"
+              ) && (
+                <>
+                  <label htmlFor="Họ và tên">Họ và tên</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="fullName"
+                    name="fullName"
+                    value={formData["fullName"]}
+                    onChange={handleInputChange}
+                    placeholder="Nhập Họ và tên"
+                  />
+                </>
+              )}
             </div>
             <div className="form-group mt-3">
               <label htmlFor="email">Email</label>
@@ -140,20 +169,22 @@ const UpdateAccount = () => {
               />
             </div>
             <div className="form-group mt-3">
-            {!roles.some(role => role._id === formData.role_id && role.name === "admin") && (
-              <>
-              <label htmlFor="Số điện thoại">Số điện thoại</label>
-              <input
-                type="text"
-                className="form-control"
-                id="Số điện thoại"
-                name="Số điện thoại"
-                value={formData["Số điện thoại"]}
-                onChange={handleInputChange}
-                placeholder="Nhập Số điện thoại"
-              />
-              </>
-            )}
+              {!roles.some(
+                (role) => role._id === formData.role_id && role.name === "admin"
+              ) && (
+                <>
+                  <label htmlFor="Số điện thoại">Số điện thoại</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="Số điện thoại"
+                    name="Số điện thoại"
+                    value={formData["Số điện thoại"]}
+                    onChange={handleInputChange}
+                    placeholder="Nhập Số điện thoại"
+                  />
+                </>
+              )}
             </div>
             <div className="form-group mt-3">
               <label htmlFor="code">Mã người dùng</label>
@@ -170,32 +201,44 @@ const UpdateAccount = () => {
             </div>
 
             <div className="form-group mt-3">
-  {!roles.some(role => role._id === formData.role_id && role.name === "admin") && (
-    <>
-      <label htmlFor="role_id">Vai trò</label>
-      <select
-        name="role_id"
-        className="form-select"
-        value={formData["role_id"]}
-        onChange={handleInputChange}
-      >
-        {roles
-          .filter(role => role.name === "librarian" || role.name === "borrower")
-          .map((role) => (
-            <option key={role._id} value={role._id}>
-              {role.name === "librarian" ? "Thủ thư" : role.name === "borrower" ? "Người mượn" : ""}
-            </option>
-          ))}
-      </select>
-    </>
-  )}
-</div>
-
+              {!roles.some(
+                (role) => role._id === formData.role_id && role.name === "admin"
+              ) && (
+                <>
+                  <label htmlFor="role_id">Vai trò</label>
+                  <select
+                    name="role_id"
+                    className="form-select"
+                    value={formData["role_id"]}
+                    onChange={handleInputChange}
+                  >
+                    {roles
+                      .filter(
+                        (role) =>
+                          role.name === "librarian" || role.name === "borrower"
+                      )
+                      .map((role) => (
+                        <option key={role._id} value={role._id}>
+                          {role.name === "librarian"
+                            ? "Thủ thư"
+                            : role.name === "borrower"
+                            ? "Người mượn"
+                            : ""}
+                        </option>
+                      ))}
+                  </select>
+                </>
+              )}
+            </div>
           </div>
         </div>
 
         <div className="d-flex justify-content-center mt-4">
-          <button type="submit" className="btn btn-primary btn-lg" disabled={loading}>
+          <button
+            type="submit"
+            className="btn btn-primary btn-lg"
+            disabled={loading}
+          >
             {loading ? "Saving..." : "Save"}
           </button>
         </div>

@@ -16,7 +16,9 @@ const ListNews = () => {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await fetch("http://localhost:9999/api/news/list");
+        const response = await fetch(
+          "https://readifylibrary.onrender.com/api/news/list"
+        );
         const data = await response.json();
         setNewsData(data.data);
       } catch (error) {
@@ -31,7 +33,7 @@ const ListNews = () => {
   const handleDelete = async () => {
     try {
       const response = await fetch(
-        `http://localhost:9999/api/news/delete/${newsIdToDelete}`,
+        `https://readifylibrary.onrender.com/api/news/delete/${newsIdToDelete}`,
         {
           method: "DELETE",
         }
@@ -134,7 +136,7 @@ const ListNews = () => {
                   <td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
                   <td>
                     <img
-                      src={`http://localhost:9999/api/news/thumbnail/${news.thumbnail
+                      src={`https://readifylibrary.onrender.com/api/news/thumbnail/${news.thumbnail
                         .split("/")
                         .pop()}`}
                       className="news-thumbnail"

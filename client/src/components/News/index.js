@@ -13,7 +13,9 @@ function News() {
     const fetchNews = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch("http://localhost:9999/api/news/list");
+        const response = await fetch(
+          "https://readifylibrary.onrender.com/api/news/list"
+        );
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -86,7 +88,7 @@ function News() {
                   >
                     <div className="news-card-image">
                       <img
-                        src={`http://localhost:9999/api/news/thumbnail/${item.thumbnail
+                        src={`https://readifylibrary.onrender.com/api/news/thumbnail/${item.thumbnail
                           .split("/")
                           .pop()}`}
                         alt={item.title}

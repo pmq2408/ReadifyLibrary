@@ -9,7 +9,9 @@ function SearchByStudentId({ onNextStep }) {
   const handleSearch = async () => {
     if (studentId.trim()) {
       try {
-        const user = await axios.get(`http://localhost:9999/api/user/getByCode/${studentId}`);
+        const user = await axios.get(
+          `https://readifylibrary.onrender.com/api/user/getByCode/${studentId}`
+        );
         const userID = user.data.data.userID;
         onNextStep(userID); // Pass userID to parent component
       } catch (error) {
@@ -24,7 +26,6 @@ function SearchByStudentId({ onNextStep }) {
 
   return (
     <div className="mt-4">
-       
       <h3>Search By Student ID</h3>
       <div className="form-group">
         <input

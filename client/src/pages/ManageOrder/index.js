@@ -4,7 +4,7 @@ import axios from "axios";
 import AuthContext from "../../contexts/UserContext";
 import { toast, ToastContainer } from "react-toastify";
 import ReactPaginate from "react-paginate";
-import './index.css';
+import "./index.css";
 const BorrowBookList = () => {
   const [showModal, setShowModal] = useState(false);
   const [condition, setCondition] = useState(""); // Separate state for condition
@@ -27,13 +27,15 @@ const BorrowBookList = () => {
       let response;
       if (identifierCode) {
         response = await axios.get(
-          `http://localhost:9999/api/orders/manage-by-identifier-code/${identifierCode}`
+          `https://readifylibrary.onrender.com/api/orders/manage-by-identifier-code/${identifierCode}`
         );
       } else if (status === "") {
-        response = await axios.get(`http://localhost:9999/api/orders/getAll`);
+        response = await axios.get(
+          `https://readifylibrary.onrender.com/api/orders/getAll`
+        );
       } else {
         response = await axios.get(
-          `http://localhost:9999/api/orders/filter?status=${status}`
+          `https://readifylibrary.onrender.com/api/orders/filter?status=${status}`
         );
       }
       const data = response.data.data || [];
@@ -129,13 +131,13 @@ const BorrowBookList = () => {
       }
 
       await axios.put(
-        `http://localhost:9999/api/orders/change-status/${selectedBook._id}`,
+        `https://readifylibrary.onrender.com/api/orders/change-status/${selectedBook._id}`,
         updateData
       );
 
       if (modalType === "receive") {
         await axios.put(
-          `http://localhost:9999/api/books/update/${selectedBook.book_id._id}`,
+          `https://readifylibrary.onrender.com/api/books/update/${selectedBook.book_id._id}`,
           {
             condition,
             condition_detail: conditionDetail,
@@ -190,7 +192,7 @@ const BorrowBookList = () => {
         updated_by: user.id,
       };
       await axios.put(
-        `http://localhost:9999/api/orders/approve-all`,
+        `https://readifylibrary.onrender.com/api/orders/approve-all`,
         updateData
       );
       toast.success("Đơn đã chọn đã duyệt thành công!");
@@ -419,7 +421,7 @@ const BorrowBookList = () => {
           )}
         </tbody>
       </table>
-  
+
       <ReactPaginate
         previousLabel={"<"}
         nextLabel={">"}
@@ -439,7 +441,7 @@ const BorrowBookList = () => {
         breakLinkClassName={"page-link"}
         activeClassName={"active"}
       />
-  
+
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>

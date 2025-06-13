@@ -23,7 +23,7 @@ function ListFines() {
     try {
       setLoading(true);
       const response = await axios.get(
-        "http://localhost:9999/api/fines/getAll"
+        "https://readifylibrary.onrender.com/api/fines/getAll"
       );
       const sortedFines = response.data.data.sort(
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
@@ -46,7 +46,7 @@ function ListFines() {
     try {
       setLoading(true);
       const response = await axios.get(
-        `http://localhost:9999/api/fines/by-code/${userCode}`
+        `https://readifylibrary.onrender.com/api/fines/by-code/${userCode}`
       );
       const sortedFines = response.data.data.sort(
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
@@ -65,8 +65,8 @@ function ListFines() {
     try {
       setLoading(true);
       const url = selectedStatus
-        ? `http://localhost:9999/api/fines/filter-by-status/${selectedStatus}`
-        : "http://localhost:9999/api/fines/getAll";
+        ? `https://readifylibrary.onrender.com/api/fines/filter-by-status/${selectedStatus}`
+        : "https://readifylibrary.onrender.com/api/fines/getAll";
       const response = await axios.get(url);
       const sortedFines = response.data.data.sort(
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt)

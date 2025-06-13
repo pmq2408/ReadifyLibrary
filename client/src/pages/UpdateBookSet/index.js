@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import {toast } from "react-toastify";
+import { toast } from "react-toastify";
 import AuthContext from "../../contexts/UserContext";
 const UpdateBookSet = () => {
   const { id } = useParams();
@@ -25,13 +25,15 @@ const UpdateBookSet = () => {
     availableCopies: "",
     price: "",
     image: "",
-    updatedBy: ""
+    updatedBy: "",
   });
 
   useEffect(() => {
     const fetchCatalogs = async () => {
       try {
-        const response = await axios.get("http://localhost:9999/api/catalogs/list");
+        const response = await axios.get(
+          "https://readifylibrary.onrender.com/api/catalogs/list"
+        );
         setCatalogData(response.data.data);
       } catch (error) {
         console.error("Error fetching catalog data:", error);
@@ -43,7 +45,9 @@ const UpdateBookSet = () => {
   useEffect(() => {
     const fetchBookSet = async () => {
       try {
-        const response = await axios.get(`http://localhost:9999/api/book-sets/${id}`);
+        const response = await axios.get(
+          `https://readifylibrary.onrender.com/api/book-sets/${id}`
+        );
         const bookSetData = response.data.bookSet;
         setFormData({
           catalog_id: bookSetData.catalog_id._id,
@@ -52,17 +56,21 @@ const UpdateBookSet = () => {
           shelfLocationCode: bookSetData.shelfLocationCode,
           title: bookSetData.title,
           author: bookSetData.author,
-          publishedYear: bookSetData.publishedYear.split('T')[0],
+          publishedYear: bookSetData.publishedYear.split("T")[0],
           publisher: bookSetData.publisher,
           physicalDescription: bookSetData.physicalDescription,
           totalCopies: bookSetData.totalCopies,
           availableCopies: bookSetData.availableCopies,
           price: bookSetData.price,
           image: bookSetData.image,
-          updatedBy: user.id
+          updatedBy: user.id,
         });
         if (bookSetData.image) {
-          setImagePreview(`http://localhost:9999/api/book-sets/image/${bookSetData.image.split("/").pop()}`);
+          setImagePreview(
+            `https://readifylibrary.onrender.com/api/book-sets/image/${bookSetData.image
+              .split("/")
+              .pop()}`
+          );
         }
       } catch (error) {
         console.error("Error fetching book set data:", error);
@@ -82,7 +90,6 @@ const UpdateBookSet = () => {
     setImagePreview(URL.createObjectURL(file));
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const data = new FormData();
@@ -95,7 +102,7 @@ const UpdateBookSet = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:9999/api/book-sets/update/${id}`,
+        `https://readifylibrary.onrender.com/api/book-sets/update/${id}`,
         data,
         {
           headers: {
@@ -113,20 +120,26 @@ const UpdateBookSet = () => {
     }
   };
 
-
   return (
     <div className="container">
-       
       <h1 className="my-4 text-center">Cập nhật sách</h1>
       <form onSubmit={handleSubmit}>
         {/* Image Preview */}
         <div className="row">
           <div className="col-md-3">
             {imagePreview && (
-              <img src={imagePreview}
-                alt="Preview" style={{ maxWidth: "200px", maxHeight: "200px" }} />
+              <img
+                src={imagePreview}
+                alt="Preview"
+                style={{ maxWidth: "200px", maxHeight: "200px" }}
+              />
             )}
-            <input type="file" className="form-control mt-3" style={{ width: "80%" }} onChange={handleImageChange} />
+            <input
+              type="file"
+              className="form-control mt-3"
+              style={{ width: "80%" }}
+              onChange={handleImageChange}
+            />
           </div>
 
           <div className="col-md-9">
@@ -134,11 +147,22 @@ const UpdateBookSet = () => {
               <div className="col-md-6">
                 {/* Catalog Selection */}
                 <div className="mb-3">
-                  <label htmlFor="catalog_id" className="form-label">Catalog:</label>
-                  <select className="form-select" name="catalog_id" value={formData.catalog_id} onChange={handleInputChange}>
-                    <option value="">{currentCatalogName || "Select Catalog"}</option>
+                  <label htmlFor="catalog_id" className="form-label">
+                    Catalog:
+                  </label>
+                  <select
+                    className="form-select"
+                    name="catalog_id"
+                    value={formData.catalog_id}
+                    onChange={handleInputChange}
+                  >
+                    <option value="">
+                      {currentCatalogName || "Select Catalog"}
+                    </option>
                     {catalogData.map((catalog) => (
-                      <option key={catalog._id} value={catalog._id}>{catalog.name}</option>
+                      <option key={catalog._id} value={catalog._id}>
+                        {catalog.name}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -152,13 +176,27 @@ const UpdateBookSet = () => {
                 { label: "Author", id: "author", type: "text" },
                 { label: "Published Year", id: "publishedYear", type: "date" },
                 { label: "Publisher", id: "publisher", type: "text" },
-                { label: "Physical Description", id: "physicalDescription", type: "text" },
-                { label: "Shelf Location Code", id: "shelfLocationCode", type: "text" },
+                {
+                  label: "Physical Description",
+                  id: "physicalDescription",
+                  type: "text",
+                },
+                {
+                  label: "Shelf Location Code",
+                  id: "shelfLocationCode",
+                  type: "text",
+                },
                 { label: "Total Copies", id: "totalCopies", type: "number" },
-                { label: "Available Copies", id: "availableCopies", type: "number" },
+                {
+                  label: "Available Copies",
+                  id: "availableCopies",
+                  type: "number",
+                },
               ].map(({ label, id, type }) => (
                 <div className="mb-3 col-md-6" key={id}>
-                  <label htmlFor={id} className="form-label">{label}:</label>
+                  <label htmlFor={id} className="form-label">
+                    {label}:
+                  </label>
                   <input
                     type={type}
                     className="form-control"
@@ -174,7 +212,9 @@ const UpdateBookSet = () => {
           </div>
         </div>
         <div className="d-flex justify-content-center align-items-center">
-          <button type="submit" className="btn btn-primary mb-3 d-flex ">Cập nhật sách</button>
+          <button type="submit" className="btn btn-primary mb-3 d-flex ">
+            Cập nhật sách
+          </button>
         </div>
       </form>
     </div>

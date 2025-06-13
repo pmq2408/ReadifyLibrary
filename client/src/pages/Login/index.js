@@ -17,7 +17,7 @@ function LoginPage() {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:9999/api/auth/login",
+        "https://readifylibrary.onrender.com/api/auth/login",
         {
           email: username,
           password: password,
@@ -37,7 +37,7 @@ function LoginPage() {
   const handleGoogleLogin = async (response) => {
     try {
       const res = await axios.post(
-        "http://localhost:9999/api/auth/google-login",
+        "https://readifylibrary.onrender.com/api/auth/google-login",
         {
           token: response.credential,
         }

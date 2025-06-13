@@ -31,18 +31,23 @@ const CatalogList = () => {
   const [itemsPerPage] = useState(10);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [catalogToDelete, setCatalogToDelete] = useState(null);
-  const [selectedCatalogForImport, setSelectedCatalogForImport] = useState(null);
+  const [selectedCatalogForImport, setSelectedCatalogForImport] =
+    useState(null);
 
   useEffect(() => {
     const fetchCatalogs = async () => {
       try {
-        const response = await fetch("http://localhost:9999/api/catalogs/list");
+        const response = await fetch(
+          "https://readifylibrary.onrender.com/api/catalogs/list"
+        );
         if (!response.ok) throw new Error("Failed to fetch catalog data");
         const data = await response.json();
-        
+
         // Sort the data by createdAt in descending order
-        const sortedData = data.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        
+        const sortedData = data.data.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+
         setCatalogData(sortedData);
         setFilteredData(sortedData);
       } catch (error) {
@@ -95,11 +100,15 @@ const CatalogList = () => {
       formData.append("createdBy", user.id);
       formData.append("file", fileSelected);
 
-      await axios.post(`http://localhost:9999/api/book-sets/import`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await axios.post(
+        `https://readifylibrary.onrender.com/api/book-sets/import`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       setFileSelected(null);
       toast.success("Thêm thành công!");
     } catch (error) {
@@ -130,11 +139,17 @@ const CatalogList = () => {
 
   const confirmDelete = async () => {
     try {
-      const response = await fetch(`http://localhost:9999/api/catalogs/delete/${catalogToDelete}`, {
-        method: "DELETE",
-      });
-      if (!response.ok) throw new Error(`Failed to delete catalog: ${response.statusText}`);
-      setCatalogData((prevCatalogs) => prevCatalogs.filter((catalog) => catalog._id !== catalogToDelete));
+      const response = await fetch(
+        `https://readifylibrary.onrender.com/api/catalogs/delete/${catalogToDelete}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (!response.ok)
+        throw new Error(`Failed to delete catalog: ${response.statusText}`);
+      setCatalogData((prevCatalogs) =>
+        prevCatalogs.filter((catalog) => catalog._id !== catalogToDelete)
+      );
     } catch (error) {
       console.error("Error deleting catalog:", error);
     } finally {
@@ -144,7 +159,14 @@ const CatalogList = () => {
   };
 
   const handleCreateNewCatalog = () => {
-    setNewCatalog({ name: "", code: "", major: "", semester: "", isTextbook: 0, createdBy: user.id });
+    setNewCatalog({
+      name: "",
+      code: "",
+      major: "",
+      semester: "",
+      isTextbook: 0,
+      createdBy: user.id,
+    });
     setIsEditMode(false);
     setShowModal(true);
   };
@@ -152,8 +174,8 @@ const CatalogList = () => {
   const handleSubmitCatalog = async (e) => {
     e.preventDefault();
     const endpoint = isEditMode
-      ? `http://localhost:9999/api/catalogs/update/${currentCatalogId}`
-      : "http://localhost:9999/api/catalogs/create";
+      ? `https://readifylibrary.onrender.com/api/catalogs/update/${currentCatalogId}`
+      : "https://readifylibrary.onrender.com/api/catalogs/create";
     const method = isEditMode ? "PUT" : "POST";
 
     try {
@@ -166,21 +188,36 @@ const CatalogList = () => {
       });
       const responseData = await response.json();
       if (!response.ok) {
-        throw new Error(responseData.message || `Failed to ${isEditMode ? "update" : "create"} catalog`);
+        throw new Error(
+          responseData.message ||
+            `Failed to ${isEditMode ? "update" : "create"} catalog`
+        );
       }
       const savedCatalog = responseData;
       if (isEditMode) {
         setCatalogData((prevData) =>
-          prevData.map((catalog) => (catalog._id === currentCatalogId ? savedCatalog : catalog))
+          prevData.map((catalog) =>
+            catalog._id === currentCatalogId ? savedCatalog : catalog
+          )
         );
       } else {
         setCatalogData([...catalogData, savedCatalog]);
       }
       setShowModal(false);
-      setNewCatalog({ name: "", code: "", major: "", semester: "", isTextbook: 0, createdBy: user.id });
+      setNewCatalog({
+        name: "",
+        code: "",
+        major: "",
+        semester: "",
+        isTextbook: 0,
+        createdBy: user.id,
+      });
       toast.success(responseData.message || "Cập nhật thành công");
     } catch (error) {
-      console.error(`Error ${isEditMode ? "updating" : "creating"} catalog:`, error);
+      console.error(
+        `Error ${isEditMode ? "updating" : "creating"} catalog:`,
+        error
+      );
       toast.error(error.message);
     }
   };
@@ -237,12 +274,18 @@ const CatalogList = () => {
           >
             <option value="">Tất cả học kỳ</option>
             {[...Array(9).keys()].map((_, i) => (
-              <option key={i + 1} value={i + 1}>{i + 1}</option>
+              <option key={i + 1} value={i + 1}>
+                {i + 1}
+              </option>
             ))}
           </select>
         </div>
         <div className="col-2 d-flex justify-content-end">
-          <button className="btn btn-primary" title="Tạo mới" onClick={handleCreateNewCatalog}>
+          <button
+            className="btn btn-primary"
+            title="Tạo mới"
+            onClick={handleCreateNewCatalog}
+          >
             <i className="fa fa-plus" aria-hidden="true"></i>
           </button>
         </div>
@@ -284,25 +327,33 @@ const CatalogList = () => {
                     <button
                       className="btn btn-primary mr-2"
                       title="Nhập"
-                      onClick={() => document.getElementById(`file-input-${catalog._id}`).click()}
+                      onClick={() =>
+                        document
+                          .getElementById(`file-input-${catalog._id}`)
+                          .click()
+                      }
                     >
                       <i className="fa fa-upload" aria-hidden="true"></i>
                     </button>
-                    {fileSelected && selectedCatalogForImport === catalog._id && (
-                      <button
-                        className="btn btn-primary mr-2"
-                        onClick={() => importBookset(catalog._id)}
-                      >
-                        Import
-                      </button>
-                    )}
+                    {fileSelected &&
+                      selectedCatalogForImport === catalog._id && (
+                        <button
+                          className="btn btn-primary mr-2"
+                          onClick={() => importBookset(catalog._id)}
+                        >
+                          Import
+                        </button>
+                      )}
                     <button
                       className="btn btn-success mr-2"
                       title="Sửa"
                       onClick={() => handleUpdate(catalog._id)}
                       style={{ marginLeft: "10px" }}
                     >
-                      <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
+                      <i
+                        className="fa fa-pencil-square-o"
+                        aria-hidden="true"
+                      ></i>
                     </button>
                     <button
                       className="btn btn-danger"
@@ -380,8 +431,13 @@ const CatalogList = () => {
                 required
               />
             </div>
-            <div className="form-group" style={{ display: "flex", alignItems: "center", margin: "10px" }}>
-              <label htmlFor="isTextbook" style={{ marginRight: "10px" }}>Sách giáo trình</label>
+            <div
+              className="form-group"
+              style={{ display: "flex", alignItems: "center", margin: "10px" }}
+            >
+              <label htmlFor="isTextbook" style={{ marginRight: "10px" }}>
+                Sách giáo trình
+              </label>
               <input
                 type="checkbox"
                 id="isTextbook"
@@ -417,7 +473,9 @@ const CatalogList = () => {
                   >
                     <option value="">Chọn học kỳ</option>
                     {[...Array(9).keys()].map((_, i) => (
-                      <option key={i + 1} value={i + 1}>{i + 1}</option>
+                      <option key={i + 1} value={i + 1}>
+                        {i + 1}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -434,9 +492,7 @@ const CatalogList = () => {
         <Modal.Header closeButton>
           <Modal.Title>Xác nhận xóa</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          Bạn có chắc chắn muốn xóa danh mục này không?
-        </Modal.Body>
+        <Modal.Body>Bạn có chắc chắn muốn xóa danh mục này không?</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
             Hủy

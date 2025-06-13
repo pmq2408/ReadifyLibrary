@@ -15,7 +15,9 @@ function UpdateNews() {
     // Fetch news detail
     const fetchNewsDetail = async () => {
       try {
-        const res = await axios.get(`http://localhost:9999/api/news/get/${id}`);
+        const res = await axios.get(
+          `https://readifylibrary.onrender.com/api/news/get/${id}`
+        );
         setData(res.data.data); // Assuming `data` is the nested object with news information
         setLoading(false); // Set loading to false once data is fetched
       } catch (error) {
@@ -47,7 +49,7 @@ function UpdateNews() {
 
     try {
       const response = await axios.put(
-        `http://localhost:9999/api/news/update/${id}`,
+        `https://readifylibrary.onrender.com/api/news/update/${id}`,
         formData,
         {
           headers: {
@@ -73,7 +75,6 @@ function UpdateNews() {
     }
   };
 
-
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -97,7 +98,7 @@ function UpdateNews() {
               ) : data.thumbnail ? (
                 // Show current thumbnail from data if available
                 <img
-                  src={`http://localhost:9999/api/news/thumbnail/${data.thumbnail
+                  src={`https://readifylibrary.onrender.com/api/news/thumbnail/${data.thumbnail
                     .split("/")
                     .pop()}`}
                   className="img-fluid"
@@ -124,44 +125,43 @@ function UpdateNews() {
               />
             </div>
           </div>
- 
         </div>
         <div className="">
-            <div className="form-group mt-3">
-              <div >
-                <label htmlFor="title">Tiêu đề</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="title"
-                  value={data.title}
-                  onChange={(e) => setData({ ...data, title: e.target.value })}
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="form-group mt-3">
-              <div >
-                <label htmlFor="content">Nội dung</label>
-                <CKEditor
-                  editor={ClassicEditor}
-                  data={data.content} // Initial content for CKEditor
-                  onChange={(event, editor) => {
-                    const content = editor.getData();
-                    setData({ ...data, content: content }); // Update content on change
-                  }}
-                />
-              </div>
-
-                <button type="submit" className="btn btn-primary mt-3">
-                  Cập nhật
-                </button>
+          <div className="form-group mt-3">
+            <div>
+              <label htmlFor="title">Tiêu đề</label>
+              <input
+                type="text"
+                className="form-control"
+                id="title"
+                value={data.title}
+                onChange={(e) => setData({ ...data, title: e.target.value })}
+                required
+              />
             </div>
           </div>
+
+          <div className="form-group mt-3">
+            <div>
+              <label htmlFor="content">Nội dung</label>
+              <CKEditor
+                editor={ClassicEditor}
+                data={data.content} // Initial content for CKEditor
+                onChange={(event, editor) => {
+                  const content = editor.getData();
+                  setData({ ...data, content: content }); // Update content on change
+                }}
+              />
+            </div>
+
+            <button type="submit" className="btn btn-primary mt-3">
+              Cập nhật
+            </button>
+          </div>
+        </div>
       </form>
     </div>
-  );  
+  );
 }
 
 export default UpdateNews;

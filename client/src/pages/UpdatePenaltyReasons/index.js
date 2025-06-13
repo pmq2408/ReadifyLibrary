@@ -14,7 +14,9 @@ const UpdatePenaltyReason = () => {
   useEffect(() => {
     const fetchPenaltyReason = async () => {
       try {
-        const response = await fetch(`http://localhost:9999/api/penalty-reasons/get/${id}`);
+        const response = await fetch(
+          `https://readifylibrary.onrender.com/api/penalty-reasons/get/${id}`
+        );
         const data = await response.json();
         if (response.ok) {
           setFormData(data.data);
@@ -38,13 +40,16 @@ const UpdatePenaltyReason = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:9999/api/penalty-reasons/update/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        `https://readifylibrary.onrender.com/api/penalty-reasons/update/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
       if (response.ok) {
         toast.success("Penalty reason updated successfully");
@@ -60,7 +65,6 @@ const UpdatePenaltyReason = () => {
 
   return (
     <div className="container mt-4">
-       
       <h2>Update Penalty Reason</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
