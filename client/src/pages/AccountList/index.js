@@ -37,9 +37,7 @@ const AccountList = () => {
       return;
     }
     axios
-      .put(`${process.env.REACT_APP_API_URL}/user/status/${id}`, {
-        isActive,
-      })
+      .put(`${process.env.REACT_APP_API_URL}/user/status/${id}`, { isActive })
       .then(() => {
         toast.success("Account status changed successfully");
 
@@ -61,7 +59,7 @@ const AccountList = () => {
   };
 
   useEffect(() => {
-    Axios.get("${process.env.REACT_APP_API_URL}/user/getAll")
+    Axios.get(`${process.env.REACT_APP_API_URL}/user/getAll`)
       .then((response) => {
         const sortedData = response.data.data.sort((a, b) => {
           return new Date(b.createdAt) - new Date(a.createdAt);
@@ -109,7 +107,7 @@ const AccountList = () => {
           toast.error("Failed to filter by role");
         });
     } else {
-      Axios.get("${process.env.REACT_APP_API_URL}/user/getAll").then(
+      Axios.get(`${process.env.REACT_APP_API_URL}/user/getAll`).then(
         (response) => {
           const sortedData = response.data.data.sort((a, b) => {
             return new Date(b.createdAt) - new Date(a.createdAt);
@@ -137,7 +135,7 @@ const AccountList = () => {
           toast.error("Failed to filter by status");
         });
     } else {
-      Axios.get("${process.env.REACT_APP_API_URL}/user/getAll").then(
+      Axios.get(`${process.env.REACT_APP_API_URL}/user/getAll`).then(
         (response) => {
           const sortedData = response.data.data.sort((a, b) => {
             return new Date(b.createdAt) - new Date(a.createdAt);

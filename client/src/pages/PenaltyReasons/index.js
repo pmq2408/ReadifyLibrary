@@ -14,7 +14,7 @@ const ListPenaltyReasons = () => {
     const fetchPenaltyReasons = async () => {
       try {
         const response = await fetch(
-          "${process.env.REACT_APP_API_URL}/penalty-reasons/list"
+          `${process.env.REACT_APP_API_URL}/penalty-reasons/list`
         );
         const data = await response.json();
         setPenaltyReasons(data.data);

@@ -17,7 +17,7 @@ const ListNews = () => {
     const fetchNews = async () => {
       try {
         const response = await fetch(
-          "${process.env.REACT_APP_API_URL}/news/list"
+          `${process.env.REACT_APP_API_URL}/news/list`
         );
         const data = await response.json();
         setNewsData(data.data);

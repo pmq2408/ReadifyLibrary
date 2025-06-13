@@ -23,7 +23,7 @@ function ListFines() {
     try {
       setLoading(true);
       const response = await axios.get(
-        "${process.env.REACT_APP_API_URL}/fines/getAll"
+        `${process.env.REACT_APP_API_URL}/fines/getAll`
       );
       const sortedFines = response.data.data.sort(
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
@@ -66,7 +66,7 @@ function ListFines() {
       setLoading(true);
       const url = selectedStatus
         ? `${process.env.REACT_APP_API_URL}/fines/filter-by-status/${selectedStatus}`
-        : "${process.env.REACT_APP_API_URL}/fines/getAll";
+        : `${process.env.REACT_APP_API_URL}/fines/getAll`;
       const response = await axios.get(url);
       const sortedFines = response.data.data.sort(
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt)

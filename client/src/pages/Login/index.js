@@ -17,7 +17,7 @@ function LoginPage() {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "${process.env.REACT_APP_API_URL}/auth/login",
+        `${process.env.REACT_APP_API_URL}/auth/login`,
         {
           email: username,
           password: password,
@@ -37,7 +37,7 @@ function LoginPage() {
   const handleGoogleLogin = async (response) => {
     try {
       const res = await axios.post(
-        "${process.env.REACT_APP_API_URL}/auth/google-login",
+        `${process.env.REACT_APP_API_URL}/auth/google-login`,
         {
           token: response.credential,
         }

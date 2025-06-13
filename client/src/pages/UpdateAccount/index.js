@@ -24,7 +24,7 @@ const UpdateAccount = () => {
       try {
         // Fetch roles
         const rolesResponse = await axios.get(
-          "${process.env.REACT_APP_API_URL}/user/all-role"
+          `${process.env.REACT_APP_API_URL}/user/all-role`
         );
         setRoles(rolesResponse.data.data);
 

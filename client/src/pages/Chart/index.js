@@ -24,10 +24,10 @@ function Chart() {
             ),
             axios.get(`${process.env.REACT_APP_API_URL}/orders/getAll`),
             axios.get(
-              "${process.env.REACT_APP_API_URL}/fines/chart-fines-by-month"
+              `${process.env.REACT_APP_API_URL}/fines/chart-fines-by-month`
             ),
-            axios.get("${process.env.REACT_APP_API_URL}/fines/getAll"),
-            axios.get("${process.env.REACT_APP_API_URL}/books/books"),
+            axios.get(`${process.env.REACT_APP_API_URL}/fines/getAll`),
+            axios.get(`${process.env.REACT_APP_API_URL}/books/books`),
           ]);
 
         setOrderData({

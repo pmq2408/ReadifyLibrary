@@ -32,7 +32,7 @@ const UpdateBookSet = () => {
     const fetchCatalogs = async () => {
       try {
         const response = await axios.get(
-          "${process.env.REACT_APP_API_URL}/catalogs/list"
+          `${process.env.REACT_APP_API_URL}/catalogs/list`
         );
         setCatalogData(response.data.data);
       } catch (error) {

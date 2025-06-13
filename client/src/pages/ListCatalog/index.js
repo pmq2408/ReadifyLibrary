@@ -38,7 +38,7 @@ const CatalogList = () => {
     const fetchCatalogs = async () => {
       try {
         const response = await fetch(
-          "${process.env.REACT_APP_API_URL}/catalogs/list"
+          `${process.env.REACT_APP_API_URL}/catalogs/list`
         );
         if (!response.ok) throw new Error("Failed to fetch catalog data");
         const data = await response.json();
@@ -175,7 +175,7 @@ const CatalogList = () => {
     e.preventDefault();
     const endpoint = isEditMode
       ? `${process.env.REACT_APP_API_URL}/catalogs/update/${currentCatalogId}`
-      : "${process.env.REACT_APP_API_URL}/catalogs/create";
+      : `${process.env.REACT_APP_API_URL}/catalogs/create`;
     const method = isEditMode ? "PUT" : "POST";
 
     try {

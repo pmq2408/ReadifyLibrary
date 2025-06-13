@@ -19,7 +19,7 @@ function ListBookSet() {
   // Fetch catalog data
   useEffect(() => {
     axios
-      .get("${process.env.REACT_APP_API_URL}/catalogs/list")
+      .get(`${process.env.REACT_APP_API_URL}/catalogs/list`)
       .then((response) => {
         setCatalogData(response.data.data);
       })
@@ -30,7 +30,7 @@ function ListBookSet() {
   useEffect(() => {
     setLoading(true);
     axios
-      .get("${process.env.REACT_APP_API_URL}/book-sets/list")
+      .get(`${process.env.REACT_APP_API_URL}/book-sets/list`)
       .then((response) => {
         const sortedData = response.data.data.sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
