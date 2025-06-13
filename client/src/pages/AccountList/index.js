@@ -224,15 +224,16 @@ const AccountList = () => {
                 <td>{account.code}</td>
                 <td>{account.email}</td>
                 <td>+84{account.phoneNumber}</td>
-                <td>
-                  {account.role_id.name === "admin"
-                    ? "Quản trị viên"
-                    : account.role_id.name === "librarian"
-                    ? "Thủ thư"
-                    : account.role_id.name === "borrower"
-                    ? "Người mượn"
-                    : ""}
-                </td>
+          <td>
+  {account.role_id?.[0]?.name === "admin"
+    ? "Quản trị viên"
+    : account.role_id?.[0]?.name === "librarian"
+    ? "Thủ thư"
+    : account.role_id?.[0]?.name === "borrower"
+    ? "Người mượn"
+    : ""}
+</td>
+
                 <td className="d-flex justify-content-between">
                   <button
                     className="btn btn-warning"
