@@ -32,7 +32,7 @@ const AccountList = () => {
 
   const handleAccountStatusChange = (id, isActive) => {
     const account = accountData.find((account) => account._id === id);
-    if (account.role_id.name === "admin" && !isActive) {
+    if (account.role_id?.[0]?.name === "admin" && !isActive) {
       toast.error("Admin accounts cannot be deactivated");
       return;
     }
@@ -243,7 +243,7 @@ const AccountList = () => {
                     <i className="fa fa-pencil-square-o" aria-hidden="true"></i>
                   </button>
 
-                  {account.role_id.name !== "admin" &&
+                  {account.role_id?.[0]?.name !== "admin"&&
                     (account.isActive ? (
                       <button
                         className="btn btn-danger"
