@@ -11,10 +11,9 @@ const app = express();
 
 // Cấu hình CORS cho phép client truy cập
 const corsOptions = {
-  origin: "*", // Các domain được phép
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE", // Các phương thức được phép
-  allowedHeaders: "*", // Các header được phép
-  credentials: true, // Cần thiết nếu bạn sử dụng cookie hoặc thông tin xác thực
+  origin: "https://readifylibrary-frontend.onrender.com",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true,
 };
 
 // Sử dụng middleware CORS
