@@ -127,7 +127,7 @@ loginUser: async (req, res) => {
 
     const userRole = user.role_id.name;
 
-    if (!["librarian", "admin"].includes(userRole)) {
+    if (!["librarian", "admin","borrower"].includes(userRole)) {
       return res
         .status(403)
         .json({ message: "Access denied: Insufficient permissions" });
