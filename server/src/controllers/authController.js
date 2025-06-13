@@ -94,59 +94,64 @@ const authController = {
   },
 
   // LOGIN USER (For Librarian/Admin Login)
-  loginUser: async (req, res) => {
-    try {
-      const { email, password } = req.body;
+loginUser: async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
-      // Find user by email
-      const user = await User.findOne({ email }).populate("role_id");
-      if (!user) {
-        return res.status(404).json({ message: "Incorrect email or password" });
-      }
-
-      // Check if user is active
-      if (!user.isActive) {
-        return res.status(403).json({
-          message:
-            "Tài khoản bị khóa, vui lòng liên hệ thư viện để xử lý. Cảm ơn!",
-          data: null,
-        });
-      }
-
-      // Compare passwords
-      const validPassword = await bcrypt.compare(password, user.password);
-      if (!validPassword) {
-        return res.status(404).json({ message: "Incorrect email or password" });
-      }
-
-      // Check if role is Librarian or Admin
-      const userRole = user.role_id.name;
-      if (!["librarian", "admin"].includes(userRole)) {
-        return res
-          .status(403)
-          .json({ message: "Access denied: Insufficient permissions" });
-      }
-
-      // Generate tokens
-      const accessToken = authController.generateAccessToken(user);
-      const refreshToken = authController.generateRefreshToken(user);
-      refreshTokens.push(refreshToken);
-
-      // Store refresh token in cookie
-      res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production", // Set to true in production
-        path: "/",
-        sameSite: "strict",
-      });
-
-      const { password: pwd, ...others } = user._doc;
-      res.status(200).json({ ...others, accessToken, refreshToken });
-    } catch (err) {
-      console.error("Login Error:", err);
-      res.status(500).json({ message: "Internal server error" });
+    // Tìm user và populate role
+    const user = await User.findOne({ email }).populate("role_id");
+    if (!user) {
+      return res.status(404).json({ message: "Incorrect email or password" });
     }
-  },
+
+    if (!user.isActive) {
+      return res.status(403).json({
+        message:
+          "Tài khoản bị khóa, vui lòng liên hệ thư viện để xử lý. Cảm ơn!",
+        data: null,
+      });
+    }
+
+    // So sánh mật khẩu
+    const validPassword = await bcrypt.compare(password, user.password);
+    if (!validPassword) {
+      return res.status(404).json({ message: "Incorrect email or password" });
+    }
+
+    // ✅ Check role_id tồn tại và hợp lệ
+    if (!user.role_id || !user.role_id.name) {
+      return res
+        .status(403)
+        .json({ message: "Vai trò không hợp lệ hoặc đã bị xoá khỏi hệ thống." });
+    }
+
+    const userRole = user.role_id.name;
+
+    if (!["librarian", "admin"].includes(userRole)) {
+      return res
+        .status(403)
+        .json({ message: "Access denied: Insufficient permissions" });
+    }
+
+    const accessToken = authController.generateAccessToken(user);
+    const refreshToken = authController.generateRefreshToken(user);
+    refreshTokens.push(refreshToken);
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      sameSite: "strict",
+    });
+
+    const { password: pwd, ...others } = user._doc;
+    res.status(200).json({ ...others, accessToken, refreshToken });
+  } catch (err) {
+    console.error("Login Error:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+},
+
 
   // GOOGLE LOGIN
   loginWithGoogle: async (req, res) => {
