@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 import AuthContext from "../../contexts/UserContext";
 import axios from "axios";
-import { toast } from "react-toastify"; // Import toast
-import "react-toastify/dist/ReactToastify.css"; // Import CSS cho toast
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./Login.scss";
 
 function LoginPage() {
@@ -15,6 +15,7 @@ function LoginPage() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/auth/login`,
@@ -23,12 +24,14 @@ function LoginPage() {
           password: password,
         }
       );
+
+      // Đăng nhập thành công
       login(response.data.accessToken);
-      toast(`Chào mừng bạn đến với fptu-library.xyz`);
+      toast.success("🎉 Chào mừng bạn đến với readifylibrary");
       navigate("/");
     } catch (error) {
       const errorMessage =
-        error.response?.data?.message || "Login failed. Please try again.";
+        error.response?.data?.message || "Đăng nhập thất bại. Vui lòng thử lại.";
       toast.error(errorMessage);
       console.error("Login error", error);
     }
@@ -42,13 +45,13 @@ function LoginPage() {
           token: response.credential,
         }
       );
+
       login(res.data.accessToken);
-      toast(`Chào mừng bạn đến với fptu-library.xyz`);
+      toast.success("🎉 Đăng nhập bằng Google thành công!");
       navigate("/");
     } catch (error) {
       const errorMessage =
-        error.response?.data?.message ||
-        "Google login failed. Please try again.";
+        error.response?.data?.message || "Google login thất bại. Vui lòng thử lại.";
       toast.error(errorMessage);
       console.error("Google login error", error);
     }
